@@ -31,7 +31,7 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
-        <script dangerouslySetInnerHTML={{ __html: "try{var t=localStorage.getItem('bondz-theme');document.documentElement.classList.toggle('dark',t==='dark'||(t===null&&matchMedia('(prefers-color-scheme: dark)').matches))}catch(e){document.documentElement.classList.toggle('dark',matchMedia('(prefers-color-scheme: dark)').matches)}" }} />
+        <script dangerouslySetInnerHTML={{ __html: "try{document.documentElement.classList.toggle('dark',localStorage.getItem('bondz-theme')==='dark')}catch(e){document.documentElement.classList.remove('dark')}" }} />
         <HeadContent />
       </head>
       <body>

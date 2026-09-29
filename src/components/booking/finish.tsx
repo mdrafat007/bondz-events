@@ -543,7 +543,7 @@ ol.terms li b { color: #151118; }
         <section className="col-span-1 md:col-span-2 flex min-h-[19rem] flex-col rounded-2xl border hairline bg-surface-light shadow-sm overflow-hidden">
           <div className="border-b hairline p-3 sm:p-4 bg-surface-light/80">
             <p className="eyebrow text-ink/55">Simulated {parties}-way dispatch - messages not sent</p>
-            <div className="scroll-quiet mt-2 flex gap-1.5 overflow-x-auto">
+            <div className="scroll-quiet mt-2 flex flex-wrap gap-1.5 lg:flex-nowrap lg:overflow-x-auto">
               {recipients.map((x, i) => (
                 <button
                   key={x.who}

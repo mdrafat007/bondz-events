@@ -42,7 +42,6 @@ function InvitePage() {
   const timeWindow = invite?.slot ? `${invite.slot} · ${SLOT_TIMES[invite.slot]}` : "Time to be confirmed";
   const locationName = invite?.place ?? "Location to be confirmed";
   const locationArea = "Preview only";
-  const attire = invite?.tagline ?? "Details will appear after the booking preview";
 
   const storageKey = `bondz_rsvp_${ref}`;
   const [attending, setAttending] = useState<boolean | null>(true);
@@ -53,7 +52,10 @@ function InvitePage() {
   const [submitted, setSubmitted] = useState(false);
   const [rsvpCount, setRsvpCount] = useState(0);
   useEffect(() => {
-    try { setRsvpCount(localStorage.getItem(storageKey) ? 1 : 0); } catch { /* optional */ }
+    try {
+      const saved = localStorage.getItem(storageKey);
+      setRsvpCount(saved && JSON.parse(saved).attending ? 1 : 0);
+    } catch { /* optional */ }
   }, [storageKey]);
 
   const toggleTag = (tag: string) => {

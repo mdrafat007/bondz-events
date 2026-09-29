@@ -12,7 +12,7 @@ export const Route = createFileRoute("/contact")({
       { title: "Contact - Bondz Events" },
       {
         name: "description",
-        content: "Say hello to Mr. Bondz. Tell us what you're celebrating and we'll get back within a business day.",
+        content: "Explore ways to plan a celebration with Mr. Bondz, Solo Event Organizer.",
       },
       { property: "og:title", content: "Contact - Bondz Events" },
       { property: "og:description", content: "Tell Mr. Bondz what you're celebrating." },
@@ -39,8 +39,7 @@ function Contact() {
       toast.error("Name, a valid email and a message, please.");
       return;
     }
-    toast.success(`Thanks ${f.name.split(" ")[0]}. This preview hasn't sent your message; please email Mr. Bondz directly.`);
-    setF({ name: "", email: "", interest: "", msg: "" });
+    toast.info("This preview cannot send messages yet. Your message is still here so you can copy it.");
   };
 
   const input =

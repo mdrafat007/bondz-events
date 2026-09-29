@@ -1,1 +1,1 @@
-export { AppShell } from "../../design-system/components/layout/AppShell";
+export { AppShell } from "@/design-system/bondz-events---design-system-9e1fdf";

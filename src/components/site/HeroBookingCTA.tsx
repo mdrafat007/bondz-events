@@ -1,8 +1,8 @@
 import { motion, useAnimationControls, type Variants } from "framer-motion";
 import { useEffect, useState, useRef, useCallback } from "react";
-import mascotWhite from "../../design-system/assets/icons/BONDZ_LOGO_ICON_DARK.png";
-import mascotRed from "../../design-system/assets/icons/BONDZ_LOGO_ICON_-_LIGHT.png";
-import { useTheme } from "../../design-system/lib/theme";
+import mascotWhite from "../../design-system/bondz-events---design-system-9e1fdf/design-system/assets/icons/BONDZ_LOGO_ICON_DARK.png";
+import mascotRed from "../../design-system/bondz-events---design-system-9e1fdf/design-system/assets/icons/BONDZ_LOGO_ICON_-_LIGHT.png";
+import { useTheme } from "../../design-system/bondz-events---design-system-9e1fdf/design-system/lib/theme";
 import { playPeekabooSound, triggerTap } from "../../lib/haptics";
 import { cn } from "../../lib/utils";
 

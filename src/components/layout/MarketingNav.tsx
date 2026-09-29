@@ -1,4 +1,4 @@
-import { SiteNav } from "../../design-system/components/layout/SiteNav";
+import { SiteNav } from "@/design-system/bondz-events---design-system-9e1fdf";
 import { useBookingLaunch } from "../../lib/use-booking-launch";
 
 const items = [

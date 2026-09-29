@@ -1,5 +1,5 @@
 # Architecture decisions
-- Keep the distributable Bondz UI, theme, utilities, and assets within `src/design-system/`, because attached projects copy this subtree as a self-contained library.
+- Consume Bondz UI, theme, utilities, and brand assets from the managed attached-library barrel and subtree, because attachment updates must remain authoritative and replaceable.
 - Keep the preview site in `src/routes/` and its adapters under `src/components/` and `src/lib/`, because these are preview-only and should not be published as library code.
 - Use `bondz-theme` and `bondz-sound` for preferences, because the supplied UX flow specifies these keys.
 - Default first visits to light mode and sound on, because the brand benchmark requires parchment before any user preference exists.

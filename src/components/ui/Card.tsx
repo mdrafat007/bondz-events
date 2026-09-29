@@ -1,1 +1,1 @@
-export { Card } from "../../design-system/components/ui/Card";
+export { Card } from "@/design-system/bondz-events---design-system-9e1fdf";

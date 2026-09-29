@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "./design-system/styles/theme.css";
+@import "./design-system/bondz-events---design-system-9e1fdf/design-system/styles/theme.css";
 
 html, body, #app { height: 100%; }
 html, body { overflow: hidden; }

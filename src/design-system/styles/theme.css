@@ -3,7 +3,10 @@
 :root {
   --bondz-night: #130f16;
   --bondz-review: #161217;
-  --bondz-status: #45b87d;
+  --bondz-status: #10b981;
+  --bondz-primary-hover: #e0382f;
+  --bondz-shadow-cta: 0 10px 25px oklch(0.62 0.22 28 / 0.35);
+  --bondz-review-hairline: oklch(1 0 0 / 0.1);
   --bondz-paper: #f6f1e7;
   --bondz-canvas: oklch(0.965 0.012 85);
   --bondz-surface: oklch(0.985 0.008 85);
@@ -33,6 +36,8 @@
   --color-night: var(--bondz-night);
   --color-review: var(--bondz-review);
   --color-status: var(--bondz-status);
+  --color-primary-hover: var(--bondz-primary-hover);
+  --color-review-hairline: var(--bondz-review-hairline);
   --color-paper: var(--bondz-paper);
   --color-canvas: var(--bondz-canvas);
   --color-surface: var(--bondz-surface);
@@ -46,6 +51,7 @@
   --shadow-raised: var(--bondz-shadow-raised);
   --shadow-soft: var(--bondz-shadow-soft);
   --shadow-popover: var(--bondz-shadow-popover);
+  --shadow-cta: var(--bondz-shadow-cta);
   --radius-card: 0.375rem;
   --radius-control: 0.25rem;
 }

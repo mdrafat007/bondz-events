@@ -17,3 +17,8 @@
 - [x] Refine the headline, mascot clearance, and responsive feature pillars.
 - [x] Replace proof text with approved testimonials, portraits, and partner badges.
 - [x] Verify mobile, tablet, desktop, dark mode, and booking navigation.
+
+# Home page benchmark refinement
+- [x] Match editorial hero typography, red mascot booking action, and cinematic dinner media.
+- [x] Unbox the four pillars and refine both proof tickers to the supplied visual benchmark.
+- [ ] Verify the refined page across mobile, desktop, dark mode, and booking launch.

@@ -1,0 +1,126 @@
+﻿import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import {
+  CATEGORIES,
+  VENUES,
+  availableDays,
+  eligiblePartners,
+  type CategoryId,
+  type EventTypeId,
+  type Sel,
+  type Slot,
+} from "@/lib/bondz-data";
+import { signalBot } from "@/lib/bot-bus";
+
+export type Step = 1 | 2 | 3 | 4 | 5 | 6;
+export type LogLine = { id: number; text: string; before: number; after: number; at: string };
+export type Details = { name: string; phone: string; email: string; honor: string; notes: string };
+
+function stamp() {
+  const d = new Date();
+  return d.toTimeString().slice(0, 8);
+}
+
+export function useBookingState(init: { event?: EventTypeId | undefined; where?: "home" | "venue" | undefined; step?: Step | undefined; reveal?: boolean | undefined }) {
+  const [anchor] = useState(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
+  const [step, setStep] = useState<Step>(init.step ?? (init.event ? (init.where ? 3 : 2) : 1));
+  const [sel, setSel] = useState<Sel>({
+    event: init.event ?? (init.step ? "wedding" : null),
+    guests: 60,
+    where: init.where ?? (init.step && init.step >= 3 ? "venue" : null),
+    venue: init.step && init.step >= 3 ? "smokestack" : null,
+    services: init.step && init.step >= 3 ? ["catering", "dj"] : [],
+  });
+  const [vibes, setVibes] = useState<string[]>(["Black Tie Glamour"]);
+  const [day, setDay] = useState<number | null>(init.step && init.step >= 4 ? 12 : null);
+  const [slot, setSlot] = useState<Slot | null>(init.step && init.step >= 5 ? "Evening" : null);
+  const [log, setLog] = useState<LogLine[]>([]);
+  const [reveal, setReveal] = useState(init.reveal ?? false);
+  const [details, setDetails] = useState<Details>({
+    name: "Alex Morgan",
+    phone: "+1 555 234 5678",
+    email: "alex.morgan@example.com",
+    honor: "",
+    notes: "",
+  });
+  const [signature, setSignature] = useState<string | null>(null);
+  const [ref, setRef] = useState<string>("BZ-7749-2026");
+
+  const days = useMemo(() => availableDays(sel), [sel]);
+
+  const push = useCallback((text: string, before: number, after: number) => {
+    setLog((l) => [...l, { id: Date.now() + Math.random(), text, before, after, at: stamp() }]);
+    signalBot({ mood: after > 0 ? "happy" : "think" });
+  }, []);
+
+  const pruneFor = (next: Sel): Sel => {
+    const venue = VENUES.find((v) => v.id === next.venue) ?? null;
+    return { ...next, services: next.services.filter((c) => eligiblePartners(c, next.guests, next.event, venue).length > 0) };
+  };
+
+  const toggleService = (c: CategoryId) => {
+    const on = sel.services.includes(c);
+    const next = { ...sel, services: on ? sel.services.filter((x) => x !== c) : [...sel.services, c] };
+    const before = availableDays(sel).length;
+    const after = availableDays(next).length;
+    const venue = VENUES.find((v) => v.id === sel.venue) ?? null;
+    const n = eligiblePartners(c, sel.guests, sel.event, venue).length;
+    const label = CATEGORIES.find((x) => x.id === c)!.label;
+    signalBot({ mood: "think" });
+    if (on) push(`${label} removed - ${after - before} date${after - before === 1 ? "" : "s"} came back`, before, after);
+    else push(`${label} added - polled ${n} partner calendar${n === 1 ? "" : "s"}. ${before - after} date${before - after === 1 ? "" : "s"} stopped existing`, before, after);
+    setSel(next);
+    setDay(null);
+    setSlot(null);
+  };
+
+  const setGuests = (g: number, commit = false) => {
+    const next = pruneFor({ ...sel, guests: g });
+    if (commit) {
+      const before = availableDays(sel).length;
+      const after = availableDays(next).length;
+      if (before !== after || next.services.length !== sel.services.length)
+        push(`Guests set to ${g} - partner eligibility re-checked`, before, after);
+    }
+    setSel(next);
+  };
+
+  const chooseVenue = (id: string | null) => {
+    const v = VENUES.find((x) => x.id === id);
+    const next = pruneFor({ ...sel, venue: id });
+    const before = availableDays(sel).length;
+    const after = availableDays(next).length;
+    if (v) push(`${v.name} selected - polled 1 venue calendar. ${Math.max(before - after, 0)} dates stopped existing`, before, after);
+    setSel(next);
+    setDay(null);
+    setSlot(null);
+  };
+
+  const reset = () => {
+    setStep(1);
+    setSel({ event: null, guests: 60, where: null, venue: null, services: [] });
+    setDay(null);
+    setSlot(null);
+    setLog([]);
+    setDetails({ name: "", phone: "", email: "", honor: "", notes: "" });
+    setSignature(null);
+    setRef("");
+  };
+
+  return {
+    anchor, step, setStep, sel, setSel, vibes, setVibes, days, day, setDay, slot, setSlot, log, push, reveal, setReveal,
+    details, setDetails, signature, setSignature, ref, setRef, toggleService, setGuests, chooseVenue, reset,
+  };
+}
+
+export type BookingCtx = ReturnType<typeof useBookingState>;
+const Ctx = createContext<BookingCtx | null>(null);
+export const BookingProvider = Ctx.Provider;
+export function useBooking() {
+  const c = useContext(Ctx);
+  if (!c) throw new Error("useBooking outside provider");
+  return c;
+}

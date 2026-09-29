@@ -35,6 +35,7 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
 
   const [step, setStep] = useState(1);
   const [subTick, setSubTick] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -44,7 +45,7 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
     return d;
   }, []);
 
-  // Stateful simulation mimicking human inputs (event type selection, guest count slider, partner clicks, date pick)
+  // Stateful simulation mimicking real user inputs
   const [sel, setSel] = useState<Sel>({
     event: "wedding",
     guests: 60,
@@ -85,19 +86,25 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
     goto: setStep,
   };
 
-  // High-cadence human simulation loop (faster time-lapse with scrolling and live selection changes)
+  // High-cadence human simulation loop (fast time-lapse with scrolling and live selection changes)
   useEffect(() => {
     if (isPaused) return;
 
-    // Sub-tick timer every 1.1s for realistic micro-actions
+    // Sub-tick timer every 1.0s for realistic micro-actions
     const subTimer = setInterval(() => {
       setSubTick((t) => t + 1);
-    }, 1100);
+    }, 1000);
+
+    // Scrubber progress tick
+    const progressTimer = setInterval(() => {
+      setProgress((p) => (p >= 100 ? 0 : p + 2.5));
+    }, 80);
 
     // Fast step transition timer: 3.2s per step (fast time-lapse)
     const stepTimer = setInterval(() => {
       setStep((prev) => {
         const next = prev >= 6 ? 1 : prev + 1;
+        setProgress(0);
         // Scroll to top on step transition
         if (scrollContainerRef.current) {
           scrollContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
@@ -108,18 +115,19 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
 
     return () => {
       clearInterval(subTimer);
+      clearInterval(progressTimer);
       clearInterval(stepTimer);
     };
   }, [isPaused]);
 
-  // Micro-actions simulation on subTick (scroll down to show full content, toggle a vibe or partner, alternate dates)
+  // Micro-actions simulation on subTick (scroll down smoothly to show all content, toggle vibe or partner, alternate dates)
   useEffect(() => {
     if (isPaused) return;
 
     if (step === 1) {
       // Simulate scrolling down to reveal 'Why people book' and 'Celebration vibe' chips
       if (scrollContainerRef.current) {
-        const scrollTargets = [0, 90, 180, 240];
+        const scrollTargets = [0, 100, 200, 300];
         scrollContainerRef.current.scrollTo({ top: scrollTargets[subTick % scrollTargets.length], behavior: "smooth" });
       }
       if (subTick % 2 === 0) {
@@ -132,12 +140,12 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
       const guestCounts = [45, 60, 90, 120];
       patch({ guests: guestCounts[subTick % guestCounts.length] });
       if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollTo({ top: (subTick % 2) * 80, behavior: "smooth" });
+        scrollContainerRef.current.scrollTo({ top: (subTick % 2) * 90, behavior: "smooth" });
       }
     } else if (step === 3) {
       // Simulate deep scroll in Step 3 services to reveal partner cards and availability log
       if (scrollContainerRef.current) {
-        const serviceScrolls = [0, 120, 240, 360];
+        const serviceScrolls = [0, 140, 260, 380];
         scrollContainerRef.current.scrollTo({ top: serviceScrolls[subTick % serviceScrolls.length], behavior: "smooth" });
       }
       if (subTick % 2 === 0) {
@@ -150,74 +158,32 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
       const sampleDays = [14, 18, 22, 27];
       setDay(sampleDays[subTick % sampleDays.length]);
       if (scrollContainerRef.current) {
-        const dateScrolls = [0, 80, 160];
+        const dateScrolls = [0, 90, 180];
         scrollContainerRef.current.scrollTo({ top: dateScrolls[subTick % dateScrolls.length], behavior: "smooth" });
       }
     } else if (step === 5 || step === 6) {
       if (scrollContainerRef.current) {
-        const finalScrolls = [0, 100, 200, 300];
+        const finalScrolls = [0, 120, 240, 340];
         scrollContainerRef.current.scrollTo({ top: finalScrolls[subTick % finalScrolls.length], behavior: "smooth" });
       }
     }
   }, [subTick, step, isPaused]);
 
   return (
-    <div
+    <figure
+      onClick={onLaunchBooking}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       className={cn(
-        "relative flex flex-col justify-between overflow-hidden rounded-2xl border border-hairline shadow-raised h-full min-h-[380px] max-h-[460px] lg:max-h-full select-none group transition-colors duration-300",
+        "relative flex flex-col justify-between overflow-hidden rounded-2xl border border-hairline shadow-raised h-full min-h-[360px] max-h-[460px] lg:max-h-full select-none group cursor-pointer transition-colors duration-300",
         demoIsDark
           ? "dark bg-[#110e14] text-[#f6f1e7] border-white/10"
           : "light bg-[#faf7f2] text-[#161217] border-black/10",
         className
       )}
-      aria-label="Interactive Booking Engine Live Simulation"
+      aria-label="Booking Engine Demo Video Container"
     >
-      {/* Top Banner Header: Opposite Theme Indicator + Step Counter */}
-      <div
-        className={cn(
-          "flex items-center justify-between border-b px-4 py-2.5 z-20 shrink-0 transition-colors",
-          demoIsDark
-            ? "border-white/10 bg-[#161218]/90 text-white"
-            : "border-black/10 bg-[#f0eae1]/90 text-ink"
-        )}
-      >
-        <div className="flex items-center gap-2">
-          <span className="flex size-2 rounded-full bg-status animate-pulse" />
-          <span className="font-mono text-[0.68rem] font-black uppercase tracking-wider text-primary">
-            LIVE DEMO · 0{step} OF 06
-          </span>
-          <span className={cn(
-            "text-[0.62rem] font-mono px-2 py-0.5 rounded-full border uppercase tracking-widest hidden sm:inline-block",
-            demoIsDark ? "border-white/15 text-white/60" : "border-black/15 text-ink/60"
-          )}>
-            {demoIsDark ? "DARK MODE ACTIVE" : "LIGHT MODE ACTIVE"}
-          </span>
-        </div>
-
-        {/* Step Jump Pills */}
-        <div className="flex items-center gap-1.5">
-          {[1, 2, 3, 4, 5, 6].map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => setStep(s)}
-              className={cn(
-                "h-2 rounded-full transition-all duration-300 cursor-pointer",
-                s === step
-                  ? "w-6 bg-primary"
-                  : demoIsDark
-                  ? "w-2 bg-white/20 hover:bg-white/40"
-                  : "w-2 bg-black/20 hover:bg-black/40"
-              )}
-              aria-label={`Jump to step ${s}`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Main Viewport: Scrollable Simulated Human Viewport */}
+      {/* Main Viewport: Scrollable Simulated Human Viewport (Video-like canvas) */}
       <div
         ref={scrollContainerRef}
         className={cn(
@@ -225,7 +191,7 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
           demoIsDark ? "bg-[#110e14]" : "bg-[#faf7f2]"
         )}
       >
-        <div className="pointer-events-auto origin-top transition-all duration-300 w-full pb-6">
+        <div className="pointer-events-auto origin-top transition-all duration-300 w-full pb-14">
           {step === 1 && (
             <div className="scale-[0.80] origin-top-left w-[125%] pointer-events-none">
               <Step1Event ctx={ctx} />
@@ -275,32 +241,32 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
         </div>
       </div>
 
-      {/* Showcase Window Bottom Caption Bar matching user exact wording */}
-      <div
-        onClick={onLaunchBooking}
+      {/* Video-player style bottom overlay: Kicker, Title, Progress bar (No tacky buttons) */}
+      <figcaption
         className={cn(
-          "border-t px-4 py-3 flex items-center justify-between cursor-pointer transition-colors z-20 shrink-0",
+          "absolute inset-x-0 bottom-0 z-20 flex flex-col justify-end p-4 sm:p-5 pt-8 bg-gradient-to-t transition-opacity duration-300",
           demoIsDark
-            ? "border-white/10 bg-[#161218] hover:bg-[#1a151d] text-white"
-            : "border-black/10 bg-[#f0eae1] hover:bg-[#e8e2d8] text-ink"
+            ? "from-[#110e14] via-[#110e14]/85 to-transparent text-white"
+            : "from-[#faf7f2] via-[#faf7f2]/85 to-transparent text-ink"
         )}
       >
-        <div className="min-w-0 pr-2">
-          <span className="font-sans text-[0.62rem] font-extrabold uppercase tracking-wider text-primary block">
-            LIVE DEMO
-          </span>
-          <p className="font-sans text-xs sm:text-sm font-black uppercase tracking-tight truncate [font-variation-settings:'wdth'_85]">
+        <div className="mb-2.5">
+          <p className="font-sans text-[0.68rem] font-bold uppercase tracking-widest text-primary">
+            Live Demo
+          </p>
+          <p className="mt-0.5 font-sans text-xs sm:text-sm md:text-base font-black uppercase tracking-tight leading-snug [font-variation-settings:'wdth'_85]">
             Few steps away to celebrate without a single call
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onLaunchBooking}
-          className="rounded-full bg-primary px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-white shadow-raised hover:bg-primary-hover shrink-0 transition-transform active:scale-95"
-        >
-          {isPaused ? "BOOK NOW ↗" : "LAUNCH ↗"}
-        </button>
-      </div>
-    </div>
+
+        {/* Video Duration / Scrubber Progress Bar */}
+        <div className={cn("w-full h-1 overflow-hidden rounded-full", demoIsDark ? "bg-white/20" : "bg-black/15")}>
+          <div
+            className="h-full bg-primary rounded-full transition-all duration-100 ease-linear"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </figcaption>
+    </figure>
   );
 }

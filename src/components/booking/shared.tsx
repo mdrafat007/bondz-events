@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+﻿import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { cn, triggerTap } from "@/index";
 import {
@@ -122,7 +122,7 @@ export function SignaturePad({ onChange }: { onChange: (dataUrl: string | null) 
 
   return (
     <div className="relative mt-2">
-      <canvas ref={ref} role="img" aria-label="Signature pad — sign with mouse or finger"
+      <canvas ref={ref} role="img" aria-label="Signature pad - sign with mouse or finger"
         className="h-24 w-full touch-none rounded-control border border-dashed border-hairline bg-surface-light text-ink"
         onPointerDown={(e) => { const { ctx, r } = setup(); drawing.current = true; e.currentTarget.setPointerCapture(e.pointerId); ctx.beginPath(); ctx.moveTo(e.clientX - r.left, e.clientY - r.top); }}
         onPointerMove={(e) => {

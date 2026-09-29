@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+﻿import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button, Card, cn, triggerTap } from "@/index";
 import {
@@ -20,7 +20,7 @@ export function Step6Booked({ ctx, code, onRestart }: { ctx: BookingCtx; code: s
   const est = estimate(sel);
   const venue = VENUES.find((v) => v.id === sel.venue) ?? null;
   const date = day !== null && anchor ? dayToDate(anchor, day) : null;
-  const dateText = date ? date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : "—";
+  const dateText = date ? date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : "-";
 
   const [theme, setTheme] = useState<(typeof THEMES)[number]>(THEMES[0]);
   const [headline, setHeadline] = useState(`${details.honor || details.name || "Our"}'s Celebration`);
@@ -66,11 +66,11 @@ export function Step6Booked({ ctx, code, onRestart }: { ctx: BookingCtx; code: s
 
   return (
     <>
-      <StepHead no="06" kicker={cancelled ? "Booking cancelled" : "You're booked"} title={cancelled ? "Cancelled —" : "It's official."} accent={cancelled ? "refund issued." : "Everyone knows."}>
+      <StepHead no="06" kicker={cancelled ? "Booking cancelled" : "You're booked"} title={cancelled ? "Cancelled -" : "It's official."} accent={cancelled ? "refund issued." : "Everyone knows."}>
         Reference <strong className={cn("text-ink", cancelled && "line-through")}>{code}</strong> · {shownText}{slot ? ` · ${slot}` : ""}
       </StepHead>
 
-      {/* Bento 1 — invitation card */}
+      {/* Bento 1 - invitation card */}
       <Card variant="elevated" className="mt-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs font-bold uppercase text-subtle">Your invitation card</p>
@@ -106,10 +106,10 @@ export function Step6Booked({ ctx, code, onRestart }: { ctx: BookingCtx; code: s
       </Card>
 
       <div className="mt-5 grid gap-5 lg:grid-cols-2">
-        {/* Bento 2 — dispatch */}
+        {/* Bento 2 - dispatch */}
         <Notified rows={notified} />
 
-        {/* Bento 3 — receipt */}
+        {/* Bento 3 - receipt */}
         <Card variant="elevated">
           <p className="text-xs font-bold uppercase text-subtle">Receipt</p>
           <dl className="mt-4 space-y-2 text-sm">
@@ -214,7 +214,7 @@ function RescheduleModal({ onClose, total, current, sel, anchor, onConfirm }:
   const [pick, setPick] = useState<number | null>(null);
   const days = availableDays(sel).filter((d) => d !== current).slice(0, 20);
   const fee = when === "today" ? 0 : Math.round(total * RESCHEDULE_FEE_RATE);
-  const fmt = (d: number | null) => (d !== null && anchor ? dayToDate(anchor, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }) : "—");
+  const fmt = (d: number | null) => (d !== null && anchor ? dayToDate(anchor, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }) : "-");
   return (
     <Modal title="Reschedule date" onClose={onClose}>
       <p className="mt-2 text-sm text-subtle">Current date: <strong className="text-ink">{fmt(current)}</strong>. Only dates that pass The Rule are shown ({HORIZON}-day window).</p>

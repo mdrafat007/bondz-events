@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Badge, Button, Card } from "@/design-system/bondz-events---design-system-9e1fdf";
 
@@ -22,7 +22,7 @@ Do this:
    Step 1 celebration type and vibe, Step 2 guest count and whether it is at my place or at a venue,
    Step 3 the services I want, Step 4 a date and time slot that is shown as open,
    Step 5 my details, the agreement and the 25% deposit, Step 6 my confirmation and invitations.
-3. Only suggest dates the site itself shows as open — never invent availability.
+3. Only suggest dates the site itself shows as open - never invent availability.
 4. Summarise my choices, the total and the 25% deposit before I confirm.
 5. Never enter payment details or submit the booking for me. I confirm the final step myself.
 
@@ -42,7 +42,7 @@ export function ConnectAIAssistant() {
   const config = JSON.stringify({ mcpServers: { "bondz-events": { url: MCP_URL } } }, null, 2);
   const copy = async (text: string, label: string) => {
     try { await navigator.clipboard.writeText(text); toast.success(`${label} copied`); }
-    catch { toast.error("Couldn't copy — select and copy it manually"); }
+    catch { toast.error("Couldn't copy - select and copy it manually"); }
   };
 
   return (
@@ -71,7 +71,7 @@ export function ConnectAIAssistant() {
               <div className="scroll-quiet mt-4 max-h-dvh min-h-0 overflow-y-auto">
                 <section className="rounded-card border border-hairline bg-surface-light p-3 sm:p-4">
                   <Badge variant="accent">Works with any AI</Badge>
-                  <h3 className="mt-2 font-sans text-sm font-black uppercase tracking-tight text-ink">Booking prompt — no setup needed</h3>
+                  <h3 className="mt-2 font-sans text-sm font-black uppercase tracking-tight text-ink">Booking prompt - no setup needed</h3>
                   <p className="mt-1 text-xs text-subtle">Paste this into any assistant that can browse the web. It guides you through a Bondz booking step by step.</p>
                   <pre className="scroll-quiet mt-2 max-h-48 overflow-auto whitespace-pre-wrap rounded-control border border-hairline bg-canvas p-3 font-mono text-xs leading-relaxed text-ink">{AGENT_PROMPT}</pre>
                   <div className="mt-3"><Button size="sm" onClick={() => copy(AGENT_PROMPT, "Prompt")}>Copy prompt</Button></div>

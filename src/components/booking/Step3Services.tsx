@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Badge, Card, cn, triggerTap } from "@/index";
 import {
   CATEGORIES, VENUES, availableDays, cheapest, estimate, priceOf, usd, venueReason,
@@ -87,7 +87,7 @@ export function Step3Services({ ctx }: { ctx: BookingCtx }) {
                       <span className="flex items-start justify-between gap-3">
                         <span>
                           <span className="block font-serif text-xl leading-tight">{v.name}</span>
-                          <span className={cn("mt-0.5 block text-xs", on ? "text-canvas/60" : "text-subtle")}>{v.area} · {v.min}–{v.max} guests</span>
+                          <span className={cn("mt-0.5 block text-xs", on ? "text-canvas/60" : "text-subtle")}>{v.area} · {v.min}-{v.max} guests</span>
                         </span>
                         <span className={cn("shrink-0 text-sm font-bold", on ? "text-primary" : "text-ink")}>{usd(v.price)}</span>
                       </span>
@@ -115,7 +115,7 @@ export function Step3Services({ ctx }: { ctx: BookingCtx }) {
                       <span className="block font-serif text-lg leading-tight">{c.label}</span>
                       <span className={cn("mt-1 block text-xs", on ? "text-canvas/60" : "text-subtle")}>{p ? c.desc : "No partner fits this guest count"}</span>
                     </span>
-                    <span className={cn("shrink-0 text-sm font-bold", on ? "text-primary" : "text-ink")}>{p ? `from ${usd(priceOf(p, sel.guests))}` : "—"}</span>
+                    <span className={cn("shrink-0 text-sm font-bold", on ? "text-primary" : "text-ink")}>{p ? `from ${usd(priceOf(p, sel.guests))}` : "-"}</span>
                   </button>
                 );
               })}

@@ -1,4 +1,4 @@
-export type EventTypeId = "wedding" | "anniversary" | "birthday" | "bbq" | "family" | "corporate" | "hybrid" | "custom";
+﻿export type EventTypeId = "wedding" | "anniversary" | "birthday" | "bbq" | "family" | "corporate" | "hybrid" | "custom";
 export type CategoryId = "catering" | "decor" | "dj" | "equipment" | "staff" | "cleaning" | "photo" | "lighting" | "hybrid";
 export type Slot = "Morning" | "Evening" | "Night";
 
@@ -36,7 +36,7 @@ export const BONDZ_FEE = { home: 450, venue: 650 };
 
 export const EVENT_TYPES = [
   { id: "wedding", no: "01", title: "Wedding", line: "Vows, a long table and one very good first dance" },
-  { id: "anniversary", no: "02", title: "Anniversary", line: "Another lap around the sun — together" },
+  { id: "anniversary", no: "02", title: "Anniversary", line: "Another lap around the sun - together" },
   { id: "birthday", no: "03", title: "Birthday", line: "Cake, candles, chaos (the good kind)" },
   { id: "bbq", no: "04", title: "BBQ Party", line: "Smoke, sun and a long table" },
   { id: "family", no: "05", title: "Family Get-together", line: "Three generations, one playlist argument" },
@@ -46,13 +46,13 @@ export const EVENT_TYPES = [
 ] as const;
 
 export const CATEGORIES: { id: CategoryId; label: string; desc: string }[] = [
-  { id: "catering", label: "Catering", desc: "Plated, family-style or live grill — food people talk about." },
+  { id: "catering", label: "Catering", desc: "Plated, family-style or live grill - food people talk about." },
   { id: "decor", label: "Decorations", desc: "Florals, draping, tablescapes and a photo wall that earns its place." },
   { id: "dj", label: "DJ / Music", desc: "A set that reads the room, plus mic for speeches." },
   { id: "photo", label: "Photo & Video", desc: "Candids, portraits, and same-week 4K highlight reel." },
   { id: "lighting", label: "Lights & Audio", desc: "Warm washes, clean audio PA, zero feedback squeal." },
   { id: "hybrid", label: "Live Streaming", desc: "Multi-cam live broadcast with remote guest interactivity." },
-  { id: "equipment", label: "Equipment Rental", desc: "Tables, chairs, tents, heaters — delivered and struck." },
+  { id: "equipment", label: "Equipment Rental", desc: "Tables, chairs, tents, heaters - delivered and struck." },
   { id: "staff", label: "Event Staff", desc: "Servers, hosts and a floor captain who never sits down." },
   { id: "cleaning", label: "Cleaning Service", desc: "The morning after, handled before you wake up." },
 ];
@@ -91,11 +91,11 @@ export const SERVICES_11: { no: string; title: string; tagline: string; tab: Ser
   { no: "02", title: "Design Support", tagline: "Mood, palette and floor plan before anyone buys a napkin.", tab: "Plan" },
   { no: "03", title: "Media & PR", tagline: "Announcements, press lists and a story worth telling.", tab: "Plan" },
   { no: "04", title: "Catering", tagline: "Menus built around your guests, not a set list.", tab: "Host" },
-  { no: "05", title: "Decorations", tagline: "Florals, draping, tablescapes — styled, installed, struck.", tab: "Host" },
+  { no: "05", title: "Decorations", tagline: "Florals, draping, tablescapes - styled, installed, struck.", tab: "Host" },
   { no: "06", title: "Music & DJ", tagline: "A set that reads the room, mic for the speeches.", tab: "Host" },
   { no: "07", title: "Post-Event Cleaning Support", tagline: "The morning after, handled before you wake.", tab: "Host" },
   { no: "08", title: "Photo & Videography", tagline: "Candids, portraits and a same-week highlight reel.", tab: "Produce" },
-  { no: "09", title: "Equipment Support", tagline: "Tables, tents, heaters, power — delivered and cleared.", tab: "Produce" },
+  { no: "09", title: "Equipment Support", tagline: "Tables, tents, heaters, power - delivered and cleared.", tab: "Produce" },
   { no: "10", title: "Lights & Sound", tagline: "Warm washes, clean audio, zero feedback squeal.", tab: "Produce" },
   { no: "11", title: "Hybrid Events", tagline: "Live + digital. Stage, cameras and a platform that just works.", tab: "Produce" },
 ];
@@ -112,7 +112,7 @@ export const isBusy = (seed: number, rate: number, day: number): boolean => rand
 export const bondzBusy = (day: number): boolean => isBusy(7, 0.22, day);
 export const slotOpen = (day: number, slotIndex: number): boolean => rand(99 + slotIndex, day) > 0.3;
 
-/** How many of the next `horizon` days this entity is free — used for live availability badges. */
+/** How many of the next `horizon` days this entity is free - used for live availability badges. */
 export function openDayCount(seed: number, rate: number, horizon = HORIZON): number {
   let open = 0;
   for (let day = 0; day < horizon; day += 1) if (!isBusy(seed, rate, day)) open += 1;
@@ -168,12 +168,12 @@ export const GUEST_MAX = 300;
 /** Narrative banner shown once an event type is chosen. */
 export const EVENT_NARRATIVES: Record<EventTypeId, { kicker: string; highlight: string; body: string }> = {
   wedding: { kicker: "Flawless production.", highlight: "Zero wedding day stress.", body: "From morning load-in and acoustic ceremony cues to the final sparkler send-off, Mr. Bondz personally captains every timeline, vendor sync, and table seating with calm mastery." },
-  anniversary: { kicker: "Milestone celebrations.", highlight: "Crafted with intimacy.", body: "Curated chef tasting menus, atmospheric ambient lighting, and bespoke musical narratives honoring your journey together — whether an intimate dining room or an outdoor terrace." },
+  anniversary: { kicker: "Milestone celebrations.", highlight: "Crafted with intimacy.", body: "Curated chef tasting menus, atmospheric ambient lighting, and bespoke musical narratives honoring your journey together - whether an intimate dining room or an outdoor terrace." },
   birthday: { kicker: "Unapologetic celebration.", highlight: "Zero planning fatigue.", body: "Boutique cocktail bars, high-vibe soundscapes, and immersive decor so you and your guests can simply walk in, celebrate, and dance until 2 AM without chasing a single vendor." },
-  bbq: { kicker: "Smoky feast, sun & style.", highlight: "Handled end-to-end.", body: "Live pitmaster grilling, artisanal craft drink stations, lawn setups, and weather-proof canopies — delivering elevated open-air hospitality with zero host cleanup." },
+  bbq: { kicker: "Smoky feast, sun & style.", highlight: "Handled end-to-end.", body: "Live pitmaster grilling, artisanal craft drink stations, lawn setups, and weather-proof canopies - delivering elevated open-air hospitality with zero host cleanup." },
   family: { kicker: "Multi-generational warmth.", highlight: "One unified table.", body: "Comfort-forward family dining, generational music curation, and seamless seating setups so you spend the entire day catching up, not running around." },
   corporate: { kicker: "Precision brand hospitality.", highlight: "Executive polish.", body: "Keynote-ready staging, seamless audiovisuals, VIP hospitality lounges, and culinary excellence designed to leave partners, investors, and clients thoroughly impressed." },
-  hybrid: { kicker: "It's not just live.", highlight: "It's live + digital.", body: "Hybrid events blend in-person energy with virtual participation through broadcasting and digital tools — so people can join from anywhere. Creative stage design, AV integration and a smart streaming platform, all coordinated by Mr. Bondz." },
+  hybrid: { kicker: "It's not just live.", highlight: "It's live + digital.", body: "Hybrid events blend in-person energy with virtual participation through broadcasting and digital tools - so people can join from anywhere. Creative stage design, AV integration and a smart streaming platform, all coordinated by Mr. Bondz." },
   custom: { kicker: "Bespoke architecture.", highlight: "You dream it, we execute it.", body: "Have a unique concept, themed gala, or unusual venue? Mr. Bondz engineers custom floorplans, bespoke lighting, and custom vendor orchestration from scratch." },
 };
 
@@ -190,9 +190,9 @@ export const VIBES_BY_EVENT: Record<EventTypeId, string[]> = {
 };
 
 export const SLOT_TIMES: Record<Slot, string> = {
-  Morning: "10:00 AM – 2:00 PM",
-  Evening: "5:00 PM – 10:00 PM",
-  Night: "9:00 PM – 2:00 AM",
+  Morning: "10:00 AM - 2:00 PM",
+  Evening: "5:00 PM - 10:00 PM",
+  Night: "9:00 PM - 2:00 AM",
 };
 
 function fitsEvent(list: EventTypeId[] | "all", e: EventTypeId | null): boolean {
@@ -238,7 +238,7 @@ export function availableDays(sel: Sel, services: CategoryId[] = sel.services, v
   return out;
 }
 
-/** Free days in the horizon for one party — used for the intersection chips. */
+/** Free days in the horizon for one party - used for the intersection chips. */
 export function freeDayCount(seed: number, rate: number): number {
   let n = 0;
   for (let d = 1; d <= HORIZON; d += 1) if (!isBusy(seed, rate, d)) n += 1;
@@ -247,7 +247,7 @@ export function freeDayCount(seed: number, rate: number): number {
 
 export function venueReason(v: Venue, guests: number, event: EventTypeId | null, budget: number): string | null {
   if (!fitsEvent(v.events, event)) return "Doesn't host this event type";
-  if (guests > v.max) return `Holds ${v.max} max — you have ${guests}`;
+  if (guests > v.max) return `Holds ${v.max} max - you have ${guests}`;
   if (guests < v.min) return `Minimum ${v.min} guests`;
   if (v.minSpend && budget < v.minSpend) return `Minimum spend $${v.minSpend.toLocaleString()}`;
   return null;
@@ -260,7 +260,7 @@ export interface EstimateLine { label: string; amount: number; note?: string }
 export function estimate(sel: Sel): { lines: EstimateLine[]; total: number; deposit: number; balance: number } {
   const venue = VENUES.find((v) => v.id === sel.venue) ?? null;
   const lines: EstimateLine[] = [
-    { label: "Mr. Bondz — planning & on-site", amount: sel.where === "venue" ? BONDZ_FEE.venue : BONDZ_FEE.home, note: "flat" },
+    { label: "Mr. Bondz - planning & on-site", amount: sel.where === "venue" ? BONDZ_FEE.venue : BONDZ_FEE.home, note: "flat" },
   ];
   if (venue) lines.push({ label: venue.name, amount: venue.price, note: "venue hire" });
   for (const c of sel.services) {

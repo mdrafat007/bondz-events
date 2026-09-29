@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Card, cn } from "@/index";
 import {
   CATEGORIES, DEPOSIT_RATE, SLOT_TIMES, VENUES, assignPartner, cheapest, dayToDate, estimate, usd,
@@ -48,7 +48,7 @@ export function Step5Lock({ ctx, onBooked }: { ctx: BookingCtx; onBooked: (ref: 
   return (
     <>
       <StepHead no="05" kicker="Details & deposit" title="Sign once." accent="Everyone moves.">
-        One signature dispatches {parties} work orders — venue, partners and Mr. Bondz.
+        One signature dispatches {parties} work orders - venue, partners and Mr. Bondz.
       </StepHead>
 
       <div className="mt-8 grid gap-5 lg:grid-cols-3">
@@ -94,7 +94,7 @@ export function Step5Lock({ ctx, onBooked }: { ctx: BookingCtx; onBooked: (ref: 
               <Row k="Location" v={venue ? venue.name : "Your place"} />
               {sel.services.map((c) => {
                 const p = day !== null ? assignPartner(c, sel, day) : cheapest(c, sel.guests, sel.event, venue);
-                return <Row key={c} k={CATEGORIES.find((x) => x.id === c)!.label} v={p?.name ?? "—"} />;
+                return <Row key={c} k={CATEGORIES.find((x) => x.id === c)!.label} v={p?.name ?? "-"} />;
               })}
             </dl>
             <div className="mt-5 grid gap-2 border-t border-review-hairline pt-4">

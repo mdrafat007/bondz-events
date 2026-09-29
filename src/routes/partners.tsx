@@ -1,137 +1,578 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { AppShell, Button, Badge } from "../index";
-import { MarketingNav } from "../components/layout/MarketingNav";
-import { SiteFooter } from "../components/layout/SiteFooter";
-import { useBookingLaunch } from "../lib/use-booking-launch";
-import { PARTNERS, VENUES, CATEGORIES, HORIZON, categoryLabel, priceLabel, openDayCount, nextOpenDay, dayLabel, type Partner, type Venue } from "../lib/bondz-data";
+﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Ticker } from "@/components/site/Brand";
+import { PARTNER_GROUPS, PARTNERS, VENUES } from "@/lib/bondz-data";
+import { cn } from "@/lib/utils";
+import { playTapSound, triggerTap } from "@/lib/haptics";
+import { triggerBookingTransition } from "@/lib/booking-transition";
 
 export const Route = createFileRoute("/partners")({
-  head: () => ({ meta: [
-    { title: "Partners — Bondz Events" },
-    { name: "description", content: "Seventeen vetted partners and five venues, each with live availability across the next 75 days. Only simultaneously free dates ever reach your screen." },
-    { property: "og:title", content: "Verified Partner Network — Bondz Events" },
-    { property: "og:description", content: "Seventeen vetted partners and five venues with live availability across the next 75 days." },
-    { property: "og:type", content: "website" },
-    { name: "twitter:card", content: "summary_large_image" },
-  ] }),
-  component: PartnersPage,
+  head: () => ({
+    meta: [
+      { title: "Partners - Bondz Events" },
+      {
+        name: "description",
+        content:
+          "The venues, caterers, decorators, DJs, equipment, staffing and cleaning crews whose calendars sync live with Mr. Bondz.",
+      },
+      { property: "og:title", content: "Partners - Bondz Events" },
+      { property: "og:description", content: "Every partner here syncs its calendar live with Bondz Events." },
+    ],
+  }),
+  component: Partners,
 });
 
-const TICKER = [...VENUES.map((venue) => ({ category: "Venue", name: venue.name })), ...PARTNERS.map((partner) => ({ category: categoryLabel(partner.category), name: partner.name }))];
-
-type Selected = { kind: "partner"; data: Partner } | { kind: "venue"; data: Venue };
-
-function AvailabilityLine({ seed, busyRate }: { seed: number; busyRate: number }) {
-  const open = openDayCount(seed, busyRate);
-  const next = nextOpenDay(seed, busyRate);
-  return <div className="flex flex-wrap items-center gap-2">
-    <span className="size-1.5 shrink-0 rounded-full bg-status" aria-hidden="true" />
-    <span className="font-sans text-[0.62rem] font-extrabold uppercase tracking-widest text-ink">{open} of {HORIZON} days open</span>
-    {next !== null && <span className="font-sans text-[0.62rem] font-bold uppercase tracking-widest text-subtle">Next: {dayLabel(next)}</span>}
-  </div>;
+interface PartnerMeta {
+  name: string;
+  category: string;
+  group: string;
+  rating: string;
+  eventsCount: string;
+  image: string;
+  headline: string;
+  details: string;
+  pricing: string;
+  capacity?: string;
+  tags: string[];
 }
 
-function Drawer({ selection, onClose, onBook }: { selection: Selected; onClose: () => void; onBook: () => void }) {
+const PARTNER_METAS: Record<string, PartnerMeta> = {
+  "Smokestack Yard": {
+    name: "Smokestack Yard",
+    category: "Venue",
+    group: "Venues",
+    rating: "4.96",
+    eventsCount: "128",
+    image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=800&q=80",
+    headline: "Riverside Arts District courtyard with open fire pits.",
+    details:
+      "A raw industrial brick haven with festoon lighting, loading bay access, and open-air fire pits. Ideal for lively BBQ feasts and dusk-to-dawn celebrations.",
+    pricing: "$2,400 flat venue hire",
+    capacity: "20-120 guests",
+    tags: ["Open-air courtyard", "Fire pits", "String lights", "Loading bay"],
+  },
+  "The Glasshouse": {
+    name: "The Glasshouse",
+    category: "Venue",
+    group: "Venues",
+    rating: "4.98",
+    eventsCount: "184",
+    image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80",
+    headline: "Botanic Quarter architectural conservatory dome.",
+    details:
+      "Floor-to-ceiling iron-framed glass conservatory surrounded by botanical flora. Includes dedicated private bridal suite and integrated spatial acoustics.",
+    pricing: "$4,200 flat venue hire",
+    capacity: "40-220 guests",
+    tags: ["Garden conservatory", "Bridal suite", "In-house AV", "Step-free"],
+  },
+  "Loft Nine": {
+    name: "Loft Nine",
+    category: "Venue",
+    group: "Venues",
+    rating: "4.94",
+    eventsCount: "152",
+    image: "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=800&q=80",
+    headline: "Old Mill Row broadcast-ready studio warehouse.",
+    details:
+      "Polished concrete, exposed timber beams, stage lighting truss, green room, freight elevator, and custom zinc cocktail bar.",
+    pricing: "$3,600 flat venue hire",
+    capacity: "30-300 guests",
+    tags: ["Stream-ready stage", "Green room", "Freight lift", "Custom bar"],
+  },
+  "Harbor Hall": {
+    name: "Harbor Hall",
+    category: "Venue",
+    group: "Venues",
+    rating: "4.99",
+    eventsCount: "210",
+    image: "https://images.unsplash.com/photo-1544078751-58fee2d8a03b?auto=format&fit=crop&w=800&q=80",
+    headline: "Waterfront grand ballroom with sweeping ocean terrace.",
+    details:
+      "Panoramic harbor views, private arrival jetty, valet parking, and marble architectural details. Built for premier gala dinners and high-guest count weddings.",
+    pricing: "$6,800 flat venue hire",
+    capacity: "150-400 guests",
+    tags: ["Grand ballroom", "Harbor terrace", "Valet arrivals", "Waterfront"],
+  },
+  "Cedar Mews Room": {
+    name: "Cedar Mews Room",
+    category: "Venue",
+    group: "Venues",
+    rating: "4.92",
+    eventsCount: "95",
+    image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
+    headline: "Hillcrest intimate private dining room with wood fireplace.",
+    details:
+      "Secluded cobblestone mews hideaway featuring a working limestone fireplace, vintage Steinway parlor piano, and private sommelier cellar.",
+    pricing: "$900 flat venue hire",
+    capacity: "10-45 guests",
+    tags: ["Private dining", "Fireplace", "Parlor piano", "Intimate lounge"],
+  },
+  "Halal Feast Co.": {
+    name: "Halal Feast Co.",
+    category: "Catering",
+    group: "Catering",
+    rating: "4.97",
+    eventsCount: "230",
+    image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+    headline: "Slow-roasted heritage lamb, saffron rice & fresh za’atar.",
+    details:
+      "100% certified halal artisanal culinary experiences. Family-style sharing banquets crafted with heirloom spices and hand-pulled breads.",
+    pricing: "$38 / guest",
+    capacity: "20-250 guests",
+    tags: ["Certified Halal", "Family-style banquets", "Live woodfire", "Dietary custom"],
+  },
+  "Smoke & Cedar Catering": {
+    name: "Smoke & Cedar Catering",
+    category: "Catering",
+    group: "Catering",
+    rating: "4.95",
+    eventsCount: "175",
+    image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80",
+    headline: "Slow-smoked oak brisket and applewood pit-fire feasts.",
+    details:
+      "Authentic pitmaster barbecue with charred sweet corn, house-brined pickles, skillet cornbread, and smoked caramelized brisket cuts.",
+    pricing: "$32 / guest",
+    capacity: "15-150 guests",
+    tags: ["Oak smoked", "Outdoor pitmaster", "Craft sides", "Informal luxury"],
+  },
+  "Ember & Oak Kitchen": {
+    name: "Ember & Oak Kitchen",
+    category: "Catering",
+    group: "Catering",
+    rating: "4.98",
+    eventsCount: "190",
+    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    headline: "Five-course seasonal plated tasting menus & natural wines.",
+    details:
+      "Elevated contemporary gastronomy emphasizing hyper-local produce, delicate sauces, and precise culinary plate compositions.",
+    pricing: "$46 / guest",
+    capacity: "40-300 guests",
+    tags: ["Plated 5-course", "Farm-to-table", "Wine pairing", "Sommelier service"],
+  },
+  "Petal Theory": {
+    name: "Petal Theory",
+    category: "Decor",
+    group: "Decor",
+    rating: "4.99",
+    eventsCount: "220",
+    image: "https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=800&q=80",
+    headline: "Architectural botanical installations & floating floral clouds.",
+    details:
+      "Sculptural garden roses, untamed branches, wild seasonal foliage, and bespoke ceramic tablescapes installed and struck seamlessly.",
+    pricing: "$1,200 flat design package",
+    capacity: "10-300 guests",
+    tags: ["Suspended florals", "Garden roses", "Zero plastic foam", "Complete strike"],
+  },
+  "Linen & Light Studio": {
+    name: "Linen & Light Studio",
+    category: "Decor",
+    group: "Decor",
+    rating: "4.93",
+    eventsCount: "140",
+    image: "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=800&q=80",
+    headline: "Belgian stone-washed linen runners and beeswax taper candles.",
+    details:
+      "Understated tactile minimalism: natural earthy textures, warm ambient candlelight, and custom stationery integration.",
+    pricing: "$950 flat design package",
+    capacity: "10-180 guests",
+    tags: ["Natural linen", "Beeswax candles", "Minimalist tableware", "Warm palette"],
+  },
+  "DJ Nova": {
+    name: "DJ Nova",
+    category: "DJ / Music",
+    group: "DJ / Music",
+    rating: "4.96",
+    eventsCount: "280",
+    image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80",
+    headline: "Vinyl-centric groove curator with flawless crowd-reading.",
+    details:
+      "Seamless transitions from warm sunset funk and soul into high-energy midnight house. Includes wireless speech mic and pristine monitors.",
+    pricing: "$850 flat session",
+    capacity: "10-300 guests",
+    tags: ["Vinyl & digital", "Zero cheese", "Wireless mic included", "Room-reading"],
+  },
+  "Static Bloom Sound": {
+    name: "Static Bloom Sound",
+    category: "DJ / Music",
+    group: "DJ / Music",
+    rating: "4.97",
+    eventsCount: "160",
+    image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80",
+    headline: "Live electronic ensemble and high-definition acoustic audio.",
+    details:
+      "Bespoke sound engineers delivering punchy warm sub-bass, club-grade audio clarity, and hybrid live percussion integration.",
+    pricing: "$1,100 flat session",
+    capacity: "30-300 guests",
+    tags: ["Club-grade PA", "Live hybrid elements", "Acoustic calibration", "Sound engineer"],
+  },
+  "RentIt Pro": {
+    name: "RentIt Pro",
+    category: "Equipment",
+    group: "Equipment",
+    rating: "4.92",
+    eventsCount: "310",
+    image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=800&q=80",
+    headline: "Bentwood chairs, oak harvest trestles & gas patio heaters.",
+    details:
+      "Reliable delivery, setup, and strike for all core event infrastructure. Spotless furniture delivered in custom protective flight cases.",
+    pricing: "$9 / guest",
+    capacity: "10-300 guests",
+    tags: ["Bentwood seating", "Solid oak trestles", "Patio heaters", "Same-night strike"],
+  },
+  "Canopy Works": {
+    name: "Canopy Works",
+    category: "Equipment",
+    group: "Equipment",
+    rating: "4.95",
+    eventsCount: "195",
+    image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=800&q=80",
+    headline: "Clear-span sailcloth pavilions and architectural marquees.",
+    details:
+      "Weather-rated luxury sailcloth marquees with wooden center poles, panoramic transparent side-walls, and integrated guttering systems.",
+    pricing: "$11 / guest",
+    capacity: "10-200 guests",
+    tags: ["Sailcloth marquees", "Clear-span weather seal", "Rigging safety certified", "Turnkey setup"],
+  },
+  "Hostline Staffing": {
+    name: "Hostline Staffing",
+    category: "Staffing",
+    group: "Staffing",
+    rating: "4.97",
+    eventsCount: "250",
+    image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80",
+    headline: "Impeccably tailored floor captains and silver-service team.",
+    details:
+      "Professional hospitality crew in crisp monochrome uniform. Trained in synchronized plating, discreet clearing, and warm hospitality.",
+    pricing: "$14 / guest",
+    capacity: "20-300 guests",
+    tags: ["Floor captain lead", "Black-tie uniform", "RSA certified", "Zero sitting down"],
+  },
+  "Tidy Morning Co.": {
+    name: "Tidy Morning Co.",
+    category: "Cleaning",
+    group: "Cleaning",
+    rating: "4.99",
+    eventsCount: "340",
+    image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80",
+    headline: "Zero-trace morning sweep before the venue manager arrives.",
+    details:
+      "Complete post-event venue restoration: bottle disposal, commercial floor scrubbing, trash removal, and verified venue sign-off checklist.",
+    pricing: "$420 flat sweep",
+    capacity: "10-300 guests",
+    tags: ["Eco-detergents", "Full waste removal", "Morning handover ready", "Venue bond guarantee"],
+  },
+  "Afterglow Cleaners": {
+    name: "Afterglow Cleaners",
+    category: "Cleaning",
+    group: "Cleaning",
+    rating: "4.94",
+    eventsCount: "180",
+    image: "https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?auto=format&fit=crop&w=800&q=80",
+    headline: "Discreet midnight post-party restoration service.",
+    details:
+      "Arrives immediately upon event conclusion for discreet midnight strikes so clients wake up to spotless living spaces or venues.",
+    pricing: "$360 flat sweep",
+    capacity: "10-150 guests",
+    tags: ["Discreet midnight strike", "Home & venue ready", "Recycling sorted", "Bond protection"],
+  },
+};
+
+function Partners() {
+  const [hoveredPartner, setHoveredPartner] = useState<PartnerMeta | null>(null);
+  const [selectedPartner, setSelectedPartner] = useState<PartnerMeta | null>(null);
+  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const navigate = useNavigate();
+
+  const handlePartnerClick = (name: string) => {
+    triggerTap();
+    const meta = PARTNER_METAS[name];
+    if (meta) {
+      setSelectedPartner(meta);
+    }
+  };
+
+  const handleBookWithPartner = () => {
+    triggerTap();
+    setSelectedPartner(null);
+    triggerBookingTransition(() => navigate({ to: "/book", search: { intro: 1 } }));
+  };
+
+  // Close modal on Escape
   useEffect(() => {
-    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") onClose(); };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedPartner(null);
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
 
-  const isVenue = selection.kind === "venue";
-  const data = selection.data;
-  const events = data.events === "all" ? "All event types" : data.events.map((event) => event[0].toUpperCase() + event.slice(1)).join(", ");
-
-  return <div className="fixed inset-0 z-50 flex justify-end">
-    <button type="button" aria-label="Close partner details" onClick={onClose} className="absolute inset-0 cursor-default bg-night/60 backdrop-blur-sm" />
-    <aside role="dialog" aria-modal="true" aria-label={`${data.name} details`} className="scroll-quiet relative flex h-full w-full max-w-md flex-col overflow-y-auto border-l border-hairline bg-canvas p-6 shadow-popover sm:p-8">
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <span className="font-sans text-[0.62rem] font-extrabold uppercase tracking-widest text-primary">{isVenue ? "Venue" : categoryLabel((data as Partner).category)}</span>
-          <h2 className="mt-1 font-serif text-3xl italic leading-tight text-ink">{data.name}</h2>
-          {isVenue && <p className="mt-1 font-sans text-[0.65rem] font-bold uppercase tracking-widest text-subtle">{(data as Venue).area}</p>}
+  return (
+    <div className="flex h-full flex-col px-4 pb-4 pt-4 md:px-8 relative">
+      {/* Header Bar */}
+      <div className="flex shrink-0 flex-wrap items-end justify-between gap-4 border-b border-ink/15 pb-4">
+        <div>
+          <p className="eyebrow text-primary font-bold tracking-widest uppercase">
+            Nº 04 - Vetted Collective · Live Synchronized
+          </p>
+          <h1 className="display mt-1 text-4xl sm:text-5xl md:text-6xl tracking-tight">
+            The people behind the curtain.
+          </h1>
         </div>
-        <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close">✕</Button>
-      </div>
-      <div className="mt-5 rounded-card border border-hairline bg-surface-light p-4">
-        <AvailabilityLine seed={data.seed} busyRate={data.busyRate} />
-        <p className="mt-2 text-xs text-subtle">Availability is recalculated across the next {HORIZON} days every time this page loads.</p>
-      </div>
-      <dl className="mt-5 space-y-3 text-sm">
-        <div className="flex justify-between gap-4 border-b border-hairline pb-3"><dt className="font-sans text-[0.65rem] font-extrabold uppercase tracking-widest text-subtle">Price</dt><dd className="font-sans font-bold text-ink">{isVenue ? `$${(data as Venue).price.toLocaleString()}` : priceLabel(data as Partner)}</dd></div>
-        {isVenue && (data as Venue).minSpend > 0 && <div className="flex justify-between gap-4 border-b border-hairline pb-3"><dt className="font-sans text-[0.65rem] font-extrabold uppercase tracking-widest text-subtle">Minimum spend</dt><dd className="font-sans font-bold text-ink">${(data as Venue).minSpend.toLocaleString()}</dd></div>}
-        <div className="flex justify-between gap-4 border-b border-hairline pb-3"><dt className="font-sans text-[0.65rem] font-extrabold uppercase tracking-widest text-subtle">Guest range</dt><dd className="font-sans font-bold text-ink">{data.min}–{data.max}</dd></div>
-        <div className="flex justify-between gap-4 border-b border-hairline pb-3"><dt className="font-sans text-[0.65rem] font-extrabold uppercase tracking-widest text-subtle">Rating</dt><dd className="font-sans font-bold text-ink">4.9 / 5.0</dd></div>
-        <div className="border-b border-hairline pb-3"><dt className="font-sans text-[0.65rem] font-extrabold uppercase tracking-widest text-subtle">Serves</dt><dd className="mt-1 text-ink">{events}</dd></div>
-        {isVenue && <div><dt className="font-sans text-[0.65rem] font-extrabold uppercase tracking-widest text-subtle">Amenities</dt><dd className="mt-2 flex flex-wrap gap-2">{(data as Venue).amenities.map((item) => <Badge key={item} variant="neutral" size="sm">{item}</Badge>)}</dd></div>}
-      </dl>
-      <Button variant="primary" size="lg" className="mt-7 w-full rounded-full" onClick={onBook}>Book with this partner →</Button>
-    </aside>
-  </div>;
-}
-
-function PartnersPage() {
-  const [selection, setSelection] = useState<Selected | null>(null);
-  const [category, setCategory] = useState<string>("all");
-  const { launchBooking, curtain } = useBookingLaunch();
-  const visible = PARTNERS.filter((partner) => category === "all" || partner.category === category);
-
-  return <AppShell header={<MarketingNav active="/partners" />} footer={<SiteFooter />}>
-    <div className="w-full">
-      <div className="overflow-x-hidden border-b border-hairline bg-surface py-3" aria-label="Partner network">
-        <div className="ticker-marquee-left">
-          {[0, 1].map((copy) => <div key={copy} className="flex shrink-0 items-center gap-3 pr-3" aria-hidden={copy === 1 ? true : undefined}>
-            {TICKER.map((entry) => <div key={entry.name} className="flex shrink-0 items-center gap-2 rounded-full border border-hairline bg-surface-light px-4 py-1.5 shadow-soft">
-              <span className="font-serif text-xs italic text-primary">{entry.category}</span>
-              <span className="font-sans text-xs font-extrabold uppercase tracking-tight text-ink">{entry.name}</span>
-              <span className="size-1.5 shrink-0 rounded-full bg-status" aria-hidden="true" />
-            </div>)}
-          </div>)}
+        <div className="flex items-center gap-3">
+          <span className="hidden sm:inline-flex items-center gap-2 rounded-full border hairline bg-surface-light px-3.5 py-1.5 text-xs font-bold text-ink/75">
+            <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+            Hover or tap to inspect specs
+          </span>
+          <p className="max-w-xs text-xs text-ink/65 leading-relaxed">
+            Every vendor shares their live calendar directly with Mr. Bondz - that’s how impossible dates never reach your screen.
+          </p>
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 sm:px-6 sm:pt-12 md:px-8">
-        <span className="font-sans text-[0.68rem] font-extrabold uppercase tracking-widest text-primary">Verified network</span>
-        <h1 className="mt-3 max-w-3xl font-sans text-[clamp(2.1rem,5.4vw,4rem)] font-black uppercase leading-[0.95] tracking-tight text-ink [font-variation-settings:'wdth'_85]">
-          {PARTNERS.length} partners<span className="font-serif font-normal italic tracking-normal text-primary"> and </span>{VENUES.length} venues
-        </h1>
-        <p className="mt-4 max-w-xl text-sm leading-relaxed text-subtle">Every partner below shares a live calendar with Mr. Bondz. A date only reaches your screen when all of them are simultaneously free.</p>
+      {/* Marquee Ticker Rows */}
+      <div className="scroll-quiet flex min-h-0 flex-1 flex-col justify-between overflow-y-auto py-2">
+        {PARTNER_GROUPS.map((g, i) => (
+          <div
+            key={g.g}
+            className="grid grid-cols-[6.5rem_1fr] items-center gap-3 border-b hairline py-2.5 md:grid-cols-[10.5rem_1fr] group/row transition-colors hover:bg-surface-light/40"
+          >
+            {/* Category Label */}
+            <p className="flex items-baseline gap-2 pl-1">
+              <span className="text-[0.72rem] font-bold text-primary font-mono">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="text-sm font-extrabold uppercase tracking-tight text-ink font-display [font-variation-settings:'wdth'_85]">
+                {g.g}
+              </span>
+              <span className="text-[0.70rem] font-mono text-ink/40">
+                ({g.names.length})
+              </span>
+            </p>
 
-        <h2 className="mt-12 font-sans text-xs font-black uppercase tracking-widest text-ink">Venues</h2>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {VENUES.map((venue) => <article key={venue.id} className="flex flex-col rounded-2xl border border-hairline bg-surface-light p-5 shadow-soft">
-            <h3 className="font-serif text-2xl italic leading-tight text-ink">{venue.name}</h3>
-            <p className="mt-1 font-sans text-[0.65rem] font-bold uppercase tracking-widest text-subtle">{venue.area}</p>
-            <p className="mt-3 text-sm text-subtle">{venue.min}–{venue.max} guests · ${venue.price.toLocaleString()}</p>
-            <div className="mt-3"><AvailabilityLine seed={venue.seed} busyRate={venue.busyRate} /></div>
-            <Button variant="outline" size="sm" className="mt-5 w-fit rounded-full" onClick={() => setSelection({ kind: "venue", data: venue })}>View details →</Button>
-          </article>)}
-        </div>
-
-        <h2 className="mt-14 font-sans text-xs font-black uppercase tracking-widest text-ink">Partner vendors</h2>
-        <div role="tablist" aria-label="Filter partners by category" className="scroll-quiet mt-4 flex gap-2 overflow-x-auto pb-1">
-          {[{ id: "all", label: "All" }, ...CATEGORIES].map((item) => <button
-            key={item.id}
-            type="button"
-            role="tab"
-            aria-selected={category === item.id}
-            onClick={() => setCategory(item.id)}
-            className={`shrink-0 rounded-full border px-4 py-2 font-sans text-[0.65rem] font-extrabold uppercase tracking-widest transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${category === item.id ? "border-primary bg-primary text-surface-light" : "border-hairline bg-surface-light text-subtle hover:text-ink"}`}
-          >{item.label}</button>)}
-        </div>
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {visible.map((partner) => <article key={partner.id} className="flex flex-col rounded-2xl border border-hairline bg-surface-light p-5 shadow-soft">
-            <span className="font-serif text-xs italic text-primary">{categoryLabel(partner.category)}</span>
-            <h3 className="mt-1 font-sans text-base font-black uppercase leading-tight tracking-tight text-ink">{partner.name}</h3>
-            <p className="mt-2 text-sm text-subtle">{priceLabel(partner)} · {partner.min}–{partner.max} guests</p>
-            <div className="mt-3"><AvailabilityLine seed={partner.seed} busyRate={partner.busyRate} /></div>
-            <Button variant="outline" size="sm" className="mt-5 w-fit rounded-full" onClick={() => setSelection({ kind: "partner", data: partner })}>View details →</Button>
-          </article>)}
-        </div>
+            {/* Infinite Ticker with interactive hover/click items */}
+            <Ticker dir={i % 2 ? "right" : "left"}>
+              {[...g.names, ...g.names].map((n, k) => {
+                const meta = PARTNER_METAS[n];
+                const isHovered = hoveredPartner?.name === n;
+                return (
+                  <button
+                    key={n + k}
+                    type="button"
+                    onClick={() => handlePartnerClick(n)}
+                    onMouseEnter={(e) => {
+                      playTapSound();
+                      if (meta) {
+                        setHoveredPartner(meta);
+                        setMousePos({ x: e.clientX, y: e.clientY });
+                      }
+                    }}
+                    onMouseMove={(e) => {
+                      setMousePos({ x: e.clientX, y: e.clientY });
+                    }}
+                    onMouseLeave={() => setHoveredPartner(null)}
+                    className={cn(
+                      "display group/item inline-flex items-center whitespace-nowrap px-3 text-[clamp(1.4rem,3.2vh,2.3rem)] transition-all duration-200 cursor-pointer text-left outline-none",
+                      isHovered
+                        ? "text-primary scale-[1.03]"
+                        : "text-ink/80 hover:text-primary",
+                    )}
+                  >
+                    <span>{n}</span>
+                    <span className="ml-3 text-xs font-mono font-bold text-primary/60 group-hover/item:text-primary">
+                      ★ {meta?.rating || "4.9"}
+                    </span>
+                    <span className="ml-4 text-primary font-normal select-none">/</span>
+                  </button>
+                );
+              })}
+            </Ticker>
+          </div>
+        ))}
       </div>
+
+      {/* Floating Preview Card on Hover (Desktop) */}
+      <AnimatePresence>
+        {hoveredPartner && !selectedPartner && (
+          <motion.div
+            initial={{ opacity: 0, y: 12, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.96 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            style={{
+              position: "fixed",
+              left: Math.min(Math.max(mousePos.x - 160, 20), window.innerWidth - 340),
+              top: mousePos.y > window.innerHeight - 280 ? mousePos.y - 250 : mousePos.y + 24,
+              pointerEvents: "none",
+              zIndex: 60,
+            }}
+            className="w-80 overflow-hidden rounded-2xl border hairline bg-surface-dark text-white shadow-2xl backdrop-blur-xl"
+          >
+            {/* Image Thumbnail */}
+            <div className="relative h-28 w-full overflow-hidden bg-muted">
+              <img
+                src={hoveredPartner.image}
+                alt={hoveredPartner.name}
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-surface-dark via-transparent to-black/20" />
+              <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-0.5 text-[0.68rem] font-bold uppercase tracking-wider backdrop-blur-md">
+                <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                {hoveredPartner.category}
+              </div>
+              <div className="absolute top-2.5 right-2.5 rounded-full bg-primary/90 px-2 py-0.5 text-[0.68rem] font-black text-white">
+                ★ {hoveredPartner.rating}
+              </div>
+            </div>
+
+            {/* Preview Content */}
+            <div className="p-3.5">
+              <h4 className="font-display text-base font-black tracking-tight text-white [font-variation-settings:'wdth'_85]">
+                {hoveredPartner.name}
+              </h4>
+              <p className="mt-1 text-xs text-white/80 leading-snug">
+                {hoveredPartner.headline}
+              </p>
+
+              <div className="mt-2.5 flex items-center justify-between border-t border-white/10 pt-2 text-[0.70rem] font-mono text-white/60">
+                <span>{hoveredPartner.pricing}</span>
+                <span className="text-primary font-bold">Click to inspect →</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Full Inspector Modal on Click / Tap */}
+      <AnimatePresence>
+        {selectedPartner && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedPartner(null)}
+              className="absolute inset-0 bg-black/70 backdrop-blur-md"
+            />
+
+            {/* Modal Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 16 }}
+              transition={{ type: "spring", damping: 28, stiffness: 350 }}
+              className="relative w-full max-w-lg overflow-hidden rounded-3xl border hairline bg-surface-dark text-white shadow-2xl z-10"
+            >
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setSelectedPartner(null)}
+                className="absolute top-4 right-4 z-20 flex size-9 items-center justify-center rounded-full bg-black/60 text-white/80 backdrop-blur-md transition hover:bg-black hover:text-white"
+              >
+                ✕
+              </button>
+
+              {/* Banner Image */}
+              <div className="relative h-48 sm:h-56 w-full overflow-hidden bg-neutral-900">
+                <img
+                  src={selectedPartner.image}
+                  alt={selectedPartner.name}
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-surface-dark via-surface-dark/40 to-transparent" />
+                <div className="absolute bottom-4 left-5 right-5 flex items-end justify-between">
+                  <div>
+                    <span className="inline-flex items-center gap-2 rounded-full bg-primary/20 border border-primary/40 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary backdrop-blur-md">
+                      <span className="size-2 rounded-full bg-primary animate-pulse" />
+                      {selectedPartner.group}
+                    </span>
+                    <h3 className="display mt-2 text-2xl sm:text-3xl font-black text-white">
+                      {selectedPartner.name}
+                    </h3>
+                  </div>
+                  <div className="text-right">
+                    <span className="block text-2xl font-black text-primary">
+                      ★ {selectedPartner.rating}
+                    </span>
+                    <span className="text-[0.70rem] font-mono text-white/60">
+                      {selectedPartner.eventsCount} celebrations
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-6">
+                <p className="text-sm sm:text-base leading-relaxed text-white/85">
+                  {selectedPartner.details}
+                </p>
+
+                {/* Key Spec Badges */}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {selectedPartner.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-white/5 border border-white/10 px-3 py-1 text-xs font-medium text-white/80"
+                    >
+                      ✓ {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Pricing & Sync Status Grid */}
+                <div className="mt-5 grid grid-cols-2 gap-3 border-t border-white/10 pt-4 text-xs font-mono">
+                  <div className="rounded-xl bg-white/5 p-3">
+                    <span className="block text-white/50 uppercase tracking-widest text-[0.65rem]">
+                      Base Investment
+                    </span>
+                    <span className="mt-1 block font-bold text-white text-sm">
+                      {selectedPartner.pricing}
+                    </span>
+                  </div>
+                  <div className="rounded-xl bg-white/5 p-3">
+                    <span className="block text-white/50 uppercase tracking-widest text-[0.65rem]">
+                      Capacity Range
+                    </span>
+                    <span className="mt-1 block font-bold text-white text-sm">
+                      {selectedPartner.capacity || "All sizes"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Live Sync Confirmation */}
+                <div className="mt-4 flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-950/20 px-3.5 py-2.5 text-xs text-emerald-300">
+                  <span className="flex items-center gap-2 font-semibold">
+                    <span className="size-2 rounded-full bg-emerald-400 animate-ping" />
+                    Calendar Synchronized Live
+                  </span>
+                  <span className="font-mono text-[0.70rem] opacity-80">100% verified</span>
+                </div>
+
+                {/* Action CTA Button */}
+                <div className="mt-6 flex items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPartner(null)}
+                    className="text-xs font-semibold text-white/60 hover:text-white"
+                  >
+                    Back to Collective
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleBookWithPartner}
+                    className="flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-display text-sm font-black uppercase tracking-wider text-primary-foreground shadow-xl hover:brightness-110 active:scale-95 transition-all [font-variation-settings:'wdth'_85]"
+                  >
+                    <span>Book with {selectedPartner.name.split(" ")[0]}</span>
+                    <span>→</span>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
-    {selection && <Drawer selection={selection} onClose={() => setSelection(null)} onBook={() => { setSelection(null); launchBooking(); }} />}
-    {curtain}
-  </AppShell>;
+  );
 }
+

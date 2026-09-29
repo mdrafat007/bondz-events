@@ -1,4 +1,4 @@
-import { Badge, Card, cn, triggerTap } from "@/index";
+﻿import { Badge, Card, cn, triggerTap } from "@/index";
 import { EVENT_NARRATIVES, EVENT_TYPES, VIBES_BY_EVENT, type EventTypeId } from "@/lib/bondz-data";
 import { EVENT_SVGS } from "./EventEditorialSvgs";
 import { Chip, StepHead, type BookingCtx } from "./shared";
@@ -11,7 +11,7 @@ export function Step1Event({ ctx }: { ctx: BookingCtx }) {
   return (
     <>
       <StepHead no="01" kicker="Celebration" title="What are we" accent="celebrating?">
-        Pick the occasion. Everything after this — partners, venues, dates — is filtered to fit it.
+        Pick the occasion. Everything after this - partners, venues, dates - is filtered to fit it.
       </StepHead>
 
       <div role="radiogroup" aria-label="Event type" className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
@@ -69,7 +69,7 @@ export function Step1Event({ ctx }: { ctx: BookingCtx }) {
               <Chip key={v} on={vibes.includes(v)} onClick={() => setVibes(vibes.includes(v) ? vibes.filter((x) => x !== v) : [...vibes, v])}>{v}</Chip>
             ))}
           </div>
-          <p className="mt-4 text-xs text-subtle">Your vibe steers the styling brief every partner receives — it does not change your price.</p>
+          <p className="mt-4 text-xs text-subtle">Your vibe steers the styling brief every partner receives - it does not change your price.</p>
         </Card>
       )}
     </>

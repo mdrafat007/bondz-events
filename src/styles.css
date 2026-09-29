@@ -34,7 +34,7 @@ button, input { font: inherit; }
 
 /* Marketing header: push the primary links to the right, beside the toggles. */
 .bondz-nav-right nav[aria-label="Main navigation"] { margin-left: auto; }
-/* Sound / theme toggles read as icons only — labels are redundant next to them. */
+/* Sound / theme toggles read as icons only - labels are redundant next to them. */
 .bondz-nav-right .border-l > button > span { display: none; }
 
 /* Preview-only AI agent link: scale in / scale out, no ghost surface. */

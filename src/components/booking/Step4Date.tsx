@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+﻿import { useMemo } from "react";
 import { Card, cn, triggerTap } from "@/index";
 import {
   HORIZON, SLOTS, SLOT_TIMES, VENUES, availableDays, cheapest, dayToDate, freeDayCount, slotOpen,
@@ -55,7 +55,7 @@ export function Step4Date({ ctx }: { ctx: BookingCtx }) {
               const on = d === day;
               return (
                 <button key={d} type="button" disabled={!ok} aria-pressed={on}
-                  aria-label={dt.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }) + (ok ? " — available" : " — unavailable")}
+                  aria-label={dt.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }) + (ok ? " - available" : " - unavailable")}
                   onClick={() => { triggerTap(); setDay(d); }}
                   className={cn("flex aspect-square min-h-11 flex-col items-center justify-center rounded-control border text-center transition-colors",
                     on ? "border-primary bg-primary text-surface-light ring-2 ring-primary/40"

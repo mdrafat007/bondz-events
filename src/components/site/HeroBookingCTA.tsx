@@ -1,29 +1,27 @@
 import { motion, useAnimationControls, type Variants } from "framer-motion";
 import { useEffect, useState, useRef, useCallback } from "react";
-import mascotWhite from "../../design-system/bondz-events---design-system-9e1fdf/design-system/assets/icons/BONDZ_LOGO_ICON_DARK.png";
-import mascotRed from "../../design-system/bondz-events---design-system-9e1fdf/design-system/assets/icons/BONDZ_LOGO_ICON_-_LIGHT.png";
-import { useTheme } from "../../design-system/bondz-events---design-system-9e1fdf/design-system/lib/theme";
-import { playPeekabooSound, triggerTap } from "../../lib/haptics";
-import { cn } from "../../lib/utils";
+import mascotWhite from "@/assets/mascot-white.png";
+import mascotRed from "@/assets/mascot-red.png";
+import { useTheme } from "@/lib/theme";
+import { triggerTap, isSoundEnabled } from "@/lib/haptics";
+import { cn } from "@/lib/utils";
 
-export interface HeroBookingCTAProps {
+interface HeroBookingCTAProps {
   onClick?: () => void;
   className?: string;
-  disabled?: boolean;
 }
 
-export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAProps) {
+export function HeroBookingCTA({ onClick, className }: HeroBookingCTAProps) {
   const { theme } = useTheme();
   const mascotImg = theme === "dark" ? mascotWhite : mascotRed;
   const [isHovered, setIsHovered] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => (typeof window !== "undefined" ? window.innerWidth < 640 : false));
   const loopTimerRef = useRef<number | null>(null);
-  const launchTimerRef = useRef<number | null>(null);
+
   const buttonRef = useRef<HTMLDivElement>(null);
   const mountedRef = useRef(true);
   const isAnimatingRef = useRef(false);
-  const isLaunchingRef = useRef(false);
 
   const textControls = useAnimationControls();
   const arrowControls = useAnimationControls();
@@ -36,10 +34,12 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
     return () => {
       mountedRef.current = false;
       window.removeEventListener("resize", checkMobile);
-      if (launchTimerRef.current !== null) window.clearTimeout(launchTimerRef.current);
     };
   }, []);
 
+  // Screen-calibrated peek and resting positions matching user reference image:
+  // Rest y: completely concealed behind button (48 on mobile, 68 on desktop)
+  // Peek y: -15 (1px down from -16, preserves full mascot size while resting bottom glasses frame precisely on button rim)
   const restY = isMobile ? 48 : 68;
   const peekY = -15;
 
@@ -75,9 +75,11 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
     },
   };
 
+  // Choreographed Side Push & Arrow Loop (Mobile-calibrated distances):
   const playPushJumpAnimation = useCallback(async () => {
     if (isAnimatingRef.current || !mountedRef.current) return;
     isAnimatingRef.current = true;
+
     try {
       const btn = buttonRef.current;
       const btnWidth = btn ? btn.offsetWidth : 280;
@@ -85,81 +87,109 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
       const jumpDist = mobile ? Math.min(50, btnWidth * 0.22) : 96;
       const travelDist = btn ? Math.max(140, btnWidth - 52) : 240;
 
-      void textControls.start({
+      // 1. Text winds up slightly left, then delivers a sharp "side push" to the right
+      textControls.start({
         x: mobile ? [0, -3, 10, 1, 0] : [0, -5, 16, 2, 0],
-        transition: { times: [0, 0.16, 0.38, 0.75, 1], duration: 0.34, ease: "easeInOut" },
+        transition: {
+          times: [0, 0.16, 0.38, 0.75, 1],
+          duration: 0.34,
+          ease: "easeInOut",
+        },
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      // 2. Wait until the text strikes at peak rightward push
+      await new Promise((r) => setTimeout(r, 100));
       if (!mountedRef.current) return;
 
+      // 3. Arrow receives the collision force and JUMPS FORWARD out the right edge (within pill bounds)
       await arrowControls.start({
         x: [0, jumpDist],
         scale: [1, 1.12],
-        transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] },
+        transition: {
+          duration: 0.16,
+          ease: [0.16, 1, 0.3, 1],
+        },
       });
       if (!mountedRef.current) return;
 
-      await arrowControls.start({ x: -travelDist, scale: 0.92, transition: { duration: 0.01 } });
+      // 4. Instantly teleport behind the text to the far left (back of the text)
+      await arrowControls.start({
+        x: -travelDist,
+        scale: 0.92,
+        transition: { duration: 0.01 },
+      });
       if (!mountedRef.current) return;
 
-      await new Promise((resolve) => setTimeout(resolve, 20));
+      // 5. Crisp pause at the rear
+      await new Promise((r) => setTimeout(r, 20));
       if (!mountedRef.current) return;
 
+      // 6. Come back from the back of the text: glide smoothly across behind the text back to resting slot
       await arrowControls.start({
         x: 0,
         scale: 1,
-        transition: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
+        transition: {
+          duration: 0.36,
+          ease: [0.22, 1, 0.36, 1],
+        },
       });
     } finally {
       isAnimatingRef.current = false;
     }
   }, [arrowControls, textControls]);
 
-  const clearLoop = useCallback(() => {
-    if (loopTimerRef.current !== null) {
-      window.clearTimeout(loopTimerRef.current);
-      loopTimerRef.current = null;
-    }
-    setIsLooping(false);
-  }, []);
-
+  // Automatic idle loop: Every 3.8 seconds, mascot peeks up and text/arrow executes push-jump loop
   useEffect(() => {
-    if (disabled || isHovered) return;
     const interval = window.setInterval(() => {
-      if (!mountedRef.current) return;
-      setIsLooping(true);
-      void playPushJumpAnimation();
-      if (loopTimerRef.current !== null) window.clearTimeout(loopTimerRef.current);
-      loopTimerRef.current = window.setTimeout(() => {
-        if (mountedRef.current) setIsLooping(false);
-        loopTimerRef.current = null;
-      }, 1700);
+      if (!isHovered && mountedRef.current) {
+        setIsLooping(true);
+        playPushJumpAnimation();
+        if (loopTimerRef.current) window.clearTimeout(loopTimerRef.current);
+        loopTimerRef.current = window.setTimeout(() => {
+          if (mountedRef.current) setIsLooping(false);
+        }, 1400);
+      }
     }, 3800);
 
     return () => {
       window.clearInterval(interval);
-      if (loopTimerRef.current !== null) window.clearTimeout(loopTimerRef.current);
+      if (loopTimerRef.current) window.clearTimeout(loopTimerRef.current);
     };
-  }, [isHovered, playPushJumpAnimation, disabled]);
+  }, [isHovered, playPushJumpAnimation]);
 
-  const handleEnter = () => {
-    clearLoop();
+  const handleMouseEnter = () => {
     setIsHovered(true);
-    void playPushJumpAnimation();
-    playPeekabooSound();
+    playPushJumpAnimation();
+    if (isSoundEnabled()) {
+      try {
+        const audio = new Audio("/peekaboo.mp3");
+        audio.volume = 0.85;
+        audio.play().catch(() => {});
+      } catch {
+        /* audio optional */
+      }
+    }
   };
 
-  const handleLeave = () => setIsHovered(false);
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
 
   const handleTap = () => {
-    if (disabled || isLaunchingRef.current) return;
-    isLaunchingRef.current = true;
-    clearLoop();
     setIsHovered(true);
     triggerTap();
-    void playPushJumpAnimation();
-    launchTimerRef.current = window.setTimeout(() => {
+    if (isSoundEnabled()) {
+      try {
+        const audio = new Audio("/peekaboo.mp3");
+        audio.volume = 0.85;
+        audio.play().catch(() => {});
+      } catch {
+        /* audio optional */
+      }
+    }
+    playPushJumpAnimation();
+    // Allow snappy animation to play visibly before navigating
+    window.setTimeout(() => {
       if (mountedRef.current) onClick?.();
     }, 260);
   };
@@ -168,24 +198,31 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
 
   return (
     <div
-      className={cn("relative inline-flex max-w-full flex-col items-center justify-end overflow-visible select-none cursor-pointer group", className)}
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-      onFocus={handleEnter}
-      onBlur={handleLeave}
+      className={cn(
+        "relative inline-flex flex-col items-center justify-end overflow-visible select-none cursor-pointer group",
+        className,
+      )}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onFocus={handleMouseEnter}
+      onBlur={handleMouseLeave}
       onTouchStart={handleTap}
       onClick={handleTap}
+      role="button"
+      tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           handleTap();
         }
       }}
-      role="button"
-      tabIndex={0}
       aria-label="Get started your booking with Mr. Bondz"
     >
-      {/* Layer 1: Mascot Head anchored behind button */}
+      {/* 
+        Layer 1 (Behind, z-index: 0): Mascot Head Illustration
+        Using bottom clipping [clip-path:inset(-400px_-100px_0px_-100px)] anchored at bottom: 0 
+        so NO chin or neck pixels can EVER peek below the bottom rim of the button!
+      */}
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 z-0 flex justify-center overflow-visible [clip-path:inset(-400px_-100px_0px_-100px)]"
         aria-hidden="true"
@@ -195,42 +232,58 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
           animate={animState}
           variants={mascotVariants}
           style={{ transformOrigin: "50% 85%" }}
-          className="flex origin-bottom items-center justify-center"
+          className="flex items-center justify-center origin-bottom"
         >
           <img
             src={mascotImg}
             alt="Mr. Bondz mascot"
-            draggable={false}
             className="w-24 xs:w-28 sm:w-38 md:w-44 h-auto max-w-none select-none object-contain drop-shadow-md"
+            draggable={false}
           />
         </motion.div>
       </div>
 
-      {/* Layer 2: Tactile Luxury Pill Button */}
+      {/* 
+        Layer 2 (Front, z-index: 10): Pill-shaped CTA Button
+        Tactile realistic luxury finish: inner highlight, bevel depth, subtle gradient, and ring
+      */}
       <motion.div
         ref={buttonRef}
+        className="relative z-10 flex max-w-full items-center justify-between gap-2 xs:gap-3 sm:gap-5 rounded-full bg-gradient-to-b from-[#f55248] via-[#ee4339] to-[#de3429] px-4 xs:px-5 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 shadow-[inset_0_1.5px_1px_rgba(255,255,255,0.45),inset_0_-2px_4px_rgba(0,0,0,0.18),0_12px_32px_rgba(241,69,59,0.36)] ring-1 ring-white/20 ring-inset overflow-hidden"
         animate={isHovered ? { scale: 1.02 } : isLooping ? { scale: 1.015 } : { scale: 1 }}
         whileTap={{ scale: 0.97 }}
         transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-        className="bondz-hero-cta relative z-10 flex min-h-14 max-w-full items-center justify-between gap-3 sm:gap-6 rounded-full bg-gradient-to-b from-[var(--bondz-cta-top)] via-[var(--bondz-cta-mid)] to-[var(--bondz-cta-bottom)] px-6 sm:px-9 py-3.5 sm:py-4.5 shadow-[var(--bondz-cta-shadow)] ring-1 ring-white/20 ring-inset overflow-hidden"
       >
+        {/* Animated Text: Delivers the side push into the arrow badge */}
         <motion.span
           animate={textControls}
-          className="whitespace-nowrap font-sans text-xs sm:text-sm md:text-base font-black tracking-wider uppercase text-white"
+          initial={{ x: 0 }}
+          className="relative z-20 font-display text-[0.74rem] xs:text-[0.84rem] sm:text-[1.04rem] md:text-[1.20rem] font-black uppercase tracking-wide text-white whitespace-nowrap [font-variation-settings:'wdth'_85] drop-shadow-[0_1.5px_2px_rgba(0,0,0,0.45)] pointer-events-none"
         >
           GET STARTED YOUR BOOKING
         </motion.span>
+
+        {/* Right Icon Accent: Tactile circular white badge pill with bold prominent arrow */}
         <motion.span
           animate={arrowControls}
-          aria-hidden="true"
-          className="grid size-8 sm:size-9 md:size-10 shrink-0 place-items-center rounded-full bg-white shadow-md text-primary font-black"
+          initial={{ x: 0, scale: 1 }}
+          className="relative z-10 flex size-9 xs:size-10 sm:size-11 md:size-12.5 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-white to-[#fbf8f5] text-[#f1453b] shadow-[0_3px_10px_rgba(0,0,0,0.22),inset_0_1.5px_1px_rgba(255,255,255,0.95)] ring-1 ring-black/10 pointer-events-none"
         >
-          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-4 sm:size-5">
-            <path d="M4 10h12M11 5l5 5-5 5" stroke="var(--bondz-primary)" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" />
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="size-5 xs:size-5.5 sm:size-6.5 md:size-7 text-[#f1453b] drop-shadow-xs transition-transform group-hover:translate-x-0.5"
+            aria-hidden="true"
+          >
+            <line x1="3.5" y1="12" x2="20.5" y2="12" />
+            <polyline points="13.5 5 20.5 12 13.5 19" />
           </svg>
         </motion.span>
       </motion.div>
     </div>
   );
 }
-

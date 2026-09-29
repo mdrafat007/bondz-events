@@ -4,7 +4,7 @@ import { playCelebrationSound, playPeekabooSound } from "../design-system/lib/ha
 import lightInvite from "../design-system/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_LIGHT.png";
 import darkInvite from "../design-system/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_DARK.png";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/system")({
   head: () => ({ meta: [
     { title: "Bondz Events — Design System" },
     { name: "description", content: "A preview of Bondz Events brand colors, typography, controls, audio, and invitation artwork." },

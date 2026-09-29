@@ -8,6 +8,9 @@ import { StepHead } from "./panels";
 import { Ghost, Primary } from "./steps";
 import { useBooking } from "./store";
 import { triggerHaptic, playTapSound, isSoundEnabled, playConfirmFlourish } from "@/lib/haptics";
+import brandLockupLight from "@/assets/brand-lockup.png";
+import brandLockupDark from "@/assets/brand-lockup-dark.png";
+
 
 /* ───────────────── helpers ───────────────── */
 function useSummary() {

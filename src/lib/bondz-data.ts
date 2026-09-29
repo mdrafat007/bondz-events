@@ -157,7 +157,7 @@ export function guestTier(g: number) {
 }
 
 export const VENUE_PREFS = [
-  { id: "venue", title: "Host at an Exclusive Partner Venue", note: "Venue calendar joins The Rule", surcharge: 1500 },
+  { id: "venue", title: "Host at an Exclusive Partner Venue", note: "Venue + Vendors joins the calendar with Mr. Bondz ", surcharge: 1500 },
   { id: "estate", title: "Host on My Private Property / Estate", note: "Mr. Bondz scouts your grounds", surcharge: 0 },
 ] as const;
 export type VenuePrefId = (typeof VENUE_PREFS)[number]["id"];

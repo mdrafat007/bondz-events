@@ -6,7 +6,6 @@ html, body { overflow: hidden; }
 body { margin: 0; }
 button, input { font: inherit; }
 ::selection { background: var(--bondz-primary); color: var(--bondz-surface-light); }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
 
 .bondz-hero-title { font-size: clamp(2.1rem, 6.8vw, 5.2rem); line-height: 0.90; letter-spacing: -0.04em; }
 @media (min-width: 1024px) and (max-width: 1800px) { .bondz-hero-title { font-size: clamp(2.1rem, 4.1vw, 5.2rem); } }
@@ -48,4 +47,24 @@ button, input { font: inherit; }
 .bondz-curtain-right { transform: translateX(100%); animation: bondz-curtain-right 450ms ease-in-out forwards; }
 @keyframes bondz-curtain-left { to { transform: translateX(0); } }
 @keyframes bondz-curtain-right { to { transform: translateX(0); } }
-@media (prefers-reduced-motion: reduce) { .ticker-marquee-left, .ticker-marquee-right { animation: none !important; transform: none !important; will-change: auto; } }
+
+/* Peek-a-boo Mascot Micro-interaction */
+@keyframes mascot-peek-pop {
+  0% { transform: translateY(72%) rotate(0deg) scale(0.92); }
+  38% { transform: translateY(-16px) rotate(11deg) scale(1.05); }
+  65% { transform: translateY(-6px) rotate(-4deg) scale(1.02); }
+  85% { transform: translateY(-12px) rotate(2deg) scale(1.01); }
+  100% { transform: translateY(-10px) rotate(0deg) scale(1); }
+}
+
+.mascot-peek {
+  transform-origin: bottom center;
+  transform: translateY(72%) rotate(0deg) scale(0.92);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.group-peek:hover .mascot-peek,
+.group-peek:focus-within .mascot-peek {
+  animation: mascot-peek-pop 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}

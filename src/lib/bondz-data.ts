@@ -135,3 +135,63 @@ export const priceLabel = (entry: { flat?: number; perGuest?: number }): string 
   entry.perGuest ? `$${entry.perGuest}/guest` : entry.flat ? `$${entry.flat.toLocaleString()} flat` : "On request";
 
 export const categoryLabel = (id: CategoryId): string => CATEGORIES.find((category) => category.id === id)?.label ?? id;
+
+/* ── /book engine: 3-step booking data ─────────────────────────── */
+export const BOOK_EVENTS = [
+  { id: "wedding", name: "Weddings", badge: "Most booked", base: 9800, note: "Ceremony to last dance" },
+  { id: "birthday", name: "Milestone Birthdays", badge: "30 · 40 · 50+", base: 5400, note: "Decades, done properly" },
+  { id: "anniversary", name: "Anniversaries", badge: "Heirloom", base: 4800, note: "Vows, revisited" },
+  { id: "dinner", name: "Private Dinners", badge: "Chef's table", base: 3600, note: "Long tables, low light" },
+  { id: "corporate", name: "Corporate Offsites", badge: "Invoice-ready", base: 7200, note: "Strategy by day, story by night" },
+  { id: "bbq", name: "Weekend BBQs", badge: "Relaxed", base: 2800, note: "Smoke, sun, playlists" },
+] as const;
+export type BookEventId = (typeof BOOK_EVENTS)[number]["id"];
+
+export const GUEST_MIN = 10;
+export const GUEST_MAX = 350;
+export function guestTier(g: number) {
+  if (g < 40) return { name: "Intimate", range: "10–40", perGuest: 145 };
+  if (g < 100) return { name: "Dinner", range: "40–100", perGuest: 120 };
+  if (g < 200) return { name: "Grand", range: "100–200", perGuest: 98 };
+  return { name: "Gala", range: "200+", perGuest: 86 };
+}
+
+export const VENUE_PREFS = [
+  { id: "venue", title: "Host at an Exclusive Partner Venue", note: "Venue calendar joins The Rule", surcharge: 1500 },
+  { id: "estate", title: "Host on My Private Property / Estate", note: "Mr. Bondz scouts your grounds", surcharge: 0 },
+] as const;
+export type VenuePrefId = (typeof VENUE_PREFS)[number]["id"];
+
+export const VIBES = ["Black Tie", "Bohemian Garden", "Underground Speakeasy", "Coastal Chic", "High Energy Rave"] as const;
+
+export const ADDONS = [
+  { id: "music", name: "Live Jazz Quartet / DJ Vinyl Set", price: 1800, crew: "Music crew" },
+  { id: "wine", name: "Sommelier Curated Wine & Champagne Pairing", price: 2400, crew: "Sommelier" },
+  { id: "photo", name: "360° Documentary Photo & Drone Coverage", price: 3200, crew: "Photo & drone team" },
+  { id: "ice", name: "Custom Ice Sculptures & Pyrotechnics", price: 1500, crew: "Sculpture & FX crew" },
+  { id: "truck", name: "Late-night Gourmet Food Truck", price: 1200, crew: "Chef & truck" },
+] as const;
+export type AddonId = (typeof ADDONS)[number]["id"];
+
+export type DayStatus = "open" | "limited" | "booked";
+/** The Rule: Mr. Bondz, venue and crew must all be free. Deterministic per event + venue choice. */
+export function bookDayStatus(day: number, eventIndex: number, pref: VenuePrefId): DayStatus {
+  if (day === 0 || bondzBusy(day)) return "booked";
+  const venueBusy = pref === "venue" && isBusy(31 + eventIndex, 0.18, day);
+  const crewBusy = isBusy(53 + eventIndex, 0.12, day);
+  if (venueBusy || crewBusy) return "booked";
+  return slotOpen(day, 0) && slotOpen(day, 2) ? "open" : "limited";
+}
+
+export const DEPOSIT_RATE = 0.25;
+export const RESCHEDULE_FEE_RATE = 0.05;
+export function bookingTotals(eventId: BookEventId, guests: number, pref: VenuePrefId, addons: AddonId[]) {
+  const ev = BOOK_EVENTS.find((e) => e.id === eventId)!;
+  const tier = guestTier(guests);
+  const guestCost = guests * tier.perGuest;
+  const venue = VENUE_PREFS.find((v) => v.id === pref)!.surcharge;
+  const addonCost = ADDONS.filter((a) => addons.includes(a.id)).reduce((s, a) => s + a.price, 0);
+  const total = ev.base + guestCost + venue + addonCost;
+  return { base: ev.base, guestCost, perGuest: tier.perGuest, venue, addonCost, total, deposit: Math.round(total * DEPOSIT_RATE) };
+}
+export const usd = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;

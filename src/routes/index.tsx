@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, SiteFooter } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
 import { HeroBookingCTA } from "../components/site/HeroBookingCTA";
+import { ConnectAIAssistant } from "../components/site/ConnectAIAssistant";
 import { useBookingLaunch } from "../lib/use-booking-launch";
 import dinner from "../assets/photography/celebration-dinner.jpg";
 import amira from "../assets/photography/amira.asset.json";
@@ -89,6 +90,7 @@ function LandingPage() {
             <div className="mt-5 flex flex-col items-start sm:mt-6">
               <HeroBookingCTA onClick={launchBooking} disabled={launching} />
               <p className="mt-2.5 max-w-full font-sans text-sm font-black uppercase tracking-tight text-ink [font-variation-settings:'wdth'_85] sm:text-base">Tell us what you're celebrating!</p>
+              <div className="mt-1"><ConnectAIAssistant /></div>
             </div>
           </div>
           <div className="min-w-0 lg:flex lg:min-h-0 lg:items-center">

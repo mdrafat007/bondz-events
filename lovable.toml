@@ -1,1 +1,6 @@
 tech_stack = "custom_design_system_tanstack"
+
+[[libraries]]
+project_id = "23ab21ef-81e4-4a7b-8a9d-23d038e76967"
+version = "1.1.0"
+slug = "bondz-events---design-system-9e1fdf"

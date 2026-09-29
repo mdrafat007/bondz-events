@@ -3,7 +3,7 @@ import { Card, cn } from "@/index";
 import {
   CATEGORIES, DEPOSIT_RATE, SLOT_TIMES, VENUES, assignPartner, cheapest, dayToDate, estimate, usd,
 } from "@/lib/bondz-data";
-import { Field, SignaturePad, StepHead, type BookingCtx } from "./shared";
+import { Field, Portal, SignaturePad, StepHead, type BookingCtx } from "./shared";
 
 const CLAUSES = [
   "A 25% deposit is due today to lock the date. The balance is due 7 days before the event.",
@@ -115,7 +115,7 @@ export function Step5Lock({ ctx, onBooked }: { ctx: BookingCtx; onBooked: (ref: 
         </aside>
       </div>
 
-      {loading && <BookingLoader parties={parties} partners={sel.services.length + (venue ? 1 : 0)} />}
+      {loading && <Portal><BookingLoader parties={parties} partners={sel.services.length + (venue ? 1 : 0)} /></Portal>}
     </>
   );
 }

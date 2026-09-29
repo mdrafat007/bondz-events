@@ -6,7 +6,7 @@ import {
   assignPartner, availableDays, dayToDate, estimate, usd,
   type Sel,
 } from "@/lib/bondz-data";
-import { StepHead, type BookingCtx } from "./shared";
+import { Portal, StepHead, type BookingCtx } from "./shared";
 
 const THEMES = [
   { id: "coral", name: "Coral Night", bg: "oklch(0.24 0.05 290)", fg: "oklch(0.97 0.015 85)", hi: "oklch(0.68 0.2 32)" },
@@ -182,6 +182,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
     return () => window.removeEventListener("keydown", k);
   }, [onClose]);
   return (
+    <Portal>
     <div className="fixed inset-0 z-40 flex items-end justify-center bg-ink/60 p-4 sm:items-center" onClick={onClose}>
       <div role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}
         className="rise scroll-quiet max-h-full w-full max-w-lg overflow-y-auto rounded-card bg-surface p-6 shadow-[var(--bondz-shadow-popover)]">
@@ -192,6 +193,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
         {children}
       </div>
     </div>
+    </Portal>
   );
 }
 

@@ -1,4 +1,5 @@
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { cn, triggerTap } from "@/index";
 import {
   GUEST_MAX, GUEST_MIN, estimate, usd,
@@ -18,6 +19,13 @@ export interface BookingCtx {
   setDetails: (u: Partial<Details>) => void;
   anchor: Date | null;
   goto: (s: number) => void;
+}
+
+/** Renders overlays at document level so animated ancestors can't trap `fixed`. */
+export function Portal({ children }: { children: ReactNode }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => { setReady(true); }, []);
+  return ready ? createPortal(children, document.body) : null;
 }
 
 export function StepHead({ no, kicker, title, accent, children }: { no: string; kicker: string; title: string; accent?: string; children?: ReactNode }) {

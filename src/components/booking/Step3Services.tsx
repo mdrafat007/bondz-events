@@ -4,7 +4,7 @@ import {
   CATEGORIES, VENUES, availableDays, cheapest, estimate, priceOf, usd, venueReason,
   type CategoryId, type LogLine,
 } from "@/lib/bondz-data";
-import { StepHead, type BookingCtx } from "./shared";
+import { GuestSlider, StepHead, type BookingCtx } from "./shared";
 
 export function Step3Services({ ctx }: { ctx: BookingCtx }) {
   const { sel, patch } = ctx;
@@ -43,6 +43,32 @@ export function Step3Services({ ctx }: { ctx: BookingCtx }) {
 
       <div className="mt-8 grid gap-5 lg:grid-cols-3">
         <div className="grid gap-5 lg:col-span-2">
+          {/* Guest Count Live Tuner */}
+          <Card variant="elevated">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
+              <span className="font-mono text-[0.66rem] font-bold uppercase tracking-wider text-primary">Headcount Tuner</span>
+              <span className="text-xs font-bold text-ink">
+                {sel.guests} <span className="text-subtle font-normal">Guests ({sel.guests <= 40 ? "Intimate" : sel.guests <= 100 ? "Dinner" : sel.guests <= 200 ? "Grand" : "Gala"} Tier)</span>
+              </span>
+            </div>
+            <GuestSlider value={sel.guests} onChange={(n) => patch({ guests: n })} />
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {[25, 60, 120, 200, 250].map((preset) => (
+                <button
+                  key={preset}
+                  type="button"
+                  onClick={() => { triggerTap(); patch({ guests: preset }); }}
+                  className={cn(
+                    "text-xs px-2.5 py-1 rounded-full border transition-colors",
+                    sel.guests === preset ? "border-primary bg-primary text-white font-bold" : "border-hairline bg-surface hover:border-ink text-ink"
+                  )}
+                >
+                  {preset} Guests
+                </button>
+              ))}
+            </div>
+          </Card>
+
           {sel.where === "venue" && (
             <Card variant="elevated">
               <div className="flex flex-wrap items-center justify-between gap-3">

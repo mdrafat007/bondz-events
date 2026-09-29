@@ -3,7 +3,7 @@ import { AppShell } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
 import { SiteFooter } from "../components/layout/SiteFooter";
 import { HeroBookingCTA } from "../components/site/HeroBookingCTA";
-import { ConnectAIAssistant } from "../components/site/ConnectAIAssistant";
+import { HeroBookingDemo } from "../components/site/HeroBookingDemo";
 import { useBookingLaunch } from "../lib/use-booking-launch";
 import dinner from "../assets/photography/celebration-dinner.jpg";
 import amira from "../assets/photography/amira.asset.json";
@@ -88,18 +88,15 @@ function LandingPage() {
               <div className="mb-3 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 font-sans text-[0.62rem] font-extrabold uppercase leading-snug tracking-tight text-ink sm:mb-4 sm:text-xs"><span className="hidden sm:inline">Solo Event Organizer · 16 Years · 700+ Celebrations</span><span className="sm:hidden">Solo Organizer · 16 Yrs · 700+ Events</span></div>
               <h1 id="hero-title" className="bondz-hero-title font-sans font-black tracking-tight text-ink [font-variation-settings:'wdth'_85]"><span className="block">Get <span className="font-serif font-normal italic tracking-normal text-primary">“yourself booked”</span></span><span className="block">and{"\n"}Leave the <span className="font-serif font-normal italic tracking-normal text-primary">“rest on us”!</span></span></h1>
             </div>
-            <div className="mt-10 flex w-full max-w-full flex-col items-start gap-4 sm:mt-12 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4 lg:flex-nowrap">
+            <div className="mt-8 flex w-full max-w-full flex-col items-start gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4 lg:flex-nowrap">
               <HeroBookingCTA onClick={launchBooking} disabled={launching} />
-              <ConnectAIAssistant />
             </div>
+            <p className="mt-3 max-w-full font-sans text-sm font-black uppercase tracking-tight text-ink [font-variation-settings:'wdth'_85] sm:text-base">
+              Tell us what you're celebrating!
+            </p>
           </div>
           <div className="min-w-0 lg:flex lg:min-h-0 lg:items-center">
-            <div className="relative ml-auto aspect-video max-h-[34vh] w-full overflow-hidden rounded-2xl border border-hairline bg-night shadow-raised lg:max-h-full" aria-label="Dinner celebration at Bondz Events">
-              <img src={dinner} alt="Guests raising a toast around a candlelit celebration dinner" width={1536} height={1024} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-night via-night/25 to-transparent" aria-hidden="true" />
-              <div className="absolute inset-x-0 bottom-0 p-4 pb-5 text-white sm:p-5 sm:pb-6"><span className="font-sans text-[0.6rem] font-extrabold uppercase tracking-wider text-primary sm:text-xs">Real-time sync network</span><p className="mt-1 max-w-[25ch] font-sans text-[clamp(1rem,2vw,1.5rem)] font-black uppercase leading-tight tracking-tight">Few steps away to celebrate without a single call</p></div>
-              <div className="absolute inset-x-0 bottom-0 h-0.5 w-full bg-primary" aria-hidden="true" />
-            </div>
+            <HeroBookingDemo onLaunchBooking={launchBooking} className="w-full" />
           </div>
         </section>
         <section aria-label="Why book with Bondz Events" className="grid shrink-0 grid-cols-1 gap-4 border-t border-hairline px-1 py-3 sm:grid-cols-2 md:px-4 lg:grid-cols-4 lg:gap-6 lg:px-0 lg:py-2">

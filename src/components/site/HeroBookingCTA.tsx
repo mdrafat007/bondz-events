@@ -175,6 +175,12 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
       onBlur={handleLeave}
       onTouchStart={handleTap}
       onClick={handleTap}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleTap();
+        }
+      }}
       role="button"
       tabIndex={0}
       aria-label="Get started your booking with Mr. Bondz"

@@ -153,7 +153,7 @@ function Cell({ k, v, fg, hi }: { k: string; v: string; fg: string; hi: string }
 function Notified({ rows }: { rows: { who: string; what: string }[] }) {
   const [shown, setShown] = useState(0);
   useEffect(() => {
-    const timers = rows.map((_, i) => setTimeout(() => setShown(i + 1), 120 * (i + 1) + 200));
+    const timers = rows.map((_, i) => setTimeout(() => setShown(i + 1), 240 * (i + 1) + 250));
     return () => timers.forEach(clearTimeout);
   }, [rows.length]);
   return (

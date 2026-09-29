@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { AppShell, Button, cn } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
 import { SiteFooter } from "../components/layout/SiteFooter";
+import { ConnectAIAssistant } from "../components/site/ConnectAIAssistant";
 import { useBookingLaunch } from "../lib/use-booking-launch";
 import { EVENT_TYPES } from "../lib/bondz-data";
 import { triggerTap } from "../lib/haptics";
@@ -156,6 +157,13 @@ function ContactPage() {
             <Button variant="primary" size="lg" className="mt-6 w-full rounded-full" onClick={launchBooking} disabled={launching}>Get Booked Now →</Button>
           </div>
         </aside>
+      </div>
+
+      <div className="mt-12 pt-6 border-t border-hairline flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-subtle">
+        <p className="font-mono uppercase tracking-wider text-[0.65rem] text-subtle">
+          DEVELOPER API & CONNECTORS · MCP REAL-TIME SYNC
+        </p>
+        <ConnectAIAssistant />
       </div>
     </div>
     {curtain}

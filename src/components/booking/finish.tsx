@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { StepHead } from "./panels";
 import { Ghost, Primary } from "./steps";
 import { useBooking } from "./store";
-import { triggerHaptic, playTapSound, isSoundEnabled } from "@/lib/haptics";
+import { triggerHaptic, playTapSound, isSoundEnabled, playConfirmFlourish } from "@/lib/haptics";
 
 /* ───────────────── helpers ───────────────── */
 function useSummary() {
@@ -364,6 +364,7 @@ export function Step6() {
     }
 
     return () => {
+      if (startTimeout) window.clearTimeout(startTimeout);
       if (stopTimeout) window.clearTimeout(stopTimeout);
       if (fadeInterval) window.clearInterval(fadeInterval);
       if (audio) {

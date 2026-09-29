@@ -344,7 +344,7 @@ function Partners() {
               <span className="text-[0.72rem] font-bold text-primary font-mono">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span className="text-sm font-extrabold uppercase tracking-tight text-ink font-display [font-variation-settings:'wdth'_85]">
+              <span className="font-display text-sm font-extrabold uppercase tracking-tight text-ink [font-variation-settings:'wdth'_85] md:text-base">
                 {g.g}
               </span>
               <span className="text-[0.70rem] font-mono text-ink/40">
@@ -374,7 +374,7 @@ function Partners() {
                     }}
                     onMouseLeave={() => setHoveredPartner(null)}
                     className={cn(
-                      "display group/item inline-flex items-center whitespace-nowrap px-3 text-[clamp(1.4rem,3.2vh,2.3rem)] transition-all duration-200 cursor-pointer text-left outline-none",
+                      "display group/item inline-flex items-center whitespace-nowrap px-3 text-[clamp(1.75rem,4.1vh,3.1rem)] transition-all duration-200 cursor-pointer text-left outline-none",
                       isHovered
                         ? "text-primary scale-[1.03]"
                         : "text-ink/80 hover:text-primary",

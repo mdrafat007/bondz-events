@@ -52,7 +52,7 @@ export function Step5Lock({ ctx, onBooked }: { ctx: BookingCtx; onBooked: (ref: 
       </StepHead>
 
       <div className="mt-8 grid gap-5 lg:grid-cols-3">
-        <div className="grid gap-5">
+        <div className="grid gap-5 lg:col-span-2">
           <Card variant="elevated">
             <p className="text-xs font-bold uppercase text-subtle">Your details</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">

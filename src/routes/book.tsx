@@ -116,7 +116,7 @@ function BookingEngine() {
         {step === 3 && <Step3Services ctx={ctx} />}
         {step === 4 && (
           <div className="grid gap-5 lg:grid-cols-4">
-            <div><Step4Date ctx={ctx} /></div>
+            <div className="lg:col-span-3"><Step4Date ctx={ctx} /></div>
             <aside className="hidden lg:block"><EstimatePanel sel={sel} sticky /></aside>
           </div>
         )}

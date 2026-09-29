@@ -10,7 +10,7 @@ export const Route = createFileRoute("/how-it-works")({
   head: () => ({
     meta: [
       { title: "Who is Mr. Bondz - Solo Event Organizer & The Rule" },
-      { name: "description", content: "Solo Event Organizer for 16 years and 700+ celebrations. One point of contact, live calendar sync, and zero telephone tag." },
+      { name: "description", content: "Solo Event Organizer for 16 years and 700+ celebrations. One point of contact and a preview of the availability rule." },
       { property: "og:title", content: "Who is Mr. Bondz - Bondz Events" },
       { property: "og:description", content: "The event organizer, the rule, and the architecture behind Bondz Events." },
       { property: "og:type", content: "website" },
@@ -34,12 +34,12 @@ const BEFORE = [
 
 const AFTER = [
   "One guided session, on the client's schedule",
-  "Every calendar polled at render time live",
-  "Impossible dates never appear on screen",
+  "Sample calendars intersected for each choice",
+  "Unavailable sample dates never appear on screen",
   "Price and breakdown updates on every choice",
-  "Signed terms + 25% deposit locked in one sitting",
-  "Every party notified at the exact same second",
-  "Receipt and contract generated instantly on file",
+  "Agreement and 25% deposit illustrated before confirmation",
+  "Sample work orders show who would be notified",
+  "Printable sample receipt and guest invitation",
 ];
 
 function WhoIsBondz() {
@@ -126,12 +126,12 @@ function WhoIsBondz() {
                   {
                     icon: "✦",
                     title: "Direct Command",
-                    desc: "One coordinator on-site from 7am load-in to 2am strike.",
+                    desc: "One Solo Event Organizer for each celebration, from first plan to final details.",
                   },
                   {
                     icon: "⌂",
                     title: "Vetted Family",
-                    desc: "12 premier caterers, florists, and DJs tied to our live calendar.",
+                    desc: "A curated roster of caterers, florists, and DJs shown in this planning preview.",
                   },
                   {
                     icon: "✓",

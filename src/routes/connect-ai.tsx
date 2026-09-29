@@ -48,17 +48,17 @@ const APPS = [
 ];
 
 const AGENT_PROMPT = `You are helping me book a celebration with Bondz Events (${SITE_URL}).
-Mr. Bondz is a solo event organizer who confirms himself, the venue and every partner for the same date, so I never have to call anyone.
+Mr. Bondz is a Solo Event Organizer. This site currently shows a planning preview using simulated availability, not connected partner calendars or a live payment flow.
 
 Do this:
 1. Open ${SITE_URL} and read the pages: /how-it-works, /services, /partners and /portfolios.
 2. Open ${SITE_URL}/book and walk through the six steps with me, asking me one question at a time:
    Step 1 celebration type and vibe, Step 2 guest count and whether it is at my place or at a venue,
    Step 3 the services I want, Step 4 a date and time slot that is shown as open,
-   Step 5 my details, the agreement and the 25% deposit, Step 6 my confirmation and invitations.
-3. Only suggest dates the site itself shows as open - never invent availability.
-4. Summarise my choices, the total and the 25% deposit before I confirm.
-5. Never enter payment details or submit the booking for me. I confirm the final step myself.
+   Step 5 my details, the agreement and a sample 25% deposit, Step 6 the sample booking summary and invitation.
+3. Only suggest dates the site's preview shows as open - never claim those dates are actually reserved.
+4. Summarise my choices, the estimated total and the sample 25% deposit.
+5. Never enter payment details or claim that payment, calendar holds, or notifications happened. I complete the preview myself.
 
 Ask me what I am celebrating, for how many guests, and roughly when.`;
 

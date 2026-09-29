@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SystemRouteImport } from './routes/system'
 import { Route as BookRouteImport } from './routes/book'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as Char91__mockupChar93PreviewSplatRouteImport } from './routes/[__mockup].preview.$'
 import { Route as Char91__componentChar93PreviewSplatRouteImport } from './routes/[__component].preview.$'
 
@@ -22,6 +23,11 @@ const SystemRoute = SystemRouteImport.update({
 const BookRoute = BookRouteImport.update({
   id: '/book',
   path: '/book',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char91__mockupChar93PreviewSplatRoute =
@@ -38,12 +44,14 @@ const Char91__componentChar93PreviewSplatRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/book': typeof BookRoute
   '/system': typeof SystemRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/book': typeof BookRoute
   '/system': typeof SystemRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
@@ -51,6 +59,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/book': typeof BookRoute
   '/system': typeof SystemRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
@@ -59,14 +68,21 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/book'
     | '/system'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/book' | '/system' | '/__component/preview/$' | '/__mockup/preview/$'
+  to:
+    | '/'
+    | '/book'
+    | '/system'
+    | '/__component/preview/$'
+    | '/__mockup/preview/$'
   id:
     | '__root__'
+    | '/'
     | '/book'
     | '/system'
     | '/__component/preview/$'
@@ -74,6 +90,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   BookRoute: typeof BookRoute
   SystemRoute: typeof SystemRoute
   Char91__componentChar93PreviewSplatRoute: typeof Char91__componentChar93PreviewSplatRoute
@@ -96,6 +113,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/__mockup/preview/$': {
       id: '/__mockup/preview/$'
       path: '/__mockup/preview/$'
@@ -114,6 +138,7 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   BookRoute: BookRoute,
   SystemRoute: SystemRoute,
   Char91__componentChar93PreviewSplatRoute:

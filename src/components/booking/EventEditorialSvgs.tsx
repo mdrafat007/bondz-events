@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { ComponentType, SVGProps } from "react";
 import type { EventTypeId } from "@/lib/bondz-data";
 
 type P = SVGProps<SVGSVGElement>;
@@ -163,7 +163,7 @@ export function CustomIcon(props: P) {
   );
 }
 
-export const EVENT_SVGS: Record<EventTypeId, (props: P) => JSX.Element> = {
+export const EVENT_SVGS: Record<EventTypeId, ComponentType<P>> = {
   wedding: WeddingIcon,
   anniversary: AnniversaryIcon,
   birthday: BirthdayIcon,

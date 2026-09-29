@@ -4,6 +4,7 @@ import { Button, Card, cn, triggerTap } from "@/index";
 import {
   CATEGORIES, DEPOSIT_RATE, HORIZON, RESCHEDULE_FEE_RATE, SLOT_TIMES, VENUES,
   assignPartner, availableDays, dayToDate, estimate, usd,
+  type Sel,
 } from "@/lib/bondz-data";
 import { StepHead, type BookingCtx } from "./shared";
 
@@ -206,7 +207,7 @@ function Timing({ value, onChange, later }: { value: "today" | "later"; onChange
 }
 
 function RescheduleModal({ onClose, total, current, sel, anchor, onConfirm }:
-{ onClose: () => void; total: number; current: number | null; sel: ReturnType<typeof Object> extends never ? never : Parameters<typeof availableDays>[0]; anchor: Date | null; onConfirm: (d: number) => void }) {
+{ onClose: () => void; total: number; current: number | null; sel: Sel; anchor: Date | null; onConfirm: (d: number) => void }) {
   const [when, setWhen] = useState<"today" | "later">("today");
   const [pick, setPick] = useState<number | null>(null);
   const days = availableDays(sel).filter((d) => d !== current).slice(0, 20);

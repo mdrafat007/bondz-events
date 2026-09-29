@@ -2,8 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, SiteFooter, Badge } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
-import { CATEGORIES, VENUES } from "../lib/bondz-data";
-import mascotWhite from "../design-system/assets/icons/BONDZ_LOGO_ICON_DARK.png";
+import mascotLight from "../design-system/assets/icons/BONDZ_LOGO_ICON_-_LIGHT.png";
 
 export const Route = createFileRoute("/how-it-works")({
   head: () => ({ meta: [
@@ -17,7 +16,7 @@ export const Route = createFileRoute("/how-it-works")({
   component: HowItWorksPage,
 });
 
-const TABS = ["Mr. Bondz", "The Rule", "Before / After", "Clients & Partners"] as const;
+const TABS = ["Mr. Bondz", "The Rule", "Before / After"] as const;
 type Tab = (typeof TABS)[number];
 
 const CREDENTIALS = ["16 Years", "700+", "Solo", "On-site"];
@@ -32,10 +31,10 @@ const NOTIFIED = [
 ];
 
 const BEFORE = [
-  "Client calls, texts, emails — often all three",
+  "Client calls, texts, emails - often all three",
   "Mr. Bondz rings the venue to check the date",
   "Then the caterer. Then decor. Then the DJ",
-  "One says no — start again from scratch",
+  "One says no - start again from scratch",
   "Deposit chased by message, tracked in memory",
   "Vendors hear about the job days later",
   "No written confirmation anyone can point to",
@@ -59,7 +58,7 @@ function TabMrBondz() {
         <blockquote className="mt-5 font-serif text-2xl italic leading-tight sm:text-4xl">
           “I've been the person between every party and the panic. Every event I've ever done, I've been there in person. I always will be.”
         </blockquote>
-        <p className="mt-6 font-sans text-xs font-bold uppercase tracking-widest text-canvas/70">— Mr. Bondz, Solo Event Organizer</p>
+        <p className="mt-6 font-sans text-xs font-bold uppercase tracking-widest text-canvas/70">- Mr. Bondz, Solo Event Organizer</p>
       </figure>
       <div className="flex flex-wrap gap-2">
         {CREDENTIALS.map((item) => <Badge key={item} variant="outline">{item}</Badge>)}
@@ -71,9 +70,9 @@ function TabMrBondz() {
         </p>
       </div>
     </div>
-    <div className="mx-auto w-full max-w-sm overflow-hidden rounded-[2rem] border border-hairline bg-ink p-6 shadow-raised">
-      <img src={mascotWhite} alt="Illustrated portrait of Mr. Bondz" loading="lazy" className="mx-auto w-full max-w-[16rem] object-contain" />
-      <p className="mt-4 text-center font-serif text-xl italic text-canvas">Mr. Bondz<span className="text-primary">.</span></p>
+    <div className="mx-auto w-full max-w-sm overflow-hidden rounded-[2rem] border border-hairline bg-surface-light p-6 shadow-raised">
+      <img src={mascotLight} alt="Illustrated portrait of Mr. Bondz" loading="lazy" className="mx-auto w-full max-w-[16rem] object-contain drop-shadow-md" />
+      <p className="mt-4 text-center font-serif text-xl italic text-ink">Mr. Bondz<span className="text-primary">.</span></p>
     </div>
   </div>;
 }
@@ -126,38 +125,10 @@ function TabBeforeAfter() {
   </div>;
 }
 
-function TabClients() {
-  return <div className="space-y-8">
-    <div>
-      <h3 className="font-sans text-xs font-black uppercase tracking-widest text-ink">Partner categories</h3>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {CATEGORIES.map((category) => <Badge key={category.id} variant="neutral">{category.label}</Badge>)}
-      </div>
-    </div>
-    <div>
-      <h3 className="font-sans text-xs font-black uppercase tracking-widest text-ink">Venues</h3>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {VENUES.map((venue) => <article key={venue.id} className="rounded-2xl border border-hairline bg-surface-light p-5 shadow-soft">
-          <div className="flex items-start justify-between gap-3">
-            <h4 className="font-serif text-2xl italic text-ink">{venue.name}</h4>
-            <Badge variant="outline" size="sm">4.9 / 5.0</Badge>
-          </div>
-          <p className="mt-1 font-sans text-[0.68rem] font-bold uppercase tracking-widest text-subtle">{venue.area}</p>
-          <p className="mt-3 text-sm text-subtle">{venue.min}–{venue.max} guests</p>
-          <div className="mt-3 flex items-center gap-2">
-            <span className="size-1.5 rounded-full bg-status" aria-hidden="true" />
-            <span className="font-sans text-[0.65rem] font-extrabold uppercase tracking-widest text-ink">Verified partner</span>
-          </div>
-        </article>)}
-      </div>
-    </div>
-  </div>;
-}
-
 function HowItWorksPage() {
   const [tab, setTab] = useState<Tab>("Mr. Bondz");
 
-  return <AppShell header={<MarketingNav active="/how-it-works" />} footer={<SiteFooter className="hidden sm:block" />}>
+  return <AppShell header={<MarketingNav active="/how-it-works" />} footer={<SiteFooter />}>
     <div className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 sm:px-6 md:px-8 sm:pt-12">
       <span className="font-sans text-[0.68rem] font-extrabold uppercase tracking-widest text-primary">Solo Event Organizer</span>
       <h1 className="mt-3 font-serif text-[clamp(2.4rem,7vw,5rem)] italic leading-[0.95] text-ink">Who is Mr. Bondz<span className="text-primary">?</span></h1>
@@ -175,7 +146,6 @@ function HowItWorksPage() {
         {tab === "Mr. Bondz" && <TabMrBondz />}
         {tab === "The Rule" && <TabRule />}
         {tab === "Before / After" && <TabBeforeAfter />}
-        {tab === "Clients & Partners" && <TabClients />}
       </div>
     </div>
   </AppShell>;

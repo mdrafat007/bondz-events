@@ -5,7 +5,7 @@ import lightLogo from "../../assets/logos/BONDZ-EVENTS-NAVLOGO.png";
 import darkLogo from "../../assets/logos/BONDZ-EVENTS-NAV-Dark-LOGO.png";
 import lightIcon from "../../assets/icons/BONDZ_LOGO_ICON_-_LIGHT.png";
 import darkIcon from "../../assets/icons/BONDZ_LOGO_ICON_DARK.png";
-const imageVariants = cva("block h-auto object-contain", { variants: { size: { sm: "w-32", md: "w-44", lg: "w-64" } }, defaultVariants: { size: "md" } });
+const imageVariants = cva("block w-auto object-contain select-none", { variants: { size: { sm: "h-7 sm:h-8", md: "h-8 sm:h-9 md:h-11", lg: "h-12 sm:h-14" } }, defaultVariants: { size: "md" } });
 export interface BrandLockupProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src" | "srcSet">, VariantProps<typeof imageVariants> { variant?: "wordmark" | "icon"; theme?: "auto" | "light" | "dark" }
 export const BrandLockup = forwardRef<HTMLSpanElement, BrandLockupProps>(function BrandLockup({ variant = "wordmark", theme = "auto", size, className, alt = "Bondz Events by Mr. Bondz", ...props }, ref) {
   const light = variant === "icon" ? lightIcon : lightLogo;

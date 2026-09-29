@@ -5,8 +5,10 @@ import { Lockup } from "@/components/site/Brand";
 import { triggerTap, triggerHaptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
 import { SLOT_TIMES, type Slot } from "@/lib/bondz-data";
+import { z } from "zod";
 
 export const Route = createFileRoute("/invite/$ref")({
+  validateSearch: z.object({ invite: z.string().max(4000).optional().catch(undefined) }),
   head: ({ params }) => ({
     meta: [
       { title: `You're Invited - ${params.ref} · Bondz Events` },
@@ -25,17 +27,18 @@ const DIETARY_TAGS = ["Halal", "Vegan", "Gluten-Free", "Nut-Free", "Vegetarian",
 
 function InvitePage() {
   const { ref } = Route.useParams();
+  const { invite: inviteToken } = Route.useSearch();
 
   const [invite, setInvite] = useState<{ title: string; host: string; date: string; slot: Slot; place: string; tagline: string } | null>(null);
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(`bondz_invite_${ref}`);
+      const raw = inviteToken ? new TextDecoder().decode(Uint8Array.from(atob(inviteToken), (char) => char.charCodeAt(0))) : localStorage.getItem(`bondz_invite_${ref}`);
       if (raw) {
         const data = JSON.parse(raw);
-        if (typeof data.title === "string" && typeof data.date === "string" && ["Morning", "Afternoon", "Evening"].includes(data.slot)) setInvite(data);
+        if (typeof data.title === "string" && typeof data.host === "string" && typeof data.place === "string" && typeof data.date === "string" && !Number.isNaN(new Date(data.date).getTime()) && ["Morning", "Afternoon", "Evening"].includes(data.slot)) setInvite(data);
       }
     } catch { /* local preview unavailable */ }
-  }, [ref]);
+  }, [ref, inviteToken]);
   const eventTitle = invite?.title ?? "Invitation preview";
   const hostName = invite?.host ?? "Your host";
   const dateStr = invite ? new Date(invite.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : "Date to be confirmed";

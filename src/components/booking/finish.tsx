@@ -377,7 +377,9 @@ export function Step6() {
     ...assigned.map((a) => ({ who: a.p?.name ?? a.cat, to: "Partner preview", subj: `Sample work order: ${a.cat} · ${dateStr}`, body: `Preview only - not sent. Proposed ${a.cat.toLowerCase()} for ${ev?.title?.toLowerCase()}, ${sel.guests} guests, ${dateStr} (${slot}) at ${place}. Celebration vibe: ${vibes.join(", ") || "Not specified"}. Estimated: ${money(priceOf(a.p!, sel.guests))}.` })),
   ];
   const r = recipients[Math.min(tab, recipients.length - 1)]!;
-  const link = typeof window !== "undefined" ? `${window.location.origin}/invite/${ref}` : `/invite/${ref}`;
+  const inviteData = day && slot ? { title: head, host: details.name, date: dayToDate(anchor, day).toISOString(), slot, place, tagline: tag } : null;
+  const inviteToken = inviteData ? btoa(Array.from(new TextEncoder().encode(JSON.stringify(inviteData)), (byte) => String.fromCharCode(byte)).join("")) : "";
+  const link = typeof window !== "undefined" ? `${window.location.origin}/invite/${encodeURIComponent(ref)}?invite=${encodeURIComponent(inviteToken)}` : `/invite/${encodeURIComponent(ref)}?invite=${encodeURIComponent(inviteToken)}`;
   const guestMsg = `${head}\n${tag}\n${dateStr} · ${slot}\n${place}\n\nDetails & RSVP: ${link}`;
 
   useEffect(() => {
@@ -689,7 +691,7 @@ ol.terms li b { color: #151118; }
               const a = document.createElement("a"); a.href = url; a.download = `bondz-${ref}.ics`; a.click();
               window.setTimeout(() => URL.revokeObjectURL(url), 1000);
             }} className="w-full rounded-full border hairline py-2.5 text-xs sm:text-sm font-bold text-ink hover:bg-canvas">Download calendar .ics</button>
-            <Link to="/invite/$ref" params={{ ref }} className="block w-full rounded-full border hairline py-2.5 text-center text-xs sm:text-sm font-bold text-ink hover:bg-canvas">View VIP invitation</Link>
+            <Link to="/invite/$ref" params={{ ref }} search={{ invite: inviteToken }} className="block w-full rounded-full border hairline py-2.5 text-center text-xs sm:text-sm font-bold text-ink hover:bg-canvas">View VIP invitation</Link>
             <Primary onClick={printPdf} className="w-full text-center">
               Download / Print PDF
             </Primary>

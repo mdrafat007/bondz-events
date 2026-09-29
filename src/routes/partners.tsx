@@ -546,9 +546,9 @@ function Partners() {
                 <div className="mt-4 flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-950/20 px-3.5 py-2.5 text-xs text-emerald-300">
                   <span className="flex items-center gap-2 font-semibold">
                     <span className="size-2 rounded-full bg-emerald-400 animate-ping" />
-                    Calendar Synchronized Live
+                    Sample calendar match
                   </span>
-                  <span className="font-mono text-[0.70rem] opacity-80">100% verified</span>
+                  <span className="font-mono text-[0.70rem] opacity-80">Preview only</span>
                 </div>
 
                 {/* Action CTA Button */}

@@ -209,7 +209,7 @@ function WhoIsBondz() {
                     <p className="font-display text-xs font-black uppercase tracking-wider text-white mt-1.5 [font-variation-settings:'wdth'_85]">
                       Telephone Tag
                     </p>
-                    <p className="text-[0.68rem] text-white/75 mt-0.5 font-medium">Direct calendar sync</p>
+                    <p className="text-[0.68rem] text-white/75 mt-0.5 font-medium">Sample calendar intersection</p>
                   </div>
                   <div className="rounded-2xl bg-white/[0.05] border border-white/10 p-3.5 shadow-2xs">
                     <p className="display text-4xl sm:text-5xl text-primary font-black leading-none">100%</p>
@@ -226,7 +226,7 @@ function WhoIsBondz() {
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2.5 py-1 text-[0.68rem] font-bold text-emerald-300 shrink-0">
                     <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Verified Active
+                    Planning preview
                   </span>
                 </div>
               </div>
@@ -239,7 +239,7 @@ function WhoIsBondz() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
                   <p className="font-display text-xs font-bold uppercase tracking-wider text-white">
-                    Smokestack Courtyard · 90 Guests · Organized Live
+                    Smokestack Courtyard · 90 Guests · Editorial example
                   </p>
                 </div>
               </div>
@@ -259,7 +259,7 @@ function WhoIsBondz() {
                 Nº 02 - The Fundamental Rule
               </span>
               <p className="text-base sm:text-lg leading-relaxed text-ink/85 font-medium">
-                Every date, venue, and vendor a client sees has already been reconciled live against Mr. Bondz's calendar, the venue's schedule, and every vendor partner involved.
+                Every date shown in this preview is calculated from sample availability across Mr. Bondz, the venue, and each selected partner. Real calendars are not connected yet.
               </p>
               <p className="text-sm leading-relaxed text-ink/75 font-medium">
                 Nothing is greyed out. Nothing is “maybe”. If a date cannot be executed with flawless perfection, it simply never renders.

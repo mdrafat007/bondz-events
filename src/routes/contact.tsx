@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
-import { AppShell, SiteFooter, Button, cn } from "../index";
+import { AppShell, Button, cn } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
+import { SiteFooter } from "../components/layout/SiteFooter";
 import { useBookingLaunch } from "../lib/use-booking-launch";
 import { EVENT_TYPES } from "../lib/bondz-data";
 import { triggerTap } from "../lib/haptics";

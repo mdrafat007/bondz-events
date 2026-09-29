@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { AppShell, SiteFooter, Button } from "../index";
+import { AppShell, Button } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
+import { SiteFooter } from "../components/layout/SiteFooter";
 import { SERVICE_ICONS } from "../components/site/ServiceIcons";
 import { SERVICES_11, CATEGORIES, PARTNERS, priceLabel, type ServiceTab } from "../lib/bondz-data";
 import { useBookingLaunch } from "../lib/use-booking-launch";

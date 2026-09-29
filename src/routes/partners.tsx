@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AppShell, SiteFooter, Button, Badge } from "../index";
+import { AppShell, Button, Badge } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
+import { SiteFooter } from "../components/layout/SiteFooter";
 import { useBookingLaunch } from "../lib/use-booking-launch";
 import { PARTNERS, VENUES, CATEGORIES, HORIZON, categoryLabel, priceLabel, openDayCount, nextOpenDay, dayLabel, type Partner, type Venue } from "../lib/bondz-data";
 

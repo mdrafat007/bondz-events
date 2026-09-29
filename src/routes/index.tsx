@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, SiteFooter } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
+import { SiteFooter } from "../components/layout/SiteFooter";
 import { HeroBookingCTA } from "../components/site/HeroBookingCTA";
 import { ConnectAIAssistant } from "../components/site/ConnectAIAssistant";
 import { useBookingLaunch } from "../lib/use-booking-launch";

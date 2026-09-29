@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { AppShell, SiteFooter, Badge } from "../index";
+import { AppShell, Badge } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
+import { SiteFooter } from "../components/layout/SiteFooter";
 import mascotLight from "../design-system/bondz-events---design-system-9e1fdf/design-system/assets/icons/BONDZ_LOGO_ICON_-_LIGHT.png";
 
 export const Route = createFileRoute("/how-it-works")({

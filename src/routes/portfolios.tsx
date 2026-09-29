@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, SiteFooter } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
+import { SiteFooter } from "../components/layout/SiteFooter";
 import pfWedding from "../assets/photography/pf-wedding.jpg";
 import pfBbq from "../assets/photography/pf-bbq.jpg";
 import pfCorporate from "../assets/photography/pf-corporate.jpg";

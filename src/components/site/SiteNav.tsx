@@ -4,7 +4,9 @@ import { Lockup } from "./Brand";
 import { playTapSound, useSoundState } from "@/lib/haptics";
 import { useTheme } from "@/lib/theme";
 import { triggerBookingTransition } from "@/lib/booking-transition";
+import { ConnectAIAssistant } from "./ConnectAIAssistant";
 import { cn } from "@/lib/utils";
+
 
 const LINKS = [
   { to: "/book", label: "Get a Booking" },
@@ -191,9 +193,13 @@ export function SiteNav() {
                 </li>
               ))}
             </ul>
+            <div className="mt-6 shrink-0" onClick={() => setOpen(false)}>
+              <ConnectAIAssistant variant="hero" className="w-full sm:w-auto" />
+            </div>
             <p className="mt-8 shrink-0 font-serif text-xl italic text-ink/55 sm:text-2xl">
               Good times, beautifully made<span className="text-primary">.</span>
             </p>
+
           </nav>
         </div>
       )}

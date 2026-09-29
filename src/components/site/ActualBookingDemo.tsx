@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { BookingEngine } from "@/components/booking/BookingEngine";
 import { useTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
@@ -9,14 +9,13 @@ interface ActualBookingDemoProps {
   className?: string;
 }
 
-const CLIP_MS = 7000;
+const CLIP_MS = 6000;
 
 export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingDemoProps) {
   const { theme } = useTheme();
   const [hovered, setHovered] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showClip, setShowClip] = useState(false);
-  const lastProgress = useRef(0);
 
   // After each complete run of the demo, rest on a looping celebration clip.
   useEffect(() => {
@@ -24,12 +23,6 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
     const t = window.setTimeout(() => setShowClip(false), CLIP_MS);
     return () => window.clearTimeout(t);
   }, [showClip]);
-
-  const handleProgress = (value: number) => {
-    if (lastProgress.current > 80 && value < 20) setShowClip(true);
-    lastProgress.current = value;
-    setProgress(value);
-  };
 
   return (
     <figure
@@ -45,18 +38,19 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
       onFocus={() => setHovered(true)}
       onBlur={() => setHovered(false)}
       className={cn(
-        "relative aspect-[4/5] max-h-[30rem] w-full cursor-pointer select-none overflow-hidden rounded-2xl border border-hairline shadow-raised focus-visible:outline-2 focus-visible:outline-primary sm:aspect-[4/3.4] sm:max-h-[26rem] lg:aspect-auto lg:h-full lg:max-h-[30rem]",
+        "relative aspect-[4/5] w-full cursor-pointer select-none overflow-hidden rounded-card border border-hairline shadow-raised focus-visible:outline-2 focus-visible:outline-primary sm:aspect-[4/3.2] lg:aspect-[4/3.6] lg:h-full",
         theme === "light" ? "dark bg-canvas text-ink" : "light bg-canvas text-ink",
         className,
       )}
     >
-      <div className="pointer-events-none absolute left-0 top-0 h-[143%] w-[143%] origin-top-left scale-[0.7] select-none overflow-hidden pb-20">
+      <div className="pointer-events-none absolute left-0 top-0 h-[167%] w-[167%] origin-top-left scale-[0.6] select-none overflow-hidden pb-20 sm:h-[143%] sm:w-[143%] sm:scale-[0.7]">
         <BookingEngine
           init={{ event: "wedding", where: "venue", step: 1 }}
           intro={false}
           demo
           paused={hovered || showClip}
-          onDemoProgress={handleProgress}
+          onDemoProgress={setProgress}
+          onDemoRoundEnd={() => setShowClip(true)}
         />
       </div>
 
@@ -71,6 +65,7 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
           className="pointer-events-none absolute inset-0 z-10 size-full select-none object-cover"
         />
       )}
+
 
       <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 z-20 select-none bg-canvas/90 p-3.5 pt-5 text-ink backdrop-blur-sm sm:p-4">
         <p className="eyebrow text-primary">Live Demo</p>

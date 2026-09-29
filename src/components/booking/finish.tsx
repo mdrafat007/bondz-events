@@ -8,6 +8,9 @@ import { StepHead } from "./panels";
 import { Ghost, Primary } from "./steps";
 import { useBooking } from "./store";
 import { triggerHaptic, playTapSound, isSoundEnabled, playConfirmFlourish } from "@/lib/haptics";
+import brandLockupLight from "@/assets/brand-lockup.png";
+import brandLockupDark from "@/assets/brand-lockup-dark.png";
+
 
 /* ───────────────── helpers ───────────────── */
 function useSummary() {
@@ -401,7 +404,7 @@ export function Step6() {
     await document.fonts.load('700 36px "Bricolage Grotesque"');
     ctx.fillStyle = theme.bg;
     ctx.fillRect(0, 0, S, S);
-    const logoSrc = theme.logo === "dark" ? "/brand-lockup-dark.png" : "/brand-lockup.png";
+    const logoSrc = theme.logo === "dark" ? brandLockupDark : brandLockupLight;
     const img = await loadImg(logoSrc);
     const w = 380;
     ctx.drawImage(img, S - w - 50, S - (w * img.height) / img.width - 50, w, (w * img.height) / img.width);
@@ -543,7 +546,7 @@ ol.terms li b { color: #151118; }
         <section className="col-span-1 md:col-span-2 flex min-h-[19rem] flex-col rounded-2xl border hairline bg-surface-light shadow-sm overflow-hidden">
           <div className="border-b hairline p-3 sm:p-4 bg-surface-light/80">
             <p className="eyebrow text-ink/55">Simulated {parties}-way dispatch - messages not sent</p>
-            <div className="scroll-quiet mt-2 flex gap-1.5 overflow-x-auto">
+            <div className="scroll-quiet mt-2 flex flex-wrap gap-1.5 lg:flex-nowrap lg:overflow-x-auto">
               {recipients.map((x, i) => (
                 <button
                   key={x.who}
@@ -618,7 +621,7 @@ ol.terms li b { color: #151118; }
                 style={{ background: theme.bg, color: theme.fg }}
               >
                 <img
-                  src={theme.logo === "dark" ? "/brand-lockup-dark.png" : "/brand-lockup.png"}
+                  src={theme.logo === "dark" ? brandLockupDark : brandLockupLight}
                   alt="Bondz Events"
                   className="absolute bottom-2.5 right-2.5 w-[38%] object-contain"
                 />

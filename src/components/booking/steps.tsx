@@ -553,7 +553,7 @@ export function Step4() {
   return (
     <div className="flex flex-col gap-4">
       <StepHead no="04" title={<>Pick a date. <span className="font-serif-i text-primary">Every one works.</span></>} sub={`This preview intersects ${calCount} simulated calendars. Days where anyone is unavailable aren't shown.`} />
-      <div className="scroll-quiet flex items-stretch gap-1.5 overflow-x-auto pb-1">
+      <div className="scroll-quiet flex flex-wrap items-stretch gap-1.5 pb-1 sm:flex-nowrap sm:overflow-x-auto">
         {sources.map((s, i) => (
           <div key={s.n} className="flex shrink-0 items-center gap-1.5">
             <div className="rounded-xl border hairline bg-surface-light px-3 py-2">
@@ -653,7 +653,7 @@ export function SlotPicker() {
         </span>
         <span className="text-[0.62rem] sm:text-xs text-primary font-semibold">Select a sample time</span>
       </div>
-      <div className="scroll-quiet flex items-center gap-2 pt-1 overflow-x-auto max-w-full pb-0.5">
+      <div className="scroll-quiet flex max-w-full flex-wrap items-center gap-2 pt-1 pb-0.5 sm:flex-nowrap sm:overflow-x-auto">
         {SLOTS.map((s, i) =>
           slotOpen(day, i) ? (
             <button

@@ -68,14 +68,14 @@ function BookingCurtain() {
         initial={{ x: "-100%" }}
         animate={{ x: isClosed ? "0%" : "-100%" }}
         transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-        className="h-full w-1/2 bg-bondz-night border-r border-primary/40"
+        className="h-full w-1/2 bg-night border-r border-primary/40"
       />
       {/* Right Curtain */}
       <motion.div
         initial={{ x: "100%" }}
         animate={{ x: isClosed ? "0%" : "100%" }}
         transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-        className="h-full w-1/2 bg-bondz-night border-l border-primary/40"
+        className="h-full w-1/2 bg-night border-l border-primary/40"
       />
     </div>
   );

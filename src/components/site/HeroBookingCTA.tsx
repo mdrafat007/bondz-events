@@ -9,9 +9,10 @@ import { cn } from "@/lib/utils";
 interface HeroBookingCTAProps {
   onClick?: () => void;
   className?: string;
+  disabled?: boolean;
 }
 
-export function HeroBookingCTA({ onClick, className }: HeroBookingCTAProps) {
+export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAProps) {
   const { theme } = useTheme();
   const mascotImg = theme === "dark" ? mascotWhite : mascotRed;
   const [isHovered, setIsHovered] = useState(false);
@@ -200,6 +201,7 @@ export function HeroBookingCTA({ onClick, className }: HeroBookingCTAProps) {
     <div
       className={cn(
         "relative inline-flex flex-col items-center justify-end overflow-visible select-none cursor-pointer group",
+        disabled && "pointer-events-none opacity-70",
         className,
       )}
       onMouseEnter={handleMouseEnter}
@@ -209,6 +211,7 @@ export function HeroBookingCTA({ onClick, className }: HeroBookingCTAProps) {
       onTouchStart={handleTap}
       onClick={handleTap}
       role="button"
+      aria-disabled={disabled || undefined}
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {

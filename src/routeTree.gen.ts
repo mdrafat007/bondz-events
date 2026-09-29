@@ -19,6 +19,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConnectAiRouteImport } from './routes/connect-ai'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InviteRefRouteImport } from './routes/invite.$ref'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91__mockupChar93PreviewSplatRouteImport } from './routes/[__mockup].preview.$'
 import { Route as Char91__componentChar93PreviewSplatRouteImport } from './routes/[__component].preview.$'
@@ -73,6 +74,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InviteRefRoute = InviteRefRouteImport.update({
+  id: '/invite/$ref',
+  path: '/invite/$ref',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
     id: '/.well-known/oauth-protected-resource',
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRoute
   '/system': typeof SystemRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/invite/$ref': typeof InviteRefRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRoute
   '/system': typeof SystemRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/invite/$ref': typeof InviteRefRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   '/services': typeof ServicesRoute
   '/system': typeof SystemRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/invite/$ref': typeof InviteRefRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/system'
     | '/.well-known/oauth-protected-resource'
+    | '/invite/$ref'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   fileRoutesByTo: FileRoutesByTo
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/system'
     | '/.well-known/oauth-protected-resource'
+    | '/invite/$ref'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   id:
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/system'
     | '/.well-known/oauth-protected-resource'
+    | '/invite/$ref'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   fileRoutesById: FileRoutesById
@@ -198,6 +210,7 @@ export interface RootRouteChildren {
   ServicesRoute: typeof ServicesRoute
   SystemRoute: typeof SystemRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  InviteRefRoute: typeof InviteRefRoute
   Char91__componentChar93PreviewSplatRoute: typeof Char91__componentChar93PreviewSplatRoute
   Char91__mockupChar93PreviewSplatRoute: typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -274,6 +287,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/invite/$ref': {
+      id: '/invite/$ref'
+      path: '/invite/$ref'
+      fullPath: '/invite/$ref'
+      preLoaderRoute: typeof InviteRefRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
       path: '/.well-known/oauth-protected-resource'
@@ -311,6 +331,7 @@ const rootRouteChildren: RootRouteChildren = {
   SystemRoute: SystemRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  InviteRefRoute: InviteRefRoute,
   Char91__componentChar93PreviewSplatRoute:
     Char91__componentChar93PreviewSplatRoute,
   Char91__mockupChar93PreviewSplatRoute: Char91__mockupChar93PreviewSplatRoute,

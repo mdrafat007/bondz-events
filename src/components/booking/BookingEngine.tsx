@@ -62,6 +62,8 @@ interface Scenario {
   services: CategoryId[];
   name: string;
   slot: Slot;
+  ref: string;
+
 }
 
 function makeScenario(): Scenario {
@@ -89,6 +91,8 @@ function makeScenario(): Scenario {
     services,
     name: pick(DEMO_NAMES),
     slot: pick(SLOTS),
+    ref: "BZ-" + event.slice(0, 2).toUpperCase() + "-" + String(1000 + Math.floor(Math.random() * 8999)),
+
   };
 }
 

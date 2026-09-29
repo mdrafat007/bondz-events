@@ -15,6 +15,19 @@ export interface HeroBookingCTAProps {
 
 const MotionButton = motion.create(Button);
 
+/**
+ * Head-anchored crop geometry, measured from the 2000x2000 mascot artwork.
+ * The head spans x 424..1580 and y 155..~1320; the bottom of the spectacle
+ * frames sits at y ~1155. The clip window is sized so that translating the
+ * mascot to y = -15 lands the spectacle frames exactly on the button's top rim.
+ */
+const SRC = 2000;
+const HEAD_LEFT = 424;
+const HEAD_TOP = 155;
+const HEAD_WIDTH = 1156;
+const SPECTACLE_BOTTOM = 1155;
+const PEEK_Y = -15;
+
 export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAProps) {
   const { theme } = useTheme();
   const mascotImg = theme === "dark" ? mascotWhite : mascotRed;
@@ -43,19 +56,37 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
     };
   }, []);
 
-  const restY = isMobile ? 110 : 135;
-  const peekY = -15;
+  // Head window sizing, derived from the measured artwork landmarks.
+  const headWidth = isMobile ? 128 : 176;
+  const scale = headWidth / HEAD_WIDTH;
+  const windowHeight = (SPECTACLE_BOTTOM - HEAD_TOP) * scale - PEEK_Y * -1;
+  const restY = isMobile ? 48 : 68;
+
   const mascotVariants: Variants = {
-    resting: { y: restY, rotate: 0, transition: { y: { type: "spring", stiffness: 360, damping: 22 } } },
+    resting: {
+      y: restY,
+      scale: 0.9,
+      opacity: 0,
+      rotate: 0,
+      transition: { y: { type: "spring", stiffness: 360, damping: 22 }, opacity: { duration: 0.18 }, scale: { duration: 0.22 } },
+    },
     hover: {
-      y: peekY, rotate: [0, 10, 10, 0],
+      y: PEEK_Y,
+      scale: 1,
+      opacity: 1,
+      rotate: [0, 10, 10, 0],
       transition: {
         y: { type: "spring", stiffness: 360, damping: 22 },
+        scale: { type: "spring", stiffness: 360, damping: 22 },
+        opacity: { duration: 0.15 },
         rotate: { times: [0, 0.45, 0.75, 1], duration: 0.48, ease: "easeInOut" },
       },
     },
     peekLoop: {
-      y: [restY, peekY, peekY, restY], rotate: [0, 10, 10, 0],
+      y: [restY, PEEK_Y, PEEK_Y, restY],
+      scale: [0.9, 1, 1, 0.9],
+      opacity: [0, 1, 1, 0],
+      rotate: [0, 10, 10, 0],
       transition: { times: [0, 0.22, 0.72, 1], duration: 1.6, ease: [0.16, 1, 0.3, 1] },
     },
   };
@@ -88,17 +119,27 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
     }
   }, [arrowControls, textControls, reducedMotion]);
 
+  const clearLoop = useCallback(() => {
+    if (loopTimerRef.current !== null) {
+      window.clearTimeout(loopTimerRef.current);
+      loopTimerRef.current = null;
+    }
+    setIsLooping(false);
+  }, []);
+
+  // Automatic idle peek every 3.8s. Skipped entirely while hovered so the
+  // loop variant and the hover variant can never drive the mascot at once.
   useEffect(() => {
-    if (reducedMotion || disabled) return;
+    if (reducedMotion || disabled || isHovered) return;
     const interval = window.setInterval(() => {
-      if (!isHovered && mountedRef.current) {
-        setIsLooping(true);
-        void playPushJumpAnimation();
-        if (loopTimerRef.current !== null) window.clearTimeout(loopTimerRef.current);
-        loopTimerRef.current = window.setTimeout(() => {
-          if (mountedRef.current) setIsLooping(false);
-        }, 1700);
-      }
+      if (!mountedRef.current) return;
+      setIsLooping(true);
+      void playPushJumpAnimation();
+      if (loopTimerRef.current !== null) window.clearTimeout(loopTimerRef.current);
+      loopTimerRef.current = window.setTimeout(() => {
+        if (mountedRef.current) setIsLooping(false);
+        loopTimerRef.current = null;
+      }, 1700);
     }, 3800);
     return () => {
       window.clearInterval(interval);
@@ -106,27 +147,50 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
     };
   }, [isHovered, playPushJumpAnimation, reducedMotion, disabled]);
 
-  const handleMouseEnter = () => {
+  const handleEnter = () => {
+    clearLoop();
     setIsHovered(true);
     void playPushJumpAnimation();
     playPeekabooSound();
   };
 
+  const handleLeave = () => setIsHovered(false);
+
   const handleTap = () => {
     if (disabled || isLaunchingRef.current) return;
     isLaunchingRef.current = true;
+    clearLoop();
     setIsHovered(true);
     void playPushJumpAnimation();
-    launchTimerRef.current = window.setTimeout(() => { if (mountedRef.current) onClick?.(); }, reducedMotion ? 0 : 260);
+    launchTimerRef.current = window.setTimeout(() => {
+      if (mountedRef.current) onClick?.();
+    }, reducedMotion ? 0 : 260);
   };
 
   const animState = reducedMotion ? "resting" : isHovered ? "hover" : isLooping ? "peekLoop" : "resting";
 
   return (
     <div className={cn("relative inline-flex max-w-full flex-col items-center justify-end overflow-visible select-none", className)}>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 flex justify-center overflow-visible [clip-path:inset(-400px_-100px_0px_-100px)]" aria-hidden="true">
-        <motion.div initial="resting" animate={animState} variants={mascotVariants} style={{ transformOrigin: "50% 85%" }} className="flex origin-bottom items-center justify-center">
-          <img src={mascotImg} alt="" className="h-auto w-28 max-w-none select-none object-contain drop-shadow-md sm:w-36 md:w-44" draggable={false} />
+      {/* Peekaboo layer: bottom edge sits on the button's top rim, clipped there. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-full z-0 flex justify-center overflow-visible [clip-path:inset(-400px_-100px_0px_-100px)]"
+        style={{ height: windowHeight }}
+        aria-hidden="true"
+      >
+        <motion.div
+          initial="resting"
+          animate={animState}
+          variants={mascotVariants}
+          style={{ transformOrigin: "50% 100%", width: headWidth, height: windowHeight, position: "relative" }}
+          className="overflow-visible"
+        >
+          <img
+            src={mascotImg}
+            alt=""
+            draggable={false}
+            className="pointer-events-none absolute max-w-none select-none object-contain drop-shadow-md"
+            style={{ width: SRC * scale, left: -HEAD_LEFT * scale, top: -HEAD_TOP * scale }}
+          />
         </motion.div>
       </div>
       <MotionButton
@@ -134,10 +198,10 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
         variant="primary"
         size="lg"
         disabled={disabled}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={() => setIsHovered(false)}
-        onFocus={handleMouseEnter}
-        onBlur={() => setIsHovered(false)}
+        onMouseEnter={handleEnter}
+        onMouseLeave={handleLeave}
+        onFocus={handleEnter}
+        onBlur={handleLeave}
         onClick={handleTap}
         className="bondz-hero-cta relative z-10 flex min-h-14 max-w-full items-center justify-between gap-2 overflow-hidden rounded-full px-4 py-3.5 font-sans text-white ring-1 ring-inset ring-white/20 sm:gap-5 sm:px-9 sm:py-4"
         animate={reducedMotion ? { scale: 1 } : isHovered ? { scale: 1.02 } : isLooping ? { scale: 1.015 } : { scale: 1 }}
@@ -146,8 +210,10 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
         <motion.span animate={textControls} className="whitespace-nowrap font-sans text-[0.62rem] font-black uppercase tracking-wider text-white sm:text-sm sm:tracking-widest md:text-base">
           GET STARTED YOUR BOOKING
         </motion.span>
-        <motion.span animate={arrowControls} aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-full bg-white text-base font-black text-primary shadow-md sm:size-9 sm:text-lg md:size-10">
-          →
+        <motion.span animate={arrowControls} aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-full bg-white shadow-md sm:size-9 md:size-10">
+          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-4 sm:size-5">
+            <path d="M4 10h12M11 5l5 5-5 5" stroke="#f1453b" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </motion.span>
       </MotionButton>
     </div>

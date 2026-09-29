@@ -8,6 +8,10 @@ body { margin: 0; }
 button, input { font: inherit; }
 ::selection { background: var(--bondz-primary); color: var(--bondz-surface-light); }
 
+.bondz-orbit-a { animation: spin 1.2s linear infinite; }
+.bondz-orbit-b { animation: spin 2s linear infinite reverse; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
 /* Project-layer tokens: invitation-card palettes (no design-system equivalent). */
 :root {
   --invite-coral-bg: oklch(0.24 0.05 290);

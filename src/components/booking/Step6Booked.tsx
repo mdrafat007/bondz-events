@@ -223,7 +223,7 @@ function RescheduleModal({ onClose, total, current, sel, anchor, onConfirm }:
         {days.map((d) => (
           <button key={d} type="button" aria-pressed={pick === d} aria-label={fmt(d)} onClick={() => { triggerTap(); setPick(d); }}
             className={cn("flex min-h-12 flex-col items-center justify-center rounded-control border transition-colors", pick === d ? "border-primary bg-primary text-surface-light" : "border-hairline text-ink hover:border-ink")}>
-            <span className="text-[0.6rem] font-bold uppercase opacity-70">{anchor ? dayToDate(anchor, d).toLocaleDateString("en-US", { month: "short" }) : ""}</span>
+            <span className="text-xs font-bold uppercase opacity-70">{anchor ? dayToDate(anchor, d).toLocaleDateString("en-US", { month: "short" }) : ""}</span>
             <span className="font-serif text-lg leading-none">{anchor ? dayToDate(anchor, d).getDate() : d}</span>
           </button>
         ))}

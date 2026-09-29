@@ -61,7 +61,7 @@ export function Step4Date({ ctx }: { ctx: BookingCtx }) {
                     on ? "border-primary bg-primary text-surface-light ring-2 ring-primary/40"
                       : ok ? "border-hairline bg-surface-light text-ink hover:border-ink"
                         : "cursor-not-allowed border-transparent bg-ink/5 text-subtle line-through opacity-30")}>
-                  <span className="text-[0.6rem] font-bold uppercase opacity-70">{dt.toLocaleDateString("en-US", { month: "short" })}</span>
+                  <span className="text-xs font-bold uppercase opacity-70">{dt.toLocaleDateString("en-US", { month: "short" })}</span>
                   <span className="font-serif text-lg leading-none">{dt.getDate()}</span>
                 </button>
               );

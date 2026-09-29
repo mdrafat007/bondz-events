@@ -51,7 +51,7 @@ export function Step5Lock({ ctx, onBooked }: { ctx: BookingCtx; onBooked: (ref: 
         One signature dispatches {parties} work orders — venue, partners and Mr. Bondz.
       </StepHead>
 
-      <div className="mt-8 grid gap-5 lg:grid-cols-[1fr_21rem]">
+      <div className="mt-8 grid gap-5 lg:grid-cols-3">
         <div className="grid gap-5">
           <Card variant="elevated">
             <p className="text-xs font-bold uppercase text-subtle">Your details</p>
@@ -142,8 +142,8 @@ function BookingLoader({ parties, partners }: { parties: number; partners: numbe
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-night/95 p-4 backdrop-blur-xl" role="status" aria-live="polite">
       <div className="w-full max-w-sm rounded-card border border-review-hairline bg-surface p-9 text-center shadow-[var(--bondz-shadow-popover)]">
         <div className="relative mx-auto size-24">
-          <span className="absolute inset-0 animate-[spin_1.2s_linear_infinite] rounded-full border-2 border-transparent border-t-primary" />
-          <span className="absolute inset-3 animate-[spin_2s_linear_infinite_reverse] rounded-full border-2 border-transparent border-b-primary/60 border-l-primary/40" />
+          <span className="absolute inset-0 bondz-orbit-a rounded-full border-2 border-transparent border-t-primary" />
+          <span className="absolute inset-3 bondz-orbit-b rounded-full border-2 border-transparent border-b-primary/60 border-l-primary/40" />
           <span className="absolute inset-0 flex items-center justify-center font-serif text-2xl text-ink">BZ</span>
         </div>
         <p className="mt-6 font-serif text-2xl text-ink">Completing your booking</p>

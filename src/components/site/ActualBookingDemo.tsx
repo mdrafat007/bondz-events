@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { BookingEngine } from "@/components/booking/BookingEngine";
 import { useTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";

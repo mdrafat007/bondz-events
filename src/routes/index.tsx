@@ -85,7 +85,7 @@ function LandingPage() {
         <div className="min-w-0">
           <div className="mb-6 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 font-sans text-[0.62rem] font-extrabold uppercase leading-snug tracking-tight text-ink sm:mb-8 sm:text-xs"><span className="hidden sm:inline">Solo Event Organizer · 16 Years · 700+ Celebrations</span><span className="sm:hidden">Solo Organizer · 16 Yrs · 700+ Events</span></div>
           <h1 id="hero-title" className="bondz-hero-title font-sans font-black text-ink [font-variation-settings:'wdth'_85]"><span className="block">Get <span className="font-serif font-normal italic text-primary">“yourself booked”</span></span><span className="block">and Leave the <span className="font-serif font-normal italic text-primary">“rest on us”!</span></span></h1>
-          <div className="mt-36 flex flex-col items-start sm:mt-46">
+          <div className="mt-36 flex flex-col items-start sm:mt-48">
             <div className="bondz-cta-wrap relative isolate max-w-full">
               <div className="pointer-events-none absolute inset-x-0 bottom-full z-0 flex justify-center overflow-visible [clip-path:inset(-400px_-100px_0px_-100px)]" aria-hidden="true">
                 <div className="bondz-mascot-peek flex origin-bottom items-center justify-center"><img src={redMascot} alt="" className="h-auto w-32 max-w-none select-none object-contain drop-shadow-md sm:w-40 dark:hidden" /><img src={whiteMascot} alt="" className="hidden h-auto w-32 max-w-none select-none object-contain drop-shadow-md sm:w-40 dark:block" /></div>

@@ -39,18 +39,92 @@ export function BookingEngine({
   );
 }
 
-function DemoDirector({ paused, canvas, onProgress }: { paused: boolean; canvas: React.RefObject<HTMLDivElement | null>; onProgress?: (progress: number) => void }) {
+const DEMO_NAMES = [
+  "Amira & Jonah", "The Okafor Family", "Lena Vasquez", "Marcus Bell",
+  "Priya & Sam", "Tolu Adeyemi", "Hannah Reid", "Northwind Studio",
+];
+const DEMO_SERVICES: CategoryId[] = ["catering", "decor", "dj", "photo", "lighting", "equipment", "staff", "cleaning"];
+
+function pick<T>(list: readonly T[]): T {
+  return list[Math.floor(Math.random() * list.length)] as T;
+}
+
+interface Scenario {
+  event: EventTypeId;
+  vibes: string[];
+  where: "home" | "venue";
+  venue: string | null;
+  guests: number;
+  services: CategoryId[];
+  name: string;
+  slot: Slot;
+}
+
+function makeScenario(): Scenario {
+  const event = pick(EVENT_TYPES).id as EventTypeId;
+  const vibeList = VIBES_BY_EVENT[event] ?? [];
+  const vibes = vibeList.filter(() => Math.random() < 0.45).slice(0, 3);
+  if (!vibes.length && vibeList[0]) vibes.push(pick(vibeList));
+
+  const options = VENUES.filter((v) => v.events === "all" || (v.events as readonly string[]).includes(event));
+  const useVenue = options.length > 0 && Math.random() < 0.7;
+  const venue = useVenue ? pick(options) : null;
+
+  let guests = 20 + Math.floor(Math.random() * 25) * 5;
+  if (venue) guests = Math.min(Math.max(guests, venue.min), venue.max);
+
+  const services = DEMO_SERVICES.filter(() => Math.random() < 0.45);
+  if (!services.length) services.push("catering");
+
+  return {
+    event,
+    vibes,
+    where: venue ? "venue" : "home",
+    venue: venue?.id ?? null,
+    guests,
+    services,
+    name: pick(DEMO_NAMES),
+    slot: pick(SLOTS),
+  };
+}
+
+function DemoDirector({
+  paused,
+  canvas,
+  onProgress,
+  onRoundEnd,
+}: {
+  paused: boolean;
+  canvas: React.RefObject<HTMLDivElement | null>;
+  onProgress?: (progress: number) => void;
+  onRoundEnd?: () => void;
+}) {
   const b = useBooking();
   const current = useRef(b);
   current.current = b;
   const progress = useRef(onProgress);
   progress.current = onProgress;
+  const roundEnd = useRef(onRoundEnd);
+  roundEnd.current = onRoundEnd;
   const elapsed = useRef(0);
   const lastAction = useRef(-1);
+  const scenario = useRef<Scenario>(makeScenario());
+
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setInterval(() => {
-      elapsed.current = (elapsed.current + 100) % 19200;
+      const next = elapsed.current + 100;
+      if (next >= 19200) {
+        // Round complete: fresh randomised celebration for the next run.
+        elapsed.current = 0;
+        lastAction.current = -1;
+        scenario.current = makeScenario();
+        current.current.reset?.();
+        roundEnd.current?.();
+      } else {
+        elapsed.current = next;
+      }
+      const sc = scenario.current;
       const step = (Math.floor(elapsed.current / 3200) + 1) as Step;
       const micro = Math.floor((elapsed.current % 3200) / 1000);
       progress.current?.((elapsed.current / 19200) * 100);
@@ -63,21 +137,22 @@ function DemoDirector({ paused, canvas, onProgress }: { paused: boolean; canvas:
       if (action === lastAction.current) return;
       lastAction.current = action;
       if (step === 1) {
-        state.setSel((s) => ({ ...s, event: "wedding" }));
-        state.setVibes(micro % 2 ? ["Romantic Garden", "Intimate Candlelight"] : ["Black Tie Glamour"]);
+        state.setSel((s) => ({ ...s, event: sc.event }));
+        state.setVibes(sc.vibes);
       } else if (step === 2) {
-        state.setSel((s) => ({ ...s, where: "venue", venue: "smokestack", guests: [45, 60, 90, 60][micro] ?? 60 }));
+        state.setSel((s) => ({ ...s, where: sc.where, venue: sc.venue, guests: sc.guests }));
       } else if (step === 3) {
-        state.setSel((s) => ({ ...s, services: micro % 2 ? ["catering", "dj", "lighting", "decor"] : ["catering", "dj"] }));
+        state.setSel((s) => ({ ...s, services: micro === 0 ? sc.services.slice(0, 1) : sc.services.slice(0, micro + 1) }));
       } else if (step === 4) {
-        const open = availableDays(state.sel).filter((day) => slotOpen(day, SLOTS.indexOf("Evening")));
+        const slotIndex = SLOTS.indexOf(sc.slot);
+        const open = availableDays(state.sel).filter((day) => slotOpen(day, slotIndex));
         state.setDay(open[micro % Math.max(open.length, 1)] ?? null);
-        state.setSlot("Evening");
+        state.setSlot(sc.slot);
       } else if (step === 5) {
-        state.setDetails((d) => ({ ...d, name: "Amira & Jonah", honor: "Amira & Jonah" }));
+        state.setDetails((d) => ({ ...d, name: sc.name, honor: sc.name }));
         state.setSignature("demo-signature");
       } else {
-        state.setRef("BZ-7492-OCT26");
+        state.setRef("BZ-" + sc.event.slice(0, 2).toUpperCase() + "-" + String(1000 + Math.floor(Math.random() * 8999)));
       }
       if (step === 1 || step === 3 || step === 5 || step === 6) {
         canvas.current?.scrollTo({ top: micro === 0 ? 0 : micro === 1 ? canvas.current.scrollHeight * 0.45 : canvas.current.scrollHeight, behavior: "smooth" });
@@ -87,6 +162,7 @@ function DemoDirector({ paused, canvas, onProgress }: { paused: boolean; canvas:
   }, [paused, canvas]);
   return null;
 }
+
 
 function Frame({ intro, demo, paused, onDemoProgress }: { intro: boolean; demo: boolean; paused: boolean; onDemoProgress?: (progress: number) => void }) {
   const b = useBooking();

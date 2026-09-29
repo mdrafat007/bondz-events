@@ -9,9 +9,10 @@ import { cn } from "@/lib/utils";
 interface HeroBookingCTAProps {
   onClick?: () => void;
   className?: string;
+  disabled?: boolean;
 }
 
-export function HeroBookingCTA({ onClick, className }: HeroBookingCTAProps) {
+export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAProps) {
   const { theme } = useTheme();
   const mascotImg = theme === "dark" ? mascotWhite : mascotRed;
   const [isHovered, setIsHovered] = useState(false);

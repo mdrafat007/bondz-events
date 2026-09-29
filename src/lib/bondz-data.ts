@@ -86,18 +86,18 @@ export const VENUES: Venue[] = [
 ];
 
 export type ServiceTab = "Plan" | "Host" | "Produce";
-export const SERVICES_11: { no: string; title: string; tagline: string; tab: ServiceTab }[] = [
-  { no: "01", title: "Events Production", tagline: "Run-of-show, cues and one person holding every thread.", tab: "Plan" },
-  { no: "02", title: "Design Support", tagline: "Mood, palette and floor plan before anyone buys a napkin.", tab: "Plan" },
-  { no: "03", title: "Media & PR", tagline: "Announcements, press lists and a story worth telling.", tab: "Plan" },
-  { no: "04", title: "Catering", tagline: "Menus built around your guests, not a set list.", tab: "Host" },
-  { no: "05", title: "Decorations", tagline: "Florals, draping, tablescapes - styled, installed, struck.", tab: "Host" },
-  { no: "06", title: "Music & DJ", tagline: "A set that reads the room, mic for the speeches.", tab: "Host" },
-  { no: "07", title: "Post-Event Cleaning Support", tagline: "The morning after, handled before you wake.", tab: "Host" },
-  { no: "08", title: "Photo & Videography", tagline: "Candids, portraits and a same-week highlight reel.", tab: "Produce" },
-  { no: "09", title: "Equipment Support", tagline: "Tables, tents, heaters, power - delivered and cleared.", tab: "Produce" },
-  { no: "10", title: "Lights & Sound", tagline: "Warm washes, clean audio, zero feedback squeal.", tab: "Produce" },
-  { no: "11", title: "Hybrid Events", tagline: "Live + digital. Stage, cameras and a platform that just works.", tab: "Produce" },
+export const SERVICES_11: { no: string; title: string; tagline: string; tab: ServiceTab; t: string; d: string }[] = [
+  { no: "01", title: "Events Production", tagline: "Run-of-show, cues and one person holding every thread.", tab: "Plan", t: "Events Production", d: "Run-of-show, cues and one person holding every thread." },
+  { no: "02", title: "Design Support", tagline: "Mood, palette and floor plan before anyone buys a napkin.", tab: "Plan", t: "Design Support", d: "Mood, palette and floor plan before anyone buys a napkin." },
+  { no: "03", title: "Media & PR", tagline: "Announcements, press lists and a story worth telling.", tab: "Plan", t: "Media & PR", d: "Announcements, press lists and a story worth telling." },
+  { no: "04", title: "Catering", tagline: "Menus built around your guests, not a set list.", tab: "Host", t: "Catering", d: "Menus built around your guests, not a set list." },
+  { no: "05", title: "Decorations", tagline: "Florals, draping, tablescapes - styled, installed, struck.", tab: "Host", t: "Decorations", d: "Florals, draping, tablescapes - styled, installed, struck." },
+  { no: "06", title: "Music & DJ", tagline: "A set that reads the room, mic for the speeches.", tab: "Host", t: "Music & DJ", d: "A set that reads the room, mic for the speeches." },
+  { no: "07", title: "Post-Event Cleaning Support", tagline: "The morning after, handled before you wake.", tab: "Host", t: "Post-Event Cleaning", d: "The morning after, handled before you wake." },
+  { no: "08", title: "Photo & Videography", tagline: "Candids, portraits and a same-week highlight reel.", tab: "Produce", t: "Photo & Videography", d: "Candids, portraits and a same-week highlight reel." },
+  { no: "09", title: "Equipment Support", tagline: "Tables, tents, heaters, power - delivered and cleared.", tab: "Produce", t: "Equipment Support", d: "Tables, tents, heaters, power - delivered and cleared." },
+  { no: "10", title: "Lights & Sound", tagline: "Warm washes, clean audio, zero feedback squeal.", tab: "Produce", t: "Lights & Sound", d: "Warm washes, clean audio, zero feedback squeal." },
+  { no: "11", title: "Hybrid Events", tagline: "Live + digital. Stage, cameras and a platform that just works.", tab: "Produce", t: "Hybrid Events", d: "Live + digital. Stage, cameras and a platform that just works." },
 ];
 
 /** Deterministic pseudo-random in [0, 1). Same seed + index always returns the same value. */

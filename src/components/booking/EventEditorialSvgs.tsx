@@ -207,6 +207,47 @@ export function CustomIcon({ className }: EditorialSvgProps) {
   );
 }
 
+export function HomeEditorialSvg({ className }: EditorialSvgProps) {
+  return (
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
+      <circle cx="50" cy="50" r="42" fill="currentColor" fillOpacity="0.04" />
+      {/* House outline */}
+      <path d="M20 52L50 26L80 52" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M28 48V80H72V48" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Door */}
+      <path d="M44 80V62H56V80" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Windows */}
+      <rect x="33" y="56" width="7" height="7" stroke="currentColor" strokeWidth="1.4" opacity="0.6" />
+      <rect x="60" y="56" width="7" height="7" stroke="currentColor" strokeWidth="1.4" opacity="0.6" />
+      {/* Ground line */}
+      <line x1="16" y1="80" x2="84" y2="80" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
+      {/* Heart above chimney */}
+      <path d="M50 14C48 11 44 11 44 14.5C44 17 50 20 50 20C50 20 56 17 56 14.5C56 11 52 11 50 14Z" fill="currentColor" opacity="0.7" />
+    </svg>
+  );
+}
+
+export function VenueEditorialSvg({ className }: EditorialSvgProps) {
+  return (
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
+      <circle cx="50" cy="50" r="42" fill="currentColor" fillOpacity="0.04" />
+      {/* Grand hall facade */}
+      <path d="M18 80V44L50 24L82 44V80" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Columns */}
+      <line x1="30" y1="52" x2="30" y2="80" stroke="currentColor" strokeWidth="1.8" />
+      <line x1="42" y1="52" x2="42" y2="80" stroke="currentColor" strokeWidth="1.8" />
+      <line x1="58" y1="52" x2="58" y2="80" stroke="currentColor" strokeWidth="1.8" />
+      <line x1="70" y1="52" x2="70" y2="80" stroke="currentColor" strokeWidth="1.8" />
+      {/* Entablature */}
+      <line x1="24" y1="52" x2="76" y2="52" stroke="currentColor" strokeWidth="1.6" opacity="0.6" />
+      {/* Star on pediment */}
+      <path d="M50 32L51.5 36.5L56 38L51.5 39.5L50 44L48.5 39.5L44 38L48.5 36.5Z" fill="currentColor" opacity="0.7" />
+      {/* Ground line */}
+      <line x1="14" y1="80" x2="86" y2="80" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
+    </svg>
+  );
+}
+
 export function EventEditorialSvg({ id, className }: { id: EventTypeId; className?: string | undefined }) {
   switch (id) {
     case "wedding":

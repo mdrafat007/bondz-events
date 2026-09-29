@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import type { EventTypeId } from "@/lib/bondz-data";
 
 interface EditorialSvgProps {
@@ -207,7 +208,7 @@ export function CustomIcon({ className }: EditorialSvgProps) {
   );
 }
 
-export const EVENT_SVGS: Record<EventTypeId, (props: EditorialSvgProps) => React.ReactElement> = {
+export const EVENT_SVGS: Record<EventTypeId, (props: EditorialSvgProps) => ReactElement> = {
   wedding: WeddingIcon,
   anniversary: AnniversaryIcon,
   birthday: BirthdayIcon,

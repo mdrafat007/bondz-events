@@ -34,17 +34,19 @@ const pillars = [
   { number: "04", title: "360° notification confirmation", detail: "Every partner in the picture." },
 ];
 
+// The managed asset route is served by the public preview host, not by the local Vite server.
+const portraitUrl = (path: string) => `https://id-preview--b05e6b12-3dde-49e9-ac29-9053c6b86cea.lovable.app${path}`;
 const reviews = [
-  { name: "Amira K.", tag: "Wedding · 90 guests", quote: "I booked a 90-person wedding on my lunch break. My mom still doesn't believe me.", avatar: amira.url },
-  { name: "Jonah R.", tag: "Birthday · 40 guests", quote: "Not one phone call. The DJ texted me before I'd closed the tab.", avatar: jonah.url },
-  { name: "Priya S.", tag: "Anniversary · 24 guests", quote: "Every date it showed me actually worked. That alone is witchcraft.", avatar: priya.url },
-  { name: "Lena M.", tag: "Corporate · 140 guests", quote: "Our offsite had caterer, AV and venue confirmed in one sitting.", avatar: lena.url },
-  { name: "Marcus T.", tag: "BBQ · 60 guests", quote: "Smoke, sun and a long table. Exactly as promised.", avatar: marcus.url },
-  { name: "Tolu A.", tag: "Hybrid · 110 guests", quote: "The stream was cleaner than our actual meeting room. Remote guests stayed the whole night.", avatar: tolu.url },
-  { name: "Sara V.", tag: "Birthday · 35 guests", quote: "Bondz was there before the caterer and left after the sweep. Felt like having an older brother who runs festivals.", avatar: sara.url },
-  { name: "Dev P.", tag: "Anniversary · 50 guests", quote: "We swapped the venue three weeks out. The calendar re-calculated and everything held together.", avatar: jonah.url },
-  { name: "Hannah L.", tag: "Wedding · 120 guests", quote: "He told our photographer where the sun was going to hit the terrace. Saved the golden hour.", avatar: hannah.url },
-  { name: "Omar F.", tag: "Corporate · 85 guests", quote: "Zero vendor emails in my inbox. Bondz absorbed the entire logistics blast radius.", avatar: omar.url },
+  { name: "Amira K.", tag: "Wedding · 90 guests", quote: "I booked a 90-person wedding on my lunch break. My mom still doesn't believe me.", avatar: portraitUrl(amira.url) },
+  { name: "Jonah R.", tag: "Birthday · 40 guests", quote: "Not one phone call. The DJ texted me before I'd closed the tab.", avatar: portraitUrl(jonah.url) },
+  { name: "Priya S.", tag: "Anniversary · 24 guests", quote: "Every date it showed me actually worked. That alone is witchcraft.", avatar: portraitUrl(priya.url) },
+  { name: "Lena M.", tag: "Corporate · 140 guests", quote: "Our offsite had caterer, AV and venue confirmed in one sitting.", avatar: portraitUrl(lena.url) },
+  { name: "Marcus T.", tag: "BBQ · 60 guests", quote: "Smoke, sun and a long table. Exactly as promised.", avatar: portraitUrl(marcus.url) },
+  { name: "Tolu A.", tag: "Hybrid · 110 guests", quote: "The stream was cleaner than our actual meeting room. Remote guests stayed the whole night.", avatar: portraitUrl(tolu.url) },
+  { name: "Sara V.", tag: "Birthday · 35 guests", quote: "Bondz was there before the caterer and left after the sweep. Felt like having an older brother who runs festivals.", avatar: portraitUrl(sara.url) },
+  { name: "Dev P.", tag: "Anniversary · 50 guests", quote: "We swapped the venue three weeks out. The calendar re-calculated and everything held together.", avatar: portraitUrl(jonah.url) },
+  { name: "Hannah L.", tag: "Wedding · 120 guests", quote: "He told our photographer where the sun was going to hit the terrace. Saved the golden hour.", avatar: portraitUrl(hannah.url) },
+  { name: "Omar F.", tag: "Corporate · 85 guests", quote: "Zero vendor emails in my inbox. Bondz absorbed the entire logistics blast radius.", avatar: portraitUrl(omar.url) },
 ];
 const partners = [
   { category: "Catering", name: "Halal Feast Co." },

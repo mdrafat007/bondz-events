@@ -157,8 +157,8 @@ export function guestTier(g: number) {
 }
 
 export const VENUE_PREFS = [
-  { id: "venue", title: "At a Venue", note: "Venue + Vendors joins the calendar with Mr. Bondz \nWe match you to premier verified venues that fit your exact guest count.", surcharge: 1500 },
-  { id: "estate", title: "At My Place", note: "Your home, garden, private estate or office.\nMr. Bondz + Partners scouts your grounds", surcharge: 0 },
+  { id: "venue", title: "At a Venue", note: "We match you to premier verified venues + partners that fit your exact guest count.", surcharge: 1500 },
+  { id: "estate", title: "At My Place", note: "Your home, garden, private estate or office. Mr. Bondz + Partners scouts your grounds", surcharge: 0 },
 ] as const;
 export type VenuePrefId = (typeof VENUE_PREFS)[number]["id"];
 

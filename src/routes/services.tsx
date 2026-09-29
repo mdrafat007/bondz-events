@@ -201,7 +201,7 @@ function Services() {
       {/* Grid of 11 Services */}
       <div
         key={tab}
-        className="scroll-quiet grid min-h-0 flex-1 auto-rows-fr grid-cols-1 gap-px overflow-y-auto bg-[var(--rule)] sm:grid-cols-2 lg:grid-cols-4 pt-px"
+        className="scroll-quiet grid min-h-0 flex-1 auto-rows-[minmax(9.5rem,auto)] grid-cols-1 gap-px overflow-y-auto bg-[var(--rule)] pt-px sm:grid-cols-2 lg:auto-rows-fr lg:grid-cols-4"
       >
         {list.map((s, i) => (
           <article
@@ -212,7 +212,7 @@ function Services() {
             {/* Creative editorial visual: oversized animated hairline illustration */}
             <div
               aria-hidden
-              className="bondz-service-art pointer-events-none absolute -bottom-6 -right-6 size-40 text-ink/10 transition-all duration-500 group-hover:text-primary/35 sm:size-48"
+              className="bondz-service-art pointer-events-none absolute -bottom-4 -right-4 size-28 text-ink/10 transition-all duration-500 group-hover:text-primary/35 sm:-bottom-6 sm:-right-6 sm:size-44"
               style={{ animationDelay: `${i * 240}ms` }}
             >
               <ServiceIcon id={s.no} className="size-full" />

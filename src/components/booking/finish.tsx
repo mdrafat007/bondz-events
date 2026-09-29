@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { StepHead } from "./panels";
 import { Ghost, Primary } from "./steps";
 import { useBooking } from "./store";
-import { triggerHaptic, playTapSound, isSoundEnabled } from "@/lib/haptics";
+import { triggerHaptic, playTapSound, isSoundEnabled, playConfirmFlourish } from "@/lib/haptics";
 
 /* ───────────────── helpers ───────────────── */
 function useSummary() {
@@ -106,7 +106,7 @@ function SignaturePad({ onChange }: { onChange: (d: string | null) => void }) {
 /* ───────────────── STEP 5 ───────────────── */
 export function Step5() {
   const s = useSummary();
-  const { sel, setGuests, day, slot, details, setDetails, signature, setSignature, setStep, setRef, est, parties, demo } = s;
+  const { sel, day, slot, details, setDetails, signature, setSignature, setStep, setRef, est, parties, demo } = s;
   const [agree, setAgree] = useState(false);
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState(0);
@@ -143,8 +143,7 @@ export function Step5() {
           <Field label="Phone" value={details.phone} onChange={set("phone")} type="tel" autoComplete="tel" required />
           <Field label="Email" value={details.email} onChange={set("email")} type="email" autoComplete="email" required />
           <Field label="Guest of honor (optional)" value={details.honor} onChange={set("honor")} />
-          <Field label="Guest count" type="number" min={10} max={300} value={sel.guests} onChange={(e) => setGuests(Math.min(300, Math.max(10, +e.target.value || 10)))} />
-          {(day === null || slot === null) && <p className="text-xs text-primary sm:col-span-2">Please return to Dates and choose a time for your updated guest count.</p>}
+          {(day === null || slot === null) && <p className="text-xs text-primary sm:col-span-2">Please return to Dates and choose a time.</p>}
           <label className="block sm:row-span-1">
             <span className="eyebrow text-ink/60">Anything we should know?</span>
             <textarea value={details.notes} onChange={set("notes")} rows={1} className="mt-1 w-full resize-none rounded-xl border hairline bg-surface-light px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/25" />
@@ -331,18 +330,21 @@ export function Step6() {
 
   useEffect(() => {
     if (demo) return;
+    // Tactile synthetic confirm first, then the recorded human celebration.
+    playConfirmFlourish();
     cheer();
     signalBot({ mood: "happy", tip: "Your sample booking is ready. No messages have been sent." });
 
     let audio: HTMLAudioElement | null = null;
     let fadeInterval: number | null = null;
     let stopTimeout: number | null = null;
+    let startTimeout: number | null = null;
 
     if (isSoundEnabled()) {
       try {
         audio = new Audio("/celebration.wav");
         audio.volume = 0.85;
-        audio.play().catch(() => {});
+        startTimeout = window.setTimeout(() => audio?.play().catch(() => {}), 520);
 
         // Play celebration audio for first 5.8s, then smooth fade out over 1s (total ~6.8s)
         stopTimeout = window.setTimeout(() => {
@@ -354,13 +356,14 @@ export function Step6() {
               if (fadeInterval) window.clearInterval(fadeInterval);
             }
           }, 80);
-        }, 5800);
+        }, 6300);
       } catch {
         /* audio optional */
       }
     }
 
     return () => {
+      if (startTimeout) window.clearTimeout(startTimeout);
       if (stopTimeout) window.clearTimeout(stopTimeout);
       if (fadeInterval) window.clearInterval(fadeInterval);
       if (audio) {

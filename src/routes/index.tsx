@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { HeroBookingCTA } from "../components/site/HeroBookingCTA";
 import { ActualBookingDemo } from "../components/site/ActualBookingDemo";
+import { ConnectAIAssistant } from "../components/site/ConnectAIAssistant";
 import { useBookingLaunch } from "../lib/use-booking-launch";
 import amira from "../assets/photography/amira.asset.json";
 import jonah from "../assets/photography/jonah.asset.json";
@@ -140,14 +141,14 @@ function LandingPage() {
   return (
     <div className="scroll-quiet h-full overflow-y-auto overflow-x-hidden lg:overflow-hidden">
       <div className="flex min-h-full w-full max-w-full flex-col lg:h-full">
-        <div className="w-full max-w-full px-4 sm:px-6 md:px-8 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
+        <div className="w-full max-w-full px-5 sm:px-8 md:px-10 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
           <section
             aria-labelledby="hero-title"
-            className="grid min-w-0 grid-cols-1 items-stretch gap-5 pb-3 pt-4 sm:gap-6 sm:pt-5 lg:min-h-0 lg:flex-[1.65] lg:grid-cols-2 lg:gap-8 lg:py-2 xl:py-3"
+            className="grid min-w-0 grid-cols-1 items-stretch gap-8 pb-8 pt-7 sm:gap-10 sm:pb-10 sm:pt-9 lg:min-h-0 lg:flex-[1.65] lg:grid-cols-[1.08fr_0.92fr] lg:gap-12 lg:py-5 xl:gap-16"
           >
-            <div className="flex min-w-0 flex-col gap-6 sm:gap-8 lg:h-full lg:justify-between">
+            <div className="flex min-w-0 flex-col gap-8 sm:gap-10 lg:h-full lg:justify-between">
               <div className="min-w-0">
-                <div className="mb-3 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 font-sans text-[0.62rem] font-extrabold uppercase leading-snug tracking-tight text-ink sm:mb-4 sm:text-xs">
+                <div className="mb-4 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 font-sans text-[0.62rem] font-extrabold uppercase leading-snug tracking-tight text-ink sm:mb-6 sm:text-xs">
                   <span>Solo Event Organizer · 16 Years · 700+ Celebrations</span>
                 </div>
                 <h1
@@ -163,17 +164,20 @@ function LandingPage() {
                 </h1>
               </div>
 
-              <div className="mt-auto flex w-full max-w-full flex-col items-start gap-4 lg:mt-0">
-                <HeroBookingCTA onClick={launchBooking} disabled={launching} />
+              <div className="mt-auto flex w-full max-w-full flex-col items-start gap-6 sm:gap-7 lg:mt-0">
+                <div className="flex w-full max-w-full flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
+                  <HeroBookingCTA onClick={launchBooking} disabled={launching} />
+                  <ConnectAIAssistant />
+                </div>
 
                 {/* Features placed directly under the Booking CTA */}
-                <div className="w-full pt-3 sm:pt-4 border-t border-hairline grid grid-cols-2 gap-x-4 gap-y-2.5">
+                <div className="grid w-full grid-cols-2 gap-x-6 gap-y-4 border-t border-hairline pt-5 sm:gap-y-5 sm:pt-7">
                   {pillars.map((pillar) => (
-                    <div key={pillar.number} className="flex items-baseline gap-2 min-w-0">
-                      <span className="shrink-0 font-serif text-base sm:text-lg italic font-bold text-primary">
+                    <div key={pillar.number} className="flex min-w-0 items-baseline gap-2.5">
+                      <span className="shrink-0 font-serif text-lg font-bold italic text-primary sm:text-2xl">
                         {pillar.number}
                       </span>
-                      <h2 className="min-w-0 font-sans text-xs font-black uppercase leading-tight text-ink [font-variation-settings:'wdth'_85]">
+                      <h2 className="min-w-0 font-sans text-sm font-black uppercase leading-tight text-ink [font-variation-settings:'wdth'_85] sm:text-base lg:text-[0.95rem] xl:text-lg">
                         {pillar.title}
                       </h2>
                     </div>
@@ -182,8 +186,8 @@ function LandingPage() {
               </div>
             </div>
 
-            <div className="min-w-0 lg:flex lg:min-h-0 lg:items-center">
-              <ActualBookingDemo onLaunchBooking={launchBooking} className="w-full" />
+            <div className="min-w-0 lg:flex lg:min-h-0 lg:items-center lg:justify-end">
+              <ActualBookingDemo onLaunchBooking={launchBooking} className="mx-auto w-full max-w-md lg:mx-0 lg:max-w-[30rem]" />
             </div>
           </section>
         </div>
@@ -191,12 +195,12 @@ function LandingPage() {
         {/* Generous editorial breathing space before client reviews and event partners */}
         <section
           aria-label="Client reviews and event partners"
-          className="mt-10 sm:mt-14 lg:mt-16 shrink-0 border-t border-hairline bg-surface"
+          className="mt-12 shrink-0 border-t border-hairline bg-surface sm:mt-16 lg:mt-10"
         >
           <ReviewMarquee />
           <PartnerMarquee />
         </section>
-        <div className="mx-auto max-w-7xl px-4 py-6 text-center font-serif text-2xl italic text-ink sm:py-8 sm:text-4xl lg:hidden">
+        <div className="mx-auto max-w-7xl px-5 py-10 text-center font-serif text-2xl italic text-ink sm:py-14 sm:text-4xl lg:hidden">
           Good times, beautifully made<span className="text-primary">.</span>
         </div>
       </div>

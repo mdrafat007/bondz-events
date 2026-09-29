@@ -28,16 +28,25 @@ button, input { font: inherit; }
   --invite-tie-hi: oklch(0.64 0.21 28);
 }
 
-.bondz-hero-title { font-size: clamp(1.16rem, 4.2vw, 3rem); line-height: 1.05; letter-spacing: -0.04em; }
-@media (min-width: 1024px) { .bondz-hero-title { font-size: clamp(1.9rem, 3.05vw, 4rem); } }
+/* Hero headline: strictly two lines at every width, as large as the line allows. */
+.bondz-hero-title { font-size: clamp(1.26rem, 4.7vw, 3.4rem); line-height: 1.04; letter-spacing: -0.042em; }
+@media (min-width: 1024px) { .bondz-hero-title { font-size: clamp(2.05rem, 3.35vw, 4.5rem); } }
 
-/* Marketing header: push the primary links to the right, beside the toggles. */
-.bondz-nav-right nav[aria-label="Main navigation"] { margin-left: auto; }
-/* Sound / theme toggles read as icons only - labels are redundant next to them. */
-.bondz-nav-right .border-l > button > span { display: none; }
+/* Borderless tactile controls: real press depth, no button chrome. */
+.bondz-tactile {
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), filter 0.18s ease, background-color 0.18s ease;
+  filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.55)) drop-shadow(0 2px 3px rgb(0 0 0 / 0.22));
+}
+.dark .bondz-tactile { filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.12)) drop-shadow(0 3px 5px rgb(0 0 0 / 0.75)); }
+.bondz-tactile:hover { transform: translateY(-1px) scale(1.06); }
+.bondz-tactile:active { transform: translateY(1px) scale(0.92); filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.3)); }
+.bondz-tactile:focus-visible { outline: 2px solid var(--bondz-primary); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .bondz-tactile:hover, .bondz-tactile:active { transform: none; } }
 
-/* Preview-only AI agent link: scale in / scale out, no ghost surface. */
-.bondz-ai-link { transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease; }
+/* AI agent call to action: scale in on hover, press in on tap. */
+.bondz-ai-link { transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease, background-color 0.2s ease; }
 .bondz-ai-link:hover, .bondz-ai-link:focus-visible { transform: scale(1.1); }
 .bondz-ai-link:active { transform: scale(0.9); }
 @media (prefers-reduced-motion: reduce) { .bondz-ai-link { transition: color 0.2s ease; } .bondz-ai-link:hover, .bondz-ai-link:active, .bondz-ai-link:focus-visible { transform: none; } }

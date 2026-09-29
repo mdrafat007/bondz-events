@@ -145,6 +145,31 @@ export function triggerTap() {
 }
 
 /**
+ * Short, dry detent tick - used by sliders as the value steps.
+ */
+export function playTickSound(intensity = 1) {
+  if (!isSoundEnabled()) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  try {
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "square";
+    osc.frequency.setValueAtTime(1180 + intensity * 140, t);
+    osc.frequency.exponentialRampToValueAtTime(420, t + 0.02);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(0.05, t + 0.003);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.035);
+  } catch {
+    /* audio is optional */
+  }
+}
+
+/**
  * Rich celebratory major chord chimes
  */
 export function playCelebrationAudio() {
@@ -167,6 +192,38 @@ export function playCelebrationAudio() {
       osc.start(startTime);
       osc.stop(startTime + duration + 0.05);
     });
+  } catch {
+    /* ignore */
+  }
+}
+
+/**
+ * Crisp synthetic "system confirm" flourish played immediately before the
+ * recorded human celebration audio, so the confirmation lands tactile first.
+ */
+export function playConfirmFlourish() {
+  if (!isSoundEnabled()) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  try {
+    const t0 = ctx.currentTime;
+    [
+      { f: 660, at: 0 },
+      { f: 880, at: 0.075 },
+      { f: 1320, at: 0.15 },
+    ].forEach(({ f, at }) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(f, t0 + at);
+      gain.gain.setValueAtTime(0.0001, t0 + at);
+      gain.gain.linearRampToValueAtTime(0.11, t0 + at + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + at + 0.16);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(t0 + at);
+      osc.stop(t0 + at + 0.2);
+    });
+    triggerHaptic([18, 40, 18]);
   } catch {
     /* ignore */
   }

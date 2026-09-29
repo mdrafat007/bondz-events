@@ -306,11 +306,10 @@ export function Step2() {
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-4">
-      <div className="grid shrink-0 gap-4 md:grid-cols-[1fr_22rem] md:items-end">
-        <StepHead no="02" title="Where’s the party?" sub="Two routes. Both end at “You’re Booked” - one just has more calendars to reconcile." />
-        <GuestSlider />
+      <div className="shrink-0">
+        <StepHead no="02" title="Where’s the party?" sub="Two routes. Both end at “You’re Booked” - one just has more calendars to reconcile. You set the headcount on the next step." />
       </div>
-      <div className="scroll-quiet grid min-h-0 flex-1 gap-3 overflow-y-auto md:grid-cols-2">
+      <div className="scroll-quiet grid min-h-0 flex-1 gap-3 overflow-y-auto sm:gap-4 md:grid-cols-2">
         {branches.map((b) => (
           <div
             key={b.id}

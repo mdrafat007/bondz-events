@@ -666,7 +666,7 @@ ol.terms li b { color: #151118; }
         {/* Bento 3: Receipt & Signed Contract (Underneath, Right) */}
         <section className="col-span-1 flex flex-col justify-between rounded-2xl border hairline bg-surface-light p-5 shadow-sm">
           <div>
-            <p className="eyebrow text-ink/55">Sample receipt & agreement</p>
+            <p className="eyebrow text-ink/55">RECEIPT &amp; AGREEMENT</p>
             <p className="display mt-3 text-4xl sm:text-5xl tabular-nums font-black text-ink">{money(est.total)}</p>
             <p className="text-xs font-semibold text-primary mt-1">
               {money(est.deposit)} demo deposit · {money(est.balance)} balance 7 days prior

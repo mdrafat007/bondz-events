@@ -106,13 +106,13 @@ function SignaturePad({ onChange }: { onChange: (d: string | null) => void }) {
 /* ───────────────── STEP 5 ───────────────── */
 export function Step5() {
   const s = useSummary();
-  const { sel, setSel, details, setDetails, signature, setSignature, setStep, setRef, est, parties, demo } = s;
+  const { sel, setGuests, day, slot, details, setDetails, signature, setSignature, setStep, setRef, est, parties, demo } = s;
   const [agree, setAgree] = useState(false);
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState(0);
 
-  const ready = details.name.trim() && /\S+@\S+\.\S+/.test(details.email) && details.phone.trim().length >= 6 && agree && signature;
-  const missing = !details.name.trim() ? "your name" : !/\S+@\S+\.\S+/.test(details.email) ? "a valid email" : details.phone.trim().length < 6 ? "a phone number" : !agree ? "agreement to the terms" : "your signature";
+  const ready = day !== null && slot !== null && details.name.trim() && /\S+@\S+\.\S+/.test(details.email) && details.phone.trim().length >= 6 && agree && signature;
+  const missing = day === null || slot === null ? "a valid date and time" : !details.name.trim() ? "your name" : !/\S+@\S+\.\S+/.test(details.email) ? "a valid email" : details.phone.trim().length < 6 ? "a phone number" : !agree ? "agreement to the terms" : "your signature";
 
   const pay = () => {
     if (demo) return;
@@ -143,7 +143,8 @@ export function Step5() {
           <Field label="Phone" value={details.phone} onChange={set("phone")} type="tel" autoComplete="tel" required />
           <Field label="Email" value={details.email} onChange={set("email")} type="email" autoComplete="email" required />
           <Field label="Guest of honor (optional)" value={details.honor} onChange={set("honor")} />
-          <Field label="Guest count" type="number" min={10} max={300} value={sel.guests} onChange={(e) => setSel({ ...sel, guests: Math.min(300, Math.max(10, +e.target.value || 10)) })} />
+          <Field label="Guest count" type="number" min={10} max={300} value={sel.guests} onChange={(e) => setGuests(Math.min(300, Math.max(10, +e.target.value || 10)))} />
+          {(day === null || slot === null) && <p className="text-xs text-primary sm:col-span-2">Please return to Dates and choose a time for your updated guest count.</p>}
           <label className="block sm:row-span-1">
             <span className="eyebrow text-ink/60">Anything we should know?</span>
             <textarea value={details.notes} onChange={set("notes")} rows={1} className="mt-1 w-full resize-none rounded-xl border hairline bg-surface-light px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/25" />

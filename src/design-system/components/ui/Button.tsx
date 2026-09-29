@@ -1,6 +1,7 @@
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
+import { triggerTap } from "../../lib/haptics";
 
 const buttonVariants = cva("inline-flex shrink-0 items-center justify-center gap-2 rounded-control font-sans font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:pointer-events-none disabled:opacity-40 cursor-pointer", {
   variants: {
@@ -14,6 +15,6 @@ const buttonVariants = cva("inline-flex shrink-0 items-center justify-center gap
   }, defaultVariants: { variant: "primary", size: "md" },
 });
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {}
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({ className, variant, size, type = "button", ...props }, ref) {
-  return <button ref={ref} type={type} className={cn(buttonVariants({ variant, size }), className)} {...props} />;
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({ className, variant, size, type = "button", onClick, ...props }, ref) {
+  return <button ref={ref} type={type} className={cn(buttonVariants({ variant, size }), className)} onClick={(event) => { triggerTap(); onClick?.(event); }} {...props} />;
 });

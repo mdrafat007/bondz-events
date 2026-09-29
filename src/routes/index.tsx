@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, Badge, BrandLockup, Button, Card, SiteFooter, SiteNav } from "../index";
-import { playCelebrationSound, playPeekabooSound, triggerTap } from "../design-system/lib/haptics";
+import { playCelebrationSound, playPeekabooSound } from "../design-system/lib/haptics";
 import lightInvite from "../design-system/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_LIGHT.png";
 import darkInvite from "../design-system/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_DARK.png";
 

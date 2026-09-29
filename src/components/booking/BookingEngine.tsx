@@ -20,6 +20,7 @@ export function BookingEngine({
   demo = false,
   paused = false,
   onDemoProgress,
+  onDemoRoundEnd,
 }: {
   init: {
     event?: EventTypeId | undefined;
@@ -31,14 +32,16 @@ export function BookingEngine({
   demo?: boolean;
   paused?: boolean;
   onDemoProgress?: (progress: number) => void;
+  onDemoRoundEnd?: () => void;
 }) {
   const state = useBookingState(init, demo);
   return (
     <BookingProvider value={state}>
-      <Frame intro={intro} demo={demo} paused={paused} onDemoProgress={onDemoProgress} />
+      <Frame intro={intro} demo={demo} paused={paused} onDemoProgress={onDemoProgress} onDemoRoundEnd={onDemoRoundEnd} />
     </BookingProvider>
   );
 }
+
 
 const DEMO_NAMES = [
   "Amira & Jonah", "The Okafor Family", "Lena Vasquez", "Marcus Bell",

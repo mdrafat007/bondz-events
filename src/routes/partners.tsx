@@ -374,7 +374,7 @@ function Partners() {
                     }}
                     onMouseLeave={() => setHoveredPartner(null)}
                     className={cn(
-                      "display group/item inline-flex items-baseline whitespace-nowrap px-4 text-[clamp(2.6rem,6.4vw,6rem)] leading-none tracking-tight transition-all duration-200 cursor-pointer text-left outline-none",
+                      "display partner-name group/item inline-flex items-baseline whitespace-nowrap px-4 leading-none tracking-tight transition-all duration-200 cursor-pointer text-left outline-none",
                       isHovered
                         ? "text-primary scale-[1.03]"
                         : "text-ink/85 hover:text-primary",

@@ -97,7 +97,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
         if (loopTimerRef.current !== null) window.clearTimeout(loopTimerRef.current);
         loopTimerRef.current = window.setTimeout(() => {
           if (mountedRef.current) setIsLooping(false);
-        }, 1400);
+        }, 1700);
       }
     }, 3800);
     return () => {
@@ -143,7 +143,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
         animate={reducedMotion ? { scale: 1 } : isHovered ? { scale: 1.02 } : isLooping ? { scale: 1.015 } : { scale: 1 }}
         whileTap={reducedMotion ? undefined : { scale: 0.97 }}
       >
-        <motion.span animate={textControls} className="whitespace-nowrap font-sans text-[0.62rem] font-black uppercase text-white sm:text-sm md:text-base">
+        <motion.span animate={textControls} className="whitespace-nowrap font-sans text-[0.62rem] font-black uppercase tracking-wider text-white sm:text-sm sm:tracking-widest md:text-base">
           GET STARTED YOUR BOOKING
         </motion.span>
         <motion.span animate={arrowControls} aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-full bg-white text-base font-black text-primary shadow-md sm:size-9 sm:text-lg md:size-10">

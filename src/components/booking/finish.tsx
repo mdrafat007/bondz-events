@@ -331,7 +331,7 @@ export function Step6() {
   useEffect(() => {
     if (demo) return;
     cheer();
-    signalBot({ mood: "happy", tip: "You're booked! Everyone's been told. Go celebrate." });
+    signalBot({ mood: "happy", tip: "Your sample booking is ready. No messages have been sent." });
 
     let audio: HTMLAudioElement | null = null;
     let fadeInterval: number | null = null;
@@ -370,10 +370,10 @@ export function Step6() {
   }, []);
 
   const recipients = [
-    { who: "Client", to: details.email || "you@example.com", subj: `You're booked - ${ev?.title} on ${dateStr}`, body: `Hi ${details.name || "there"},\n\nIt's official. Your ${ev?.title?.toLowerCase()} for ${sel.guests} guests is locked for ${dateStr} (${slot}) at ${place}.\n\nDeposit paid: ${money(est.deposit)}. Balance of ${money(est.balance)} is due 7 days before.\nReference: ${ref}\n\nYour signed agreement and receipt are attached. Nothing else to do - Mr. Bondz has it from here.` },
-    { who: "Mr. Bondz", to: "bondz@bondzevents.com", subj: `New booking ${ref} · ${ev?.title} · ${sel.guests} guests`, body: `Client: ${details.name} · ${details.phone} · ${details.email}\nWhen: ${dateStr}, ${slot}\nWhere: ${place}\nPartners locked: ${assigned.map((a) => a.p!.name).join(", ") || "Solo event"}\nNotes: ${details.notes || "-"}\n\nCalendar blocked. Deposit cleared.` },
-    ...(venue ? [{ who: venue.name, to: `bookings@${venue.id}.venue`, subj: `Confirmed hold - ${dateStr}`, body: `Hello ${venue.name} team,\n\nConfirmed: ${ev?.title} for ${sel.guests} guests on ${dateStr} (${slot}). Organizer: Mr. Bondz. Venue fee ${money(venue.price)} is covered under ref ${ref}.\n\nYour calendar has been locked for this date.` }] : []),
-    ...assigned.map((a) => ({ who: a.p!.name, to: `jobs@${a.p!.id}.partner`, subj: `You're on: ${a.cat} · ${dateStr}`, body: `Hi ${a.p!.name},\n\nYou're booked for ${a.cat.toLowerCase()} - ${ev?.title?.toLowerCase()}, ${sel.guests} guests, ${dateStr} (${slot}) at ${place}.\nAgreed: ${money(priceOf(a.p!, sel.guests))}. Ref ${ref}.\n\nMr. Bondz will share the run-of-show 14 days out.` })),
+    { who: "Client", to: details.email || "you@example.com", subj: `Sample booking - ${ev?.title} on ${dateStr}`, body: `Hi ${details.name || "there"},\n\nThis is a preview for ${sel.guests} guests on ${dateStr} (${slot}) at ${place}.\n\nSample deposit: ${money(est.deposit)}. Estimated balance: ${money(est.balance)}. Reference: ${ref}. No payment was taken and no date was reserved.` },
+    { who: "Mr. Bondz", to: "bondz@bondzevents.com", subj: `Sample brief ${ref} · ${ev?.title}`, body: `Preview only - not sent.\nClient: ${details.name} · ${details.phone} · ${details.email}\nWhen: ${dateStr}, ${slot}\nWhere: ${place}\nSuggested partners: ${assigned.map((a) => a.p?.name).filter(Boolean).join(", ") || "Solo event"}\nNotes: ${details.notes || "-"}` },
+    ...(venue ? [{ who: venue.name, to: "Venue preview", subj: `Sample venue brief - ${dateStr}`, body: `Preview only - not sent. Suggested venue: ${venue.name}. Estimated hire: ${money(venue.price)}. No hold was placed.` }] : []),
+    ...assigned.map((a) => ({ who: a.p?.name ?? a.cat, to: "Partner preview", subj: `Sample work order: ${a.cat} · ${dateStr}`, body: `Preview only - not sent. Proposed ${a.cat.toLowerCase()} for ${ev?.title?.toLowerCase()}, ${sel.guests} guests, ${dateStr} (${slot}) at ${place}. Estimated: ${money(priceOf(a.p!, sel.guests))}.` })),
   ];
   const r = recipients[Math.min(tab, recipients.length - 1)]!;
   const link = typeof window !== "undefined" ? `${window.location.origin}/invite/${ref}` : `/invite/${ref}`;
@@ -426,8 +426,9 @@ export function Step6() {
   const printPdf = (): void => {
     const w = window.open("", "_blank");
     if (!w) { toast.error("Allow pop-ups to download your contract."); return; }
-    const rows = est.lines.map((l) => `<tr><td><b>${l.label}</b><small>${l.note ?? ""}</small></td><td style="text-align:right">${money(l.amount)}</td></tr>`).join("");
-    const terms = TERMS.map((t, i) => `<li><b>${i + 1}. ${t.t}.</b> ${t.b}</li>`).join("");
+    const esc = (value: unknown) => String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    const rows = est.lines.map((l) => `<tr><td><b>${esc(l.label)}</b><small>${esc(l.note)}</small></td><td style="text-align:right">${money(l.amount)}</td></tr>`).join("");
+    const terms = TERMS.map((t, i) => `<li><b>${i + 1}. ${esc(t.t)}.</b> ${esc(t.b)}</li>`).join("");
     w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Bondz Events Agreement & Receipt - ${ref}</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
@@ -466,20 +467,20 @@ ol.terms li b { color: #151118; }
   <div style="text-align:right">
     <div class="k">Service Agreement & Receipt</div>
     <h1>You’re booked.</h1>
-    <div style="font-size:9.5px;color:#555;margin-top:2px">Ref <b>${ref}</b> · Deposit Confirmed</div>
+    <div style="font-size:9.5px;color:#555;margin-top:2px">Ref <b>${esc(ref)}</b> · Demo only - no payment collected</div>
   </div>
 </header>
 <div class="meta-grid">
-  <div><div class="meta-label">Client</div><div class="meta-val"><b>${details.name}</b><br>${details.email}<br>${details.phone}</div></div>
-  <div><div class="meta-label">Event</div><div class="meta-val"><b>${ev?.title}</b> · ${sel.guests} guests<br>${dateStr}<br>${slot}</div></div>
-  <div><div class="meta-label">Location & Venue</div><div class="meta-val">${place}</div></div>
+  <div><div class="meta-label">Client</div><div class="meta-val"><b>${esc(details.name)}</b><br>${esc(details.email)}<br>${esc(details.phone)}</div></div>
+  <div><div class="meta-label">Event</div><div class="meta-val"><b>${esc(ev?.title)}</b> · ${sel.guests} guests<br>${esc(dateStr)}<br>${esc(slot)}</div></div>
+  <div><div class="meta-label">Location & Venue</div><div class="meta-val">${esc(place)}</div></div>
 </div>
 <table>
   <thead><tr><th>Item & Scope</th><th style="text-align:right">Amount</th></tr></thead>
   <tbody>
     ${rows}
     <tr class="t"><td>Total Event Cost</td><td style="text-align:right">${money(est.total)}</td></tr>
-    <tr class="r"><td>Deposit Paid Today (25%)</td><td style="text-align:right">${money(est.deposit)}</td></tr>
+    <tr class="r"><td>Sample Deposit (25%, not paid)</td><td style="text-align:right">${money(est.deposit)}</td></tr>
     <tr class="b"><td>Balance Due (7 Days Prior)</td><td style="text-align:right">${money(est.balance)}</td></tr>
   </tbody>
 </table>
@@ -488,7 +489,7 @@ ol.terms li b { color: #151118; }
 <div class="signatures">
   <div class="sig-box">
     ${signature ? `<img src="${signature}" alt="Client Signature" />` : ""}
-    <span class="sig-label">Client Authorized - ${details.name}</span>
+    <span class="sig-label">Client preview signature - ${esc(details.name)}</span>
   </div>
   <div class="sig-box">
     <span class="sig-name">Mr. Bondz</span>

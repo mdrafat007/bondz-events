@@ -85,7 +85,7 @@ function TabRule() {
         Every event is staffed by Mr. Bondz in person. Only dates where Mr. Bondz and every chosen partner are simultaneously free can ever be locked in.
       </p>
       <div className="mt-7 grid gap-3 sm:grid-cols-3">
-        {["Mr. Bondz free", "Venue free", "Every partner free"].map((label, index) => <div key={label} className="rounded-card border border-hairline bg-surface p-4">
+        {["MR. BONDZ AVAILABLE\u00a0", "VENUE AVAILABLE\u00a0", "EVERY PARTNER\nAVAILABLE\u00a0"].map((label, index) => <div key={label} className="rounded-card border border-hairline bg-surface p-4">
           <span className="font-serif text-xl italic text-primary">0{index + 1}</span>
           <p className="mt-1 font-sans text-xs font-black uppercase tracking-tight text-ink">{label}</p>
         </div>)}

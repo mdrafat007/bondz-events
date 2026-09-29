@@ -281,3 +281,32 @@ export function dayToDate(anchor: Date, d: number): Date {
 
 export const usd = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 export const money = usd;
+
+export const CONTACT = {
+  email: "hello@bondzevents.com",
+  phone: "+1 (555) 012-3456",
+  hours: "Mon-Sat, 9am-7pm",
+};
+
+export const TERMS: { t: string; b: string }[] = [
+  { t: "Deposit", b: "A 25% deposit locks your date, your venue and every partner in one sitting." },
+  { t: "Balance", b: "The remaining balance is due 7 days before your celebration." },
+  { t: "Rescheduling", b: "Move your date once, free, up to 14 days out. Inside 14 days a 5% fee applies." },
+  { t: "Cancellation", b: "Cancel up to 30 days out for a full deposit refund. Inside 30 days the deposit is held." },
+  { t: "Availability", b: "Only dates where Mr. Bondz, the venue and every partner are free are shown - what you see is what you get." },
+  { t: "Partners", b: "Every partner is vetted, insured and briefed by Mr. Bondz personally." },
+  { t: "Weather", b: "Outdoor plans always carry an indoor fallback at no extra cost." },
+  { t: "One point of contact", b: "You never chase a vendor. One call, one person, one plan." },
+];
+
+export const PARTNER_GROUPS: { g: string; names: string[] }[] = [
+  { g: "Catering", names: ["Halal Feast Co.", "Smoke & Cedar Catering", "Ember & Oak Kitchen"] },
+  { g: "Decor", names: ["Petal Theory", "Linen & Light Studio"] },
+  { g: "Music & DJ", names: ["DJ Nova", "Static Bloom Sound"] },
+  { g: "Photo & Film", names: ["Lens & Frame Studio", "Lumina Cinematics"] },
+  { g: "Lights & Sound", names: ["Aura Sound & Lighting", "Prism Stagecraft"] },
+  { g: "Hybrid", names: ["StreamSync Studio"] },
+  { g: "Equipment", names: ["RentIt Pro", "Canopy Works"] },
+  { g: "Staffing", names: ["Hostline Staffing"] },
+  { g: "Cleaning", names: ["Tidy Morning Co.", "Afterglow Cleaners"] },
+];

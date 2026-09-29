@@ -212,7 +212,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
         animate={isHovered ? { scale: 1.02 } : isLooping ? { scale: 1.015 } : { scale: 1 }}
         whileTap={{ scale: 0.97 }}
         transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-        className="bondz-hero-cta relative z-10 flex min-h-14 max-w-full items-center justify-between gap-3 sm:gap-6 rounded-full bg-gradient-to-b from-[#f55248] via-[#ee4339] to-[#de3429] px-6 sm:px-9 py-3.5 sm:py-4.5 shadow-[inset_0_1.5px_1px_rgba(255,255,255,0.45),inset_0_-2px_4px_rgba(0,0,0,0.18),0_12px_32px_rgba(241,69,59,0.36)] ring-1 ring-white/20 ring-inset overflow-hidden"
+        className="bondz-hero-cta relative z-10 flex min-h-14 max-w-full items-center justify-between gap-3 sm:gap-6 rounded-full bg-gradient-to-b from-[var(--bondz-cta-top)] via-[var(--bondz-cta-mid)] to-[var(--bondz-cta-bottom)] px-6 sm:px-9 py-3.5 sm:py-4.5 shadow-[var(--bondz-cta-shadow)] ring-1 ring-white/20 ring-inset overflow-hidden"
       >
         <motion.span
           animate={textControls}
@@ -226,7 +226,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
           className="grid size-8 sm:size-9 md:size-10 shrink-0 place-items-center rounded-full bg-white shadow-md text-primary font-black"
         >
           <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-4 sm:size-5">
-            <path d="M4 10h12M11 5l5 5-5 5" stroke="#f1453b" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4 10h12M11 5l5 5-5 5" stroke="var(--bondz-primary)" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </motion.span>
       </motion.div>

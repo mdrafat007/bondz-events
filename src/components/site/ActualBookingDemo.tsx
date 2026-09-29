@@ -14,13 +14,13 @@ import {
   type Sel,
   type Slot,
 } from "../../lib/bondz-data";
-import { Step1Event } from "./Step1Event";
-import { Step2Where } from "./Step2Where";
-import { Step3Services } from "./Step3Services";
-import { Step4Date } from "./Step4Date";
-import { Step5Lock } from "./Step5Lock";
-import { Step6Booked } from "./Step6Booked";
-import type { BookingCtx } from "./shared";
+import { Step1Event } from "../booking/Step1Event";
+import { Step2Where } from "../booking/Step2Where";
+import { Step3Services } from "../booking/Step3Services";
+import { Step4Date } from "../booking/Step4Date";
+import { Step5Lock } from "../booking/Step5Lock";
+import { Step6Booked } from "../booking/Step6Booked";
+import type { BookingCtx } from "../booking/shared";
 
 interface ActualBookingDemoProps {
   onLaunchBooking?: () => void;

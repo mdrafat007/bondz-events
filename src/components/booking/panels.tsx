@@ -13,7 +13,7 @@ import {
   money,
 } from "@/lib/bondz-data";
 import { cn } from "@/lib/utils";
-import { playTapSound } from "@/lib/haptics";
+import { playTapSound, playTickSound } from "@/lib/haptics";
 import { useBooking } from "./store";
 
 export function Check({ on, className }: { on: boolean; className?: string }) {
@@ -47,12 +47,13 @@ export function StepHead({ no, title, sub }: { no: string; title: React.ReactNod
 export function GuestSlider({ compact }: { compact?: boolean }) {
   const { sel, setGuests } = useBooking();
   const [v, setV] = useState(sel.guests);
+  const lastTick = useRef(sel.guests);
   useEffect(() => setV(sel.guests), [sel.guests]);
   return (
-    <label className={cn("block", compact ? "" : "rounded-2xl border hairline bg-surface-light p-4")}>
-      <span className="flex items-baseline justify-between">
+    <label className={cn("block min-w-0", compact ? "" : "rounded-2xl border hairline bg-surface-light p-4")}>
+      <span className="flex items-baseline justify-between gap-3">
         <span className="eyebrow text-ink/60">Expected guests</span>
-        <span className="display text-3xl tabular-nums">{v}</span>
+        <span className="display text-2xl tabular-nums sm:text-3xl">{v}</span>
       </span>
       <input
         type="range"
@@ -61,15 +62,19 @@ export function GuestSlider({ compact }: { compact?: boolean }) {
         step={5}
         value={v}
         onChange={(e) => {
-          setV(+e.target.value);
-          setGuests(+e.target.value);
+          const next = +e.target.value;
+          if (next !== lastTick.current) {
+            lastTick.current = next;
+            playTickSound(Math.min(next / 300, 1));
+          }
+          setV(next);
+          setGuests(next);
         }}
         onPointerUp={(e) => {
           playTapSound();
           setGuests(+(e.target as HTMLInputElement).value, true);
         }}
         onKeyUp={(e) => {
-          playTapSound();
           setGuests(+(e.target as HTMLInputElement).value, true);
         }}
         className="mt-2 w-full accent-primary"

@@ -47,8 +47,8 @@ button, input { font: inherit; }
 
 /* AI agent call to action: scale in on hover, press in on tap. */
 .bondz-ai-link { transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease, background-color 0.2s ease; }
-.bondz-ai-link:hover, .bondz-ai-link:focus-visible { transform: scale(1.06); }
-.bondz-ai-link:active { transform: scale(0.92); }
+.bondz-ai-link:hover, .bondz-ai-link:focus-visible { transform: scale(1.1); }
+.bondz-ai-link:active { transform: scale(0.9); }
 @media (prefers-reduced-motion: reduce) { .bondz-ai-link { transition: color 0.2s ease; } .bondz-ai-link:hover, .bondz-ai-link:active, .bondz-ai-link:focus-visible { transform: none; } }
 .bondz-hero-cta { background: linear-gradient(to bottom, var(--bondz-cta-top), var(--bondz-cta-mid), var(--bondz-cta-bottom)); box-shadow: var(--bondz-cta-shadow); }
 .bondz-hero-cta:hover { background: linear-gradient(to bottom, var(--bondz-cta-top), var(--bondz-cta-mid), var(--bondz-cta-bottom)); }

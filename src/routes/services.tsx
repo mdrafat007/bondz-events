@@ -201,7 +201,7 @@ function Services() {
       {/* Grid of 11 Services */}
       <div
         key={tab}
-        className="scroll-quiet grid min-h-0 flex-1 auto-rows-[minmax(9.5rem,auto)] grid-cols-1 gap-px overflow-y-auto bg-[var(--rule)] pt-px sm:grid-cols-2 lg:auto-rows-fr lg:grid-cols-4"
+        className="scroll-quiet grid min-h-0 flex-1 auto-rows-[minmax(12rem,auto)] grid-cols-1 gap-px overflow-y-auto bg-[var(--rule)] pt-px sm:auto-rows-[minmax(13rem,auto)] sm:grid-cols-2 lg:auto-rows-fr lg:grid-cols-4"
       >
         {list.map((s, i) => (
           <article

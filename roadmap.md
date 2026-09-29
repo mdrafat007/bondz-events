@@ -32,3 +32,8 @@
 - [x] Replace CSS-only mascot hover with motion-driven hover, idle, and push-jump states.
 - [x] Restore continuous opposing testimonial and partner tracks with matching duplicated halves.
 - [x] Verify motion, reduced-motion behavior, responsive layout, and booking launch in the browser.
+
+# Home page fit and mascot concealment
+- [x] Conceal the mascot fully at rest and keep the 3.8s idle peek with wobble and arrow push-jump.
+- [x] Fit the whole home page inside one desktop viewport with no page scrolling.
+- [x] Keep both proof tickers running smoothly and seamlessly, pausing only on hover.

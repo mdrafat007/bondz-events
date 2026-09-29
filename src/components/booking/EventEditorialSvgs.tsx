@@ -3,7 +3,7 @@ import type { EventTypeId } from "@/lib/bondz-data";
 
 type P = SVGProps<SVGSVGElement>;
 const base = { viewBox: "0 0 100 100", fill: "none", xmlns: "http://www.w3.org/2000/svg" } as const;
-const RED = "#f1453b";
+const RED = "var(--bondz-primary)";
 
 export function WeddingIcon(props: P) {
   return (

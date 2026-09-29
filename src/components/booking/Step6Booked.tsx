@@ -9,10 +9,10 @@ import {
 import { Portal, StepHead, type BookingCtx } from "./shared";
 
 const THEMES = [
-  { id: "coral", name: "Coral Night", bg: "oklch(0.24 0.05 290)", fg: "oklch(0.97 0.015 85)", hi: "oklch(0.68 0.2 32)" },
-  { id: "golden", name: "Golden Hour", bg: "oklch(0.84 0.12 75)", fg: "oklch(0.2 0.03 290)", hi: "oklch(0.52 0.19 30)" },
-  { id: "garden", name: "Garden", bg: "oklch(0.88 0.06 150)", fg: "oklch(0.22 0.04 160)", hi: "oklch(0.5 0.12 155)" },
-  { id: "tie", name: "Black Tie", bg: "oklch(0.1 0 0)", fg: "oklch(0.97 0.015 85)", hi: "oklch(0.64 0.21 28)" },
+  { id: "coral", name: "Coral Night", bg: "var(--invite-coral-bg)", fg: "var(--invite-coral-fg)", hi: "var(--invite-coral-hi)" },
+  { id: "golden", name: "Golden Hour", bg: "var(--invite-golden-bg)", fg: "var(--invite-golden-fg)", hi: "var(--invite-golden-hi)" },
+  { id: "garden", name: "Garden", bg: "var(--invite-garden-bg)", fg: "var(--invite-garden-fg)", hi: "var(--invite-garden-hi)" },
+  { id: "tie", name: "Black Tie", bg: "var(--invite-tie-bg)", fg: "var(--invite-tie-fg)", hi: "var(--invite-tie-hi)" },
 ] as const;
 
 export function Step6Booked({ ctx, code, onRestart }: { ctx: BookingCtx; code: string; onRestart: () => void }) {

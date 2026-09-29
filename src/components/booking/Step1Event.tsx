@@ -38,7 +38,7 @@ export function Step1Event({ ctx }: { ctx: BookingCtx }) {
               )} />
               <span className="relative flex h-full flex-col justify-between gap-6">
                 <span className="text-xs font-bold tabular-nums text-subtle">{e.no}</span>
-                <span className="max-w-[70%]">
+                <span className="w-2/3">
                   <span className={cn("block font-serif leading-tight text-ink", big ? "text-3xl sm:text-4xl" : "text-xl")}>{e.title}</span>
                   <span className="mt-1 block text-xs text-subtle">{e.line}</span>
                 </span>

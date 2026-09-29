@@ -143,8 +143,7 @@ export function Step5() {
           <Field label="Phone" value={details.phone} onChange={set("phone")} type="tel" autoComplete="tel" required />
           <Field label="Email" value={details.email} onChange={set("email")} type="email" autoComplete="email" required />
           <Field label="Guest of honor (optional)" value={details.honor} onChange={set("honor")} />
-          <Field label="Guest count" type="number" min={10} max={300} value={sel.guests} onChange={(e) => setGuests(Math.min(300, Math.max(10, +e.target.value || 10)))} />
-          {(day === null || slot === null) && <p className="text-xs text-primary sm:col-span-2">Please return to Dates and choose a time for your updated guest count.</p>}
+          {(day === null || slot === null) && <p className="text-xs text-primary sm:col-span-2">Please return to Dates and choose a time.</p>}
           <label className="block sm:row-span-1">
             <span className="eyebrow text-ink/60">Anything we should know?</span>
             <textarea value={details.notes} onChange={set("notes")} rows={1} className="mt-1 w-full resize-none rounded-xl border hairline bg-surface-light px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/25" />

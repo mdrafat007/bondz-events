@@ -206,11 +206,20 @@ function Services() {
         {list.map((s, i) => (
           <article
             key={s.t}
-            className="rise group relative flex flex-col justify-between bg-canvas p-5 sm:p-6 transition-all duration-300 hover:bg-surface-light hover:shadow-inner"
+            className="rise group relative flex flex-col justify-between overflow-hidden bg-canvas p-5 sm:p-6 transition-all duration-300 hover:bg-surface-light"
             style={{ animationDelay: `${i * 35}ms` }}
           >
+            {/* Creative editorial visual: oversized animated hairline illustration */}
+            <div
+              aria-hidden
+              className="bondz-service-art pointer-events-none absolute -bottom-6 -right-6 size-40 text-ink/10 transition-all duration-500 group-hover:text-primary/35 sm:size-48"
+              style={{ animationDelay: `${i * 240}ms` }}
+            >
+              <ServiceIcon id={s.no} className="size-full" />
+            </div>
+
             {/* Top row: Numeral + Bespoke Hairline SVG Icon + Category Badge */}
-            <div className="flex items-start justify-between gap-3">
+            <div className="relative z-10 flex items-start justify-between gap-3">
               <span className="display text-4xl sm:text-5xl font-black text-ink/20 transition-colors duration-300 group-hover:text-primary">
                 {s.no}
               </span>
@@ -225,7 +234,7 @@ function Services() {
             </div>
 
             {/* Bottom block: Service Title & Scaled Human Description */}
-            <div className="mt-6 flex flex-col justify-end">
+            <div className="relative z-10 mt-6 flex flex-col justify-end">
               <span className="text-[0.72rem] font-mono uppercase tracking-widest text-primary font-bold">
                 {SERVICE_TAGS[s.no] || "Included in coordination"}
               </span>
@@ -238,6 +247,7 @@ function Services() {
             </div>
           </article>
         ))}
+
 
         {/* Dynamic Build Yours Card */}
         {tab === "All" && (

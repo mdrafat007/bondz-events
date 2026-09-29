@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AppShell, SiteFooter } from "../index";
+import { AppShell } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
 import { SiteFooter } from "../components/layout/SiteFooter";
 import { HeroBookingCTA } from "../components/site/HeroBookingCTA";

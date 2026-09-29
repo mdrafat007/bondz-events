@@ -77,7 +77,7 @@ function PartnersPage() {
   const { launchBooking, curtain } = useBookingLaunch();
   const visible = PARTNERS.filter((partner) => category === "all" || partner.category === category);
 
-  return <AppShell header={<MarketingNav active="/partners" />} footer={<SiteFooter className="hidden sm:block" />}>
+  return <AppShell header={<MarketingNav active="/partners" />} footer={<SiteFooter />}>
     <div className="w-full">
       <div className="overflow-x-hidden border-b border-hairline bg-surface py-3" aria-label="Partner network">
         <div className="ticker-marquee-left">

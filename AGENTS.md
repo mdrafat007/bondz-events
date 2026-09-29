@@ -10,3 +10,4 @@
 - Keep theme observation and preference updates in the distributable library, because its toggle and attached consumers share that state.
 - Keep the bespoke Home booking animation in a preview-only semantic CTA and use the existing library Button, because the flagship motion is site-specific while accessible controls remain shared.
 - Keep all event, partner, venue, service, and availability data in `src/lib/bondz-data.ts`, because it is the single source of truth every preview route reads from.
+- Keep MCP tools in `src/lib/mcp/` as public, read-only wrappers over `src/lib/bondz-data.ts`, because the app has no accounts and all exposed data is already public.

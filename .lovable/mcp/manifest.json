@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "sdk_version": "3.0.4",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "bondz-events",
+      "version": "0.1.0",
+      "title": "BONDZ EVENTS"
+    },
+    "tools": [
+      {
+        "name": "get_catalog",
+        "title": "Get event catalog",
+        "description": "List Bondz Events celebration types, vibes, service categories, partners and venues with prices.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "check_availability",
+        "title": "Check availability & estimate",
+        "description": "Find dates in the next 75 days when Mr. Bondz, the venue and every chosen partner are all free, plus a price estimate.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string",
+              "enum": [
+                "wedding",
+                "anniversary",
+                "birthday",
+                "bbq",
+                "family",
+                "corporate",
+                "hybrid",
+                "custom"
+              ],
+              "description": "Celebration type."
+            },
+            "guests": {
+              "type": "integer",
+              "minimum": 10,
+              "maximum": 300,
+              "description": "Guest count."
+            },
+            "venue": {
+              "description": "Venue id from get_catalog; omit to host at your own place.",
+              "type": "string"
+            },
+            "services": {
+              "default": [],
+              "description": "Service category ids.",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "catering",
+                  "decor",
+                  "dj",
+                  "equipment",
+                  "staff",
+                  "cleaning",
+                  "photo",
+                  "lighting",
+                  "hybrid"
+                ]
+              }
+            }
+          },
+          "required": [
+            "event",
+            "guests"
+          ],
+          "additionalProperties": false
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

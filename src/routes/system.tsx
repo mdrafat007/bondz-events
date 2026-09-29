@@ -28,7 +28,7 @@ const palette = [
 const swatchClasses = ["bg-canvas", "bg-surface", "bg-surface-light", "bg-ink", "bg-primary", "bg-hairline", "bg-subtle"];
 
 function Index() {
-  return <AppShell header={<SiteNav items={[{ label: "System", href: "/", active: true }, { label: "Who is Mr. Bondz" }, { label: "Events Gallery" }, { label: "Event Services" }, { label: "Partners" }, { label: "Contact" }]} />} footer={<SiteFooter />}>
+  return <AppShell header={<SiteNav items={[{ label: "Home", href: "/" }, { label: "System", href: "/system", active: true }]} />} footer={<SiteFooter />}>
     <div>
       <div className="mx-auto max-w-7xl px-4 pb-16 pt-7 sm:px-6 md:px-8 md:pt-12">
         <div className="flex flex-wrap items-center gap-2 text-[0.7rem] font-bold uppercase text-primary"><span className="h-1.5 w-1.5 rounded-full bg-primary" /> Bondz Events <span className="text-subtle">/</span> Foundation <span className="text-subtle">/</span> 01</div>

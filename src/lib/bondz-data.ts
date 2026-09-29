@@ -136,62 +136,148 @@ export const priceLabel = (entry: { flat?: number; perGuest?: number }): string 
 
 export const categoryLabel = (id: CategoryId): string => CATEGORIES.find((category) => category.id === id)?.label ?? id;
 
-/* ── /book engine: 3-step booking data ─────────────────────────── */
-export const BOOK_EVENTS = [
-  { id: "wedding", name: "Weddings", badge: "Most booked", base: 9800, note: "Ceremony to last dance" },
-  { id: "birthday", name: "Milestone Birthdays", badge: "30 · 40 · 50+", base: 5400, note: "Decades, done properly" },
-  { id: "anniversary", name: "Anniversaries", badge: "Heirloom", base: 4800, note: "Vows, revisited" },
-  { id: "dinner", name: "Private Dinners", badge: "Chef's table", base: 3600, note: "Long tables, low light" },
-  { id: "corporate", name: "Corporate Offsites", badge: "Invoice-ready", base: 7200, note: "Strategy by day, story by night" },
-  { id: "bbq", name: "Weekend BBQs", badge: "Relaxed", base: 2800, note: "Smoke, sun, playlists" },
-] as const;
-export type BookEventId = (typeof BOOK_EVENTS)[number]["id"];
+/* ── /book engine: 6-step booking data ─────────────────────────── */
 
-export const GUEST_MIN = 10;
-export const GUEST_MAX = 350;
-export function guestTier(g: number) {
-  if (g < 40) return { name: "Intimate", range: "10–40", perGuest: 145 };
-  if (g < 100) return { name: "Dinner", range: "40–100", perGuest: 120 };
-  if (g < 200) return { name: "Grand", range: "100–200", perGuest: 98 };
-  return { name: "Gala", range: "200+", perGuest: 86 };
+export interface Sel {
+  event: EventTypeId | null;
+  guests: number;
+  where: "home" | "venue" | null;
+  venue: string | null;
+  services: CategoryId[];
 }
 
-export const VENUE_PREFS = [
-  { id: "venue", title: "At a Venue", note: "We match you to premier verified venues + partners that fit your exact guest count.", surcharge: 1500 },
-  { id: "estate", title: "At My Place", note: "Your home, garden, private estate or office. Mr. Bondz + Partners scouts your grounds", surcharge: 0 },
-] as const;
-export type VenuePrefId = (typeof VENUE_PREFS)[number]["id"];
+export interface Details {
+  name: string;
+  phone: string;
+  email: string;
+  honor: string;
+  notes: string;
+}
 
-export const VIBES = ["Black Tie", "Bohemian Garden", "Underground Speakeasy", "Coastal Chic", "High Energy Rave"] as const;
+export interface LogLine {
+  id: number;
+  text: string;
+  before: number;
+  after: number;
+  at: string;
+}
 
-export const ADDONS = [
-  { id: "music", name: "Live Jazz Quartet / DJ Vinyl Set", price: 1800, crew: "Music crew" },
-  { id: "wine", name: "Sommelier Curated Wine & Champagne Pairing", price: 2400, crew: "Sommelier" },
-  { id: "photo", name: "360° Documentary Photo & Drone Coverage", price: 3200, crew: "Photo & drone team" },
-  { id: "ice", name: "Custom Ice Sculptures & Pyrotechnics", price: 1500, crew: "Sculpture & FX crew" },
-  { id: "truck", name: "Late-night Gourmet Food Truck", price: 1200, crew: "Chef & truck" },
-] as const;
-export type AddonId = (typeof ADDONS)[number]["id"];
+export const GUEST_MIN = 10;
+export const GUEST_MAX = 300;
 
-export type DayStatus = "open" | "limited" | "booked";
-/** The Rule: Mr. Bondz, venue and crew must all be free. Deterministic per event + venue choice. */
-export function bookDayStatus(day: number, eventIndex: number, pref: VenuePrefId): DayStatus {
-  if (day === 0 || bondzBusy(day)) return "booked";
-  const venueBusy = pref === "venue" && isBusy(31 + eventIndex, 0.18, day);
-  const crewBusy = isBusy(53 + eventIndex, 0.12, day);
-  if (venueBusy || crewBusy) return "booked";
-  return slotOpen(day, 0) && slotOpen(day, 2) ? "open" : "limited";
+/** Narrative banner shown once an event type is chosen. */
+export const EVENT_NARRATIVES: Record<EventTypeId, { kicker: string; highlight: string; body: string }> = {
+  wedding: { kicker: "Flawless production.", highlight: "Zero wedding day stress.", body: "From morning load-in and acoustic ceremony cues to the final sparkler send-off, Mr. Bondz personally captains every timeline, vendor sync, and table seating with calm mastery." },
+  anniversary: { kicker: "Milestone celebrations.", highlight: "Crafted with intimacy.", body: "Curated chef tasting menus, atmospheric ambient lighting, and bespoke musical narratives honoring your journey together — whether an intimate dining room or an outdoor terrace." },
+  birthday: { kicker: "Unapologetic celebration.", highlight: "Zero planning fatigue.", body: "Boutique cocktail bars, high-vibe soundscapes, and immersive decor so you and your guests can simply walk in, celebrate, and dance until 2 AM without chasing a single vendor." },
+  bbq: { kicker: "Smoky feast, sun & style.", highlight: "Handled end-to-end.", body: "Live pitmaster grilling, artisanal craft drink stations, lawn setups, and weather-proof canopies — delivering elevated open-air hospitality with zero host cleanup." },
+  family: { kicker: "Multi-generational warmth.", highlight: "One unified table.", body: "Comfort-forward family dining, generational music curation, and seamless seating setups so you spend the entire day catching up, not running around." },
+  corporate: { kicker: "Precision brand hospitality.", highlight: "Executive polish.", body: "Keynote-ready staging, seamless audiovisuals, VIP hospitality lounges, and culinary excellence designed to leave partners, investors, and clients thoroughly impressed." },
+  hybrid: { kicker: "It's not just live.", highlight: "It's live + digital.", body: "Hybrid events blend in-person energy with virtual participation through broadcasting and digital tools — so people can join from anywhere. Creative stage design, AV integration and a smart streaming platform, all coordinated by Mr. Bondz." },
+  custom: { kicker: "Bespoke architecture.", highlight: "You dream it, we execute it.", body: "Have a unique concept, themed gala, or unusual venue? Mr. Bondz engineers custom floorplans, bespoke lighting, and custom vendor orchestration from scratch." },
+};
+
+/** Celebration vibes, curated per event category. */
+export const VIBES_BY_EVENT: Record<EventTypeId, string[]> = {
+  wedding: ["Black Tie Glamour", "Romantic Garden", "Modern Minimalist", "Fairy Tale Luxe", "Coastal Chic", "Intimate Candlelight"],
+  anniversary: ["Heirloom Romance", "Candlelight & Vinyl", "Speakeasy Soirée", "Sunset Terrace", "Vintage Grandeur"],
+  birthday: ["High Energy Rave", "Underground Speakeasy", "Neon Disco", "Rooftop Sunset", "Bohemian Lounge", "Festival Field"],
+  bbq: ["Smoky Pitmaster", "Backyard Fiesta", "Sun-Drenched Lawn", "Craft Beer & Beats", "Campfire Acoustic"],
+  family: ["Generational Warmth", "Cozy Heritage", "Sunday Picnic", "Fireside Stories", "Festive Feast"],
+  corporate: ["Executive Polish", "Tech Summit Luxe", "Innovation Showcase", "Cocktail Networking", "Black Tie Gala"],
+  hybrid: ["Broadcast Studio", "Global Stage", "Immersive Neon", "Silicon Sleek", "Split-Screen Social"],
+  custom: ["Avant-Garde Fantasy", "Celestial Night", "Art Gallery Noir", "Bespoke Masquerade", "Futuristic Chic"],
+};
+
+export const SLOT_TIMES: Record<Slot, string> = {
+  Morning: "10:00 AM – 2:00 PM",
+  Evening: "5:00 PM – 10:00 PM",
+  Night: "9:00 PM – 2:00 AM",
+};
+
+function fitsEvent(list: EventTypeId[] | "all", e: EventTypeId | null): boolean {
+  return list === "all" || (e ? list.includes(e) : true);
+}
+
+export function eligiblePartners(cat: CategoryId, guests: number, event: EventTypeId | null, venue?: Venue | null): Partner[] {
+  return PARTNERS.filter(
+    (p) => p.category === cat && guests >= p.min && guests <= p.max && fitsEvent(p.events, event) && !(venue && venue.excludes.includes(p.id)),
+  );
+}
+
+export const priceOf = (p: Partner, guests: number): number => p.flat ?? (p.perGuest ?? 0) * guests;
+
+export function cheapest(cat: CategoryId, guests: number, event: EventTypeId | null, venue?: Venue | null): Partner | null {
+  const ps = eligiblePartners(cat, guests, event, venue);
+  if (!ps.length) return null;
+  return ps.reduce((a, b) => (priceOf(a, guests) <= priceOf(b, guests) ? a : b));
+}
+
+export function assignPartner(cat: CategoryId, sel: Sel, day: number): Partner | undefined {
+  const venue = VENUES.find((v) => v.id === sel.venue) ?? null;
+  return eligiblePartners(cat, sel.guests, sel.event, venue)
+    .filter((p) => !isBusy(p.seed, p.busyRate, day))
+    .sort((a, b) => priceOf(a, sel.guests) - priceOf(b, sel.guests))[0];
+}
+
+/** The Smart Intersection engine: days where Mr. Bondz, the venue and every chosen partner are free. */
+export function availableDays(sel: Sel, services: CategoryId[] = sel.services, venueId: string | null = sel.venue): number[] {
+  const venue = VENUES.find((v) => v.id === venueId) ?? null;
+  const out: number[] = [];
+  for (let d = 1; d <= HORIZON; d += 1) {
+    if (bondzBusy(d)) continue;
+    if (venue && isBusy(venue.seed, venue.busyRate, d)) continue;
+    if (!SLOTS.some((_, s) => slotOpen(d, s))) continue;
+    let ok = true;
+    for (const c of services) {
+      const ps = eligiblePartners(c, sel.guests, sel.event, venue);
+      if (!ps.some((p) => !isBusy(p.seed, p.busyRate, d))) { ok = false; break; }
+    }
+    if (ok) out.push(d);
+  }
+  return out;
+}
+
+/** Free days in the horizon for one party — used for the intersection chips. */
+export function freeDayCount(seed: number, rate: number): number {
+  let n = 0;
+  for (let d = 1; d <= HORIZON; d += 1) if (!isBusy(seed, rate, d)) n += 1;
+  return n;
+}
+
+export function venueReason(v: Venue, guests: number, event: EventTypeId | null, budget: number): string | null {
+  if (!fitsEvent(v.events, event)) return "Doesn't host this event type";
+  if (guests > v.max) return `Holds ${v.max} max — you have ${guests}`;
+  if (guests < v.min) return `Minimum ${v.min} guests`;
+  if (v.minSpend && budget < v.minSpend) return `Minimum spend $${v.minSpend.toLocaleString()}`;
+  return null;
 }
 
 export const DEPOSIT_RATE = 0.25;
 export const RESCHEDULE_FEE_RATE = 0.05;
-export function bookingTotals(eventId: BookEventId, guests: number, pref: VenuePrefId, addons: AddonId[]) {
-  const ev = BOOK_EVENTS.find((e) => e.id === eventId)!;
-  const tier = guestTier(guests);
-  const guestCost = guests * tier.perGuest;
-  const venue = VENUE_PREFS.find((v) => v.id === pref)!.surcharge;
-  const addonCost = ADDONS.filter((a) => addons.includes(a.id)).reduce((s, a) => s + a.price, 0);
-  const total = ev.base + guestCost + venue + addonCost;
-  return { base: ev.base, guestCost, perGuest: tier.perGuest, venue, addonCost, total, deposit: Math.round(total * DEPOSIT_RATE) };
+
+export interface EstimateLine { label: string; amount: number; note?: string }
+export function estimate(sel: Sel): { lines: EstimateLine[]; total: number; deposit: number; balance: number } {
+  const venue = VENUES.find((v) => v.id === sel.venue) ?? null;
+  const lines: EstimateLine[] = [
+    { label: "Mr. Bondz — planning & on-site", amount: sel.where === "venue" ? BONDZ_FEE.venue : BONDZ_FEE.home, note: "flat" },
+  ];
+  if (venue) lines.push({ label: venue.name, amount: venue.price, note: "venue hire" });
+  for (const c of sel.services) {
+    const p = cheapest(c, sel.guests, sel.event, venue);
+    if (!p) continue;
+    lines.push({ label: categoryLabel(c), amount: priceOf(p, sel.guests), note: p.flat ? "flat" : `$${p.perGuest}/guest` });
+  }
+  const total = lines.reduce((a, l) => a + l.amount, 0);
+  const deposit = Math.round(total * DEPOSIT_RATE);
+  return { lines, total, deposit, balance: total - deposit };
 }
+
+export function dayToDate(anchor: Date, d: number): Date {
+  const x = new Date(anchor);
+  x.setDate(x.getDate() + d);
+  return x;
+}
+
 export const usd = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
+export const money = usd;

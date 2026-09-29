@@ -8,6 +8,26 @@ body { margin: 0; }
 button, input { font: inherit; }
 ::selection { background: var(--bondz-primary); color: var(--bondz-surface-light); }
 
+.bondz-orbit-a { animation: spin 1.2s linear infinite; }
+.bondz-orbit-b { animation: spin 2s linear infinite reverse; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Project-layer tokens: invitation-card palettes (no design-system equivalent). */
+:root {
+  --invite-coral-bg: oklch(0.24 0.05 290);
+  --invite-coral-fg: var(--bondz-paper);
+  --invite-coral-hi: oklch(0.68 0.2 32);
+  --invite-golden-bg: oklch(0.84 0.12 75);
+  --invite-golden-fg: oklch(0.2 0.03 290);
+  --invite-golden-hi: oklch(0.52 0.19 30);
+  --invite-garden-bg: oklch(0.88 0.06 150);
+  --invite-garden-fg: oklch(0.22 0.04 160);
+  --invite-garden-hi: oklch(0.5 0.12 155);
+  --invite-tie-bg: oklch(0.1 0 0);
+  --invite-tie-fg: var(--bondz-paper);
+  --invite-tie-hi: oklch(0.64 0.21 28);
+}
+
 .bondz-hero-title { font-size: clamp(2.35rem, 7vw, 5.6rem); line-height: 0.92; letter-spacing: -0.04em; }
 @media (min-width: 1024px) { .bondz-hero-title { font-size: clamp(2.75rem, 4.8vw, 5.8rem); line-height: 0.92; } }
 @media (min-width: 1440px) { .bondz-hero-title { font-size: clamp(3.2rem, 5.4vw, 6.4rem); line-height: 0.90; } }

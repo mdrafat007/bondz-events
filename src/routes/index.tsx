@@ -29,7 +29,7 @@ const swatchClasses = ["bg-canvas", "bg-surface", "bg-surface-light", "bg-ink", 
 
 function Index() {
   return <AppShell header={<SiteNav items={[{ label: "System", href: "/", active: true }, { label: "Who is Mr. Bondz" }, { label: "Events Gallery" }, { label: "Event Services" }, { label: "Partners" }, { label: "Contact" }]} />} footer={<SiteFooter />}>
-    <div data-testid="work-canvas" className="scroll-quiet h-full min-h-0 overflow-x-hidden overflow-y-auto">
+    <div>
       <div className="mx-auto max-w-7xl px-4 pb-16 pt-7 sm:px-6 md:px-8 md:pt-12">
         <div className="flex flex-wrap items-center gap-2 text-[0.7rem] font-bold uppercase text-primary"><span className="h-1.5 w-1.5 rounded-full bg-primary" /> Bondz Events <span className="text-subtle">/</span> Foundation <span className="text-subtle">/</span> 01</div>
         <div className="mt-8 grid items-end gap-8 border-b border-hairline pb-12 lg:grid-cols-[1.3fr_1fr] lg:gap-16">

@@ -4,7 +4,7 @@ export interface AppShellProps extends HTMLAttributes<HTMLDivElement> { header?:
 export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppShell({ header, footer, children, className, ...props }, ref) {
   return <div ref={ref} className={cn("flex h-dvh flex-col overflow-hidden bg-canvas font-sans text-ink transition-colors duration-300", className)} {...props}>
     {header && <div className="shrink-0">{header}</div>}
-    <main className="relative min-h-0 flex-1 overflow-hidden">{children}</main>
+    <main data-testid="work-canvas" className="scroll-quiet relative min-h-0 flex-1 overflow-x-hidden overflow-y-auto">{children}</main>
     {footer && <div className="shrink-0">{footer}</div>}
   </div>;
 });

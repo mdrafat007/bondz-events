@@ -167,3 +167,8 @@ button, input { font: inherit; }
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Partners: oversized editorial marquee names. */
+.partner-name {
+  font-size: clamp(2.4rem, 6vw, 5.5rem);
+}

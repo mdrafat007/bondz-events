@@ -42,6 +42,7 @@ function InvitePage() {
   const timeWindow = invite?.slot ? `${invite.slot} · ${SLOT_TIMES[invite.slot]}` : "Time to be confirmed";
   const locationName = invite?.place ?? "Location to be confirmed";
   const locationArea = "Preview only";
+  const attire = invite?.tagline ?? "Details will appear after the booking preview";
 
   const storageKey = `bondz_rsvp_${ref}`;
   const [attending, setAttending] = useState<boolean | null>(true);

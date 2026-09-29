@@ -43,20 +43,20 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
     };
   }, []);
 
-  const restY = isMobile ? 48 : 68;
+  const restY = isMobile ? 110 : 135;
   const peekY = -15;
   const mascotVariants: Variants = {
-    resting: { y: restY, rotate: 0, transition: { y: { duration: 0.28, ease: [0.25, 1, 0.5, 1] } } },
+    resting: { y: restY, rotate: 0, transition: { y: { type: "spring", stiffness: 360, damping: 22 } } },
     hover: {
       y: peekY, rotate: [0, 10, 10, 0],
       transition: {
-        y: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+        y: { type: "spring", stiffness: 360, damping: 22 },
         rotate: { times: [0, 0.45, 0.75, 1], duration: 0.48, ease: "easeInOut" },
       },
     },
     peekLoop: {
       y: [restY, peekY, peekY, restY], rotate: [0, 10, 10, 0],
-      transition: { times: [0, 0.25, 0.75, 1], duration: 1.35, ease: [0.16, 1, 0.3, 1] },
+      transition: { times: [0, 0.22, 0.72, 1], duration: 1.6, ease: [0.16, 1, 0.3, 1] },
     },
   };
 

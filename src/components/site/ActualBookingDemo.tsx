@@ -112,25 +112,33 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
     };
   }, [isPaused]);
 
-  // Micro-actions simulation on subTick (scroll down slightly, toggle a vibe or partner, alternate dates)
+  // Micro-actions simulation on subTick (scroll down to show full content, toggle a vibe or partner, alternate dates)
   useEffect(() => {
     if (isPaused) return;
 
     if (step === 1) {
-      // Simulate choosing between wedding and birthday, adding vibes
+      // Simulate scrolling down to reveal 'Why people book' and 'Celebration vibe' chips
+      if (scrollContainerRef.current) {
+        const scrollTargets = [0, 90, 180, 240];
+        scrollContainerRef.current.scrollTo({ top: scrollTargets[subTick % scrollTargets.length], behavior: "smooth" });
+      }
       if (subTick % 2 === 0) {
-        setVibes(["Black Tie Glamour", "Intimate Candlelight"]);
+        setVibes(["Black Tie Glamour", "Romantic Garden", "Intimate Candlelight"]);
       } else {
-        setVibes(["Romantic Garden"]);
+        setVibes(["Modern Minimalist", "Fairy Tale Luxe"]);
       }
     } else if (step === 2) {
-      // Simulate guest count adjustment
+      // Simulate guest count adjustment and scroll down
       const guestCounts = [45, 60, 90, 120];
       patch({ guests: guestCounts[subTick % guestCounts.length] });
-    } else if (step === 3) {
-      // Simulate scroll in Step 3 services and toggling partners
       if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollTo({ top: (subTick % 3) * 70, behavior: "smooth" });
+        scrollContainerRef.current.scrollTo({ top: (subTick % 2) * 80, behavior: "smooth" });
+      }
+    } else if (step === 3) {
+      // Simulate deep scroll in Step 3 services to reveal partner cards and availability log
+      if (scrollContainerRef.current) {
+        const serviceScrolls = [0, 120, 240, 360];
+        scrollContainerRef.current.scrollTo({ top: serviceScrolls[subTick % serviceScrolls.length], behavior: "smooth" });
       }
       if (subTick % 2 === 0) {
         patch({ services: ["catering", "dj", "photo"] });
@@ -138,15 +146,17 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
         patch({ services: ["catering", "dj"] });
       }
     } else if (step === 4) {
-      // Simulate browsing dates
+      // Simulate browsing dates and scrolling down to time shifts
       const sampleDays = [14, 18, 22, 27];
       setDay(sampleDays[subTick % sampleDays.length]);
       if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollTo({ top: (subTick % 2) * 50, behavior: "smooth" });
+        const dateScrolls = [0, 80, 160];
+        scrollContainerRef.current.scrollTo({ top: dateScrolls[subTick % dateScrolls.length], behavior: "smooth" });
       }
     } else if (step === 5 || step === 6) {
       if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollTo({ top: (subTick % 3) * 60, behavior: "smooth" });
+        const finalScrolls = [0, 100, 200, 300];
+        scrollContainerRef.current.scrollTo({ top: finalScrolls[subTick % finalScrolls.length], behavior: "smooth" });
       }
     }
   }, [subTick, step, isPaused]);

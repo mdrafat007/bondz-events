@@ -77,32 +77,36 @@ function PartnerMarquee() {
 function LandingPage() {
   const { launchBooking, launching, curtain } = useBookingLaunch();
 
-  return <AppShell header={<MarketingNav />} footer={<SiteFooter className="hidden sm:block" />}>
-    <div className="w-full max-w-full px-4 sm:px-6 md:px-8">
-      <section aria-labelledby="hero-title" className="grid min-w-0 grid-cols-1 items-stretch gap-6 pb-8 pt-9 sm:pt-12 lg:grid-cols-2 lg:gap-8 lg:py-10 2xl:py-14">
-        <div className="min-w-0">
-          <div className="mb-6 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 font-sans text-[0.62rem] font-extrabold uppercase leading-snug tracking-tight text-ink sm:mb-8 sm:text-xs"><span className="hidden sm:inline">Solo Event Organizer · 16 Years · 700+ Celebrations</span><span className="sm:hidden">Solo Organizer · 16 Yrs · 700+ Events</span></div>
-          <h1 id="hero-title" className="bondz-hero-title font-sans font-black text-ink [font-variation-settings:'wdth'_85]"><span className="block">Get <span className="font-serif font-normal italic text-primary">“yourself booked”</span></span><span className="block">and Leave the <span className="font-serif font-normal italic text-primary">“rest on us”!</span></span></h1>
-          <div className="mt-36 flex flex-col items-start sm:mt-48">
-            <HeroBookingCTA onClick={launchBooking} disabled={launching} />
-            <p className="mt-4 max-w-full font-sans text-sm font-black uppercase tracking-tight text-ink [font-variation-settings:'wdth'_85] sm:text-base">Tell us what you're celebrating!</p>
+  return <AppShell header={<MarketingNav />} footer={<SiteFooter className="hidden sm:block" />} canvasClassName="lg:overflow-hidden">
+    <div className="flex min-h-full w-full max-w-full flex-col lg:h-full">
+      <div className="w-full max-w-full px-4 sm:px-6 md:px-8 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
+        <section aria-labelledby="hero-title" className="grid min-w-0 grid-cols-1 items-stretch gap-6 pb-8 pt-9 sm:pt-12 lg:min-h-0 lg:flex-1 lg:grid-cols-2 lg:gap-8 lg:py-6 2xl:py-8">
+          <div className="flex min-w-0 flex-col justify-between lg:h-full">
+            <div className="min-w-0">
+              <div className="mb-5 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 font-sans text-[0.62rem] font-extrabold uppercase leading-snug tracking-tight text-ink sm:mb-6 sm:text-xs"><span className="hidden sm:inline">Solo Event Organizer · 16 Years · 700+ Celebrations</span><span className="sm:hidden">Solo Organizer · 16 Yrs · 700+ Events</span></div>
+              <h1 id="hero-title" className="bondz-hero-title font-sans font-black tracking-tight text-ink [font-variation-settings:'wdth'_85]"><span className="block">Get <span className="font-serif font-normal italic tracking-normal text-primary">“yourself booked”</span></span><span className="block">and Leave the <span className="font-serif font-normal italic tracking-normal text-primary">“rest on us”!</span></span></h1>
+            </div>
+            <div className="mt-8 flex flex-col items-start sm:mt-10">
+              <HeroBookingCTA onClick={launchBooking} disabled={launching} />
+              <p className="mt-4 max-w-full font-sans text-sm font-black uppercase tracking-tight text-ink [font-variation-settings:'wdth'_85] sm:text-base">Tell us what you're celebrating!</p>
+            </div>
           </div>
-        </div>
-        <div className="min-w-0">
-          <div className="relative ml-auto aspect-video max-h-[38vh] w-full overflow-hidden rounded-2xl border border-hairline bg-night shadow-raised" aria-label="Dinner celebration at Bondz Events">
-            <img src={dinner} alt="Guests raising a toast around a candlelit celebration dinner" width={1536} height={1024} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-night via-night/25 to-transparent" aria-hidden="true" />
-            <div className="absolute inset-x-0 bottom-0 p-4 pb-6 text-white sm:p-6 sm:pb-8"><span className="font-sans text-[0.6rem] font-extrabold uppercase tracking-wider text-primary sm:text-xs">Live sync network</span><p className="mt-1 max-w-[25ch] font-sans text-[clamp(1rem,2.2vw,1.7rem)] font-black uppercase leading-tight tracking-tight">How to get booked without a single call</p></div>
-            <div className="absolute inset-x-0 bottom-0 h-0.5 w-full bg-primary" aria-hidden="true" />
+          <div className="min-w-0 lg:flex lg:min-h-0 lg:items-center">
+            <div className="relative ml-auto aspect-video max-h-[38vh] w-full overflow-hidden rounded-2xl border border-hairline bg-night shadow-raised lg:max-h-full" aria-label="Dinner celebration at Bondz Events">
+              <img src={dinner} alt="Guests raising a toast around a candlelit celebration dinner" width={1536} height={1024} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-night via-night/25 to-transparent" aria-hidden="true" />
+              <div className="absolute inset-x-0 bottom-0 p-4 pb-6 text-white sm:p-6 sm:pb-8"><span className="font-sans text-[0.6rem] font-extrabold uppercase tracking-wider text-primary sm:text-xs">Live sync network</span><p className="mt-1 max-w-[25ch] font-sans text-[clamp(1rem,2.2vw,1.7rem)] font-black uppercase leading-tight tracking-tight">How to get booked without a single call</p></div>
+              <div className="absolute inset-x-0 bottom-0 h-0.5 w-full bg-primary" aria-hidden="true" />
+            </div>
           </div>
-        </div>
-      </section>
-      <section aria-label="Why book with Bondz Events" className="grid grid-cols-1 gap-5 border-t border-hairline px-1 py-6 sm:grid-cols-2 md:px-4 lg:grid-cols-4 lg:gap-6 lg:px-0">
-        {pillars.map((pillar) => <div key={pillar.number} className="flex min-w-0 items-start gap-3"><span className="shrink-0 font-serif text-2xl italic text-primary sm:text-3xl">{pillar.number}</span><h2 className="min-w-0 pt-1 font-sans text-sm font-black uppercase leading-tight tracking-tight text-ink sm:text-base">{pillar.title}</h2></div>)}
-      </section>
+        </section>
+        <section aria-label="Why book with Bondz Events" className="grid shrink-0 grid-cols-1 gap-5 border-t border-hairline px-1 py-6 sm:grid-cols-2 md:px-4 lg:grid-cols-4 lg:gap-6 lg:px-0 lg:py-4">
+          {pillars.map((pillar) => <div key={pillar.number} className="flex min-w-0 items-start gap-3"><span className="shrink-0 font-serif text-2xl italic text-primary sm:text-3xl">{pillar.number}</span><h2 className="min-w-0 pt-1 font-sans text-sm font-black uppercase leading-tight tracking-tight text-ink sm:text-base">{pillar.title}</h2></div>)}
+        </section>
+      </div>
+      <section aria-label="Client reviews and event partners" className="mt-6 shrink-0 border-t border-hairline bg-surface sm:mt-9 lg:mt-0"><ReviewMarquee /><PartnerMarquee /></section>
+      <div className="mx-auto max-w-7xl px-4 py-8 text-center font-serif text-2xl italic text-ink sm:py-12 sm:text-4xl lg:hidden">Good times, beautifully made<span className="text-primary">.</span></div>
     </div>
-    <section aria-label="Client reviews and event partners" className="mt-6 border-t border-hairline bg-surface sm:mt-9"><ReviewMarquee /><PartnerMarquee /></section>
-    <div className="mx-auto max-w-7xl px-4 py-8 text-center font-serif text-2xl italic text-ink sm:py-12 sm:text-4xl">Good times, beautifully made<span className="text-primary">.</span></div>
     {curtain}
   </AppShell>;
 }

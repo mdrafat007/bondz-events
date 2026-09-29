@@ -43,20 +43,20 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
     };
   }, []);
 
-  const restY = isMobile ? 48 : 68;
+  const restY = isMobile ? 110 : 135;
   const peekY = -15;
   const mascotVariants: Variants = {
-    resting: { y: restY, rotate: 0, transition: { y: { duration: 0.28, ease: [0.25, 1, 0.5, 1] } } },
+    resting: { y: restY, rotate: 0, transition: { y: { type: "spring", stiffness: 360, damping: 22 } } },
     hover: {
       y: peekY, rotate: [0, 10, 10, 0],
       transition: {
-        y: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+        y: { type: "spring", stiffness: 360, damping: 22 },
         rotate: { times: [0, 0.45, 0.75, 1], duration: 0.48, ease: "easeInOut" },
       },
     },
     peekLoop: {
       y: [restY, peekY, peekY, restY], rotate: [0, 10, 10, 0],
-      transition: { times: [0, 0.25, 0.75, 1], duration: 1.35, ease: [0.16, 1, 0.3, 1] },
+      transition: { times: [0, 0.22, 0.72, 1], duration: 1.6, ease: [0.16, 1, 0.3, 1] },
     },
   };
 
@@ -97,7 +97,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
         if (loopTimerRef.current !== null) window.clearTimeout(loopTimerRef.current);
         loopTimerRef.current = window.setTimeout(() => {
           if (mountedRef.current) setIsLooping(false);
-        }, 1400);
+        }, 1700);
       }
     }, 3800);
     return () => {
@@ -143,7 +143,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
         animate={reducedMotion ? { scale: 1 } : isHovered ? { scale: 1.02 } : isLooping ? { scale: 1.015 } : { scale: 1 }}
         whileTap={reducedMotion ? undefined : { scale: 0.97 }}
       >
-        <motion.span animate={textControls} className="whitespace-nowrap font-sans text-[0.62rem] font-black uppercase text-white sm:text-sm md:text-base">
+        <motion.span animate={textControls} className="whitespace-nowrap font-sans text-[0.62rem] font-black uppercase tracking-wider text-white sm:text-sm sm:tracking-widest md:text-base">
           GET STARTED YOUR BOOKING
         </motion.span>
         <motion.span animate={arrowControls} aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-full bg-white text-base font-black text-primary shadow-md sm:size-9 sm:text-lg md:size-10">

@@ -57,7 +57,7 @@ export function ConnectAIAssistant() {
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-night/60 p-0 backdrop-blur-xs sm:items-center sm:p-4" onClick={() => setOpen(false)}>
-          <div role="dialog" aria-modal="true" aria-labelledby="ai-connect-title" className="w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+          <div role="dialog" aria-modal="true" aria-labelledby="ai-connect-title" className="flex max-h-dvh w-full max-w-lg flex-col overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <Card variant="elevated">
               <div className="flex items-start justify-between gap-3 sm:gap-4">
                 <div className="min-w-0">

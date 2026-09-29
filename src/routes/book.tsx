@@ -165,7 +165,7 @@ function BookingEngine() {
                   <p className="mt-4 border-t border-hairline pt-4 text-sm text-subtle">Estimated <strong className="text-ink">{usd(tier.perGuest)}/guest</strong> · guest budget <strong className="text-ink">{usd(totals.guestCost)}</strong></p>
                 </Card>
                 <Card variant="elevated">
-                  <p className="text-xs font-bold uppercase text-subtle">Venue preference</p>
+                  <p className="text-xs font-bold uppercase text-subtle">Where’s the party?</p>
                   <div role="radiogroup" aria-label="Venue preference" className="mt-3 grid gap-2">
                     {VENUE_PREFS.map((v) => {
                       const on = v.id === pref;

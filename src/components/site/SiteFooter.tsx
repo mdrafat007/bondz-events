@@ -63,13 +63,13 @@ export function PolicyDialog({ children }: { children: React.ReactNode }) {
 export function SiteFooter() {
   return (
     <footer className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 border-t border-hairline/60 bg-canvas px-4 py-1.5 text-ink/55 transition-colors duration-300 md:px-8">
-      <span className="truncate text-[0.6rem] font-semibold uppercase tracking-[0.12em] sm:text-[0.66rem] sm:tracking-[0.16em]">
+      <span className="eyebrow truncate">
         © 2026 Bondz Events<span className="hidden sm:inline"> · by Mr. Bondz</span>
       </span>
       <PolicyDialog>
         <button
           type="button"
-          className="shrink-0 text-[0.6rem] font-semibold uppercase tracking-[0.12em] underline-offset-4 hover:text-ink hover:underline sm:text-[0.66rem] sm:tracking-[0.16em]"
+          className="eyebrow shrink-0 underline-offset-4 hover:text-ink hover:underline"
         >
           Cancellation<span className="hidden sm:inline"> &amp; Rescheduling</span>
         </button>

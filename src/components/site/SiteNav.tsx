@@ -142,7 +142,7 @@ export function SiteNav() {
               <span className={cn("block h-[2px] w-4.5 rounded-full bg-current transition-opacity duration-200", open && "opacity-0")} />
               <span className={cn("block h-[2px] w-4.5 rounded-full bg-current transition-transform duration-300", open && "-translate-y-[5px] -rotate-45")} />
             </span>
-            <span className="font-sans text-[0.68rem] font-black uppercase tracking-[0.18em] sm:text-xs">
+            <span className="eyebrow font-black">
               {open ? "Close" : "Menu"}
             </span>
           </button>

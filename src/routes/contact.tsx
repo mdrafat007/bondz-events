@@ -69,14 +69,14 @@ Thank you.`;
 
   const input =
     "mt-1 w-full border-0 border-b border-ink/25 bg-transparent px-0 py-2 text-base font-semibold text-ink outline-none transition focus:border-primary placeholder:text-ink/35 sm:text-lg";
-  const label = "text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-ink/65";
+  const label = "eyebrow text-ink/65";
 
   return (
     <div className="scroll-quiet grid h-full gap-8 overflow-y-auto px-5 pb-8 pt-6 md:px-8 lg:grid-cols-12 lg:gap-10 lg:overflow-hidden">
       {/* Left column: kicker and headline at the top, Mr. Bondz card pinned to the bottom */}
       <div className="flex min-w-0 flex-col justify-between gap-8 lg:col-span-5">
         <div className="min-w-0">
-          <p className="text-[0.66rem] font-bold uppercase tracking-[0.2em] text-primary">
+          <p className="eyebrow text-primary">
             Direct line to Mr. Bondz
           </p>
           <h1 className="display mt-3 text-4xl leading-none tracking-tight sm:text-5xl md:text-6xl">
@@ -97,7 +97,7 @@ Thank you.`;
             />
           </div>
           <div className="flex min-w-0 flex-col">
-            <span className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-primary">
+            <span className="eyebrow text-primary">
               Personal Event Organizer Guarantee
             </span>
             <p className="mt-0.5 font-sans text-base font-black tracking-tight text-paper [font-variation-settings:'wdth'_85] sm:text-lg">
@@ -189,7 +189,7 @@ Thank you.`;
               onPointerUp={playTapSound}
               className="mt-3 w-full accent-primary"
             />
-            <span className="mt-1 flex justify-between text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-ink/40">
+            <span className="eyebrow mt-1 flex justify-between text-ink/40">
               <span>10</span>
               <span>300</span>
             </span>
@@ -223,7 +223,7 @@ Thank you.`;
                   setTouchedMsg(false);
                   setF({ ...f, msg: "" });
                 }}
-                className="text-[0.66rem] font-bold uppercase tracking-[0.14em] text-primary underline-offset-4 hover:underline"
+                className="eyebrow text-primary underline-offset-4 hover:underline"
               >
                 Rewrite from my details
               </button>

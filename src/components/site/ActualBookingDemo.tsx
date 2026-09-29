@@ -74,7 +74,7 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
 
       <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 z-20 select-none bg-canvas/90 p-3.5 pt-5 text-ink backdrop-blur-sm sm:p-4">
         <p className="eyebrow text-primary">Live Demo</p>
-        <p className="display mt-1 text-[0.82rem] uppercase leading-tight sm:text-sm">
+        <p className="display mt-1 text-xs uppercase leading-tight sm:text-sm">
           Few steps away to celebrate without a single call
         </p>
         <div className="mt-2.5 h-1 overflow-hidden rounded-full bg-ink/15" aria-hidden="true">

@@ -172,13 +172,13 @@ export function RealityPanel({ onClose }: { onClose?: () => void }) {
     list.push({
       who: venue.name,
       role: "Venue",
-      detail: `Locked for ${dateStr}${slot ? ` (${slot})` : ""}`,
+      detail: `Suggested for ${dateStr}${slot ? ` (${slot})` : ""}`,
     });
   } else if (sel.where === "home") {
     list.push({
       who: "Private Location",
       role: "Host Residence",
-      detail: `Site access window locked for ${dateStr}${slot ? ` (${slot})` : ""}`,
+      detail: `Proposed site window for ${dateStr}${slot ? ` (${slot})` : ""}`,
     });
   }
 
@@ -188,7 +188,7 @@ export function RealityPanel({ onClose }: { onClose?: () => void }) {
     const cat = CATEGORIES.find((x) => x.id === c);
     const name = p ? p.name : (cat?.label ?? "Partner");
 
-    let detail = "Service order & calendar hold confirmed";
+    let detail = "Sample service order and calendar hold";
     if (c === "catering") {
       detail = `${sel.guests} Plate kitchen work order & dietary sheet`;
     } else if (c === "dj") {
@@ -228,10 +228,10 @@ export function RealityPanel({ onClose }: { onClose?: () => void }) {
         <div>
           <div className="flex items-center gap-2">
             <span className="live-dot size-2 rounded-full bg-success" />
-            <p className="eyebrow text-primary">Instant Dispatch</p>
+            <p className="eyebrow text-primary">Dispatch preview</p>
           </div>
           <p className="mt-1 text-sm font-extrabold text-ink tracking-tight">
-            Who Gets Notified Instantly:
+            Who would receive a work order:
           </p>
         </div>
         {onClose && (

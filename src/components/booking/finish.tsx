@@ -137,7 +137,7 @@ export function Step5() {
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_21rem]">
       <div className="flex flex-col gap-4">
-        <StepHead no="05" title="Lock it in." sub="Almost booked. This is the only form you will ever fill." />
+        <StepHead no="05" title="Your details." sub="Create a sample booking brief. No payment is taken and no date is held." />
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Full name" value={details.name} onChange={set("name")} autoComplete="name" required />
           <Field label="Phone" value={details.phone} onChange={set("phone")} type="tel" autoComplete="tel" required />
@@ -175,28 +175,28 @@ export function Step5() {
       <aside className="dark flex flex-col rounded-2xl bg-background p-5 text-foreground lg:sticky lg:top-0 lg:self-start">
         <p className="eyebrow text-primary">Demo deposit - no payment collected</p>
         <p className="display mt-3 text-6xl tabular-nums">{money(est.deposit)}</p>
-        <p className="mt-1 text-xs text-foreground/60">due today · balance {money(est.balance)} due 7 days before</p>
+        <p className="mt-1 text-xs text-foreground/60">illustrative 25% deposit · 75% balance {money(est.balance)} due 7 days before</p>
         <p className="mt-5 text-xs text-foreground/70">This is a client-side preview. No card details are requested, no money is collected and no notifications are sent.</p>
         <Primary disabled={!ready || demo} onClick={pay} className="mt-5 w-full py-4">
-          Preview booking - {money(est.deposit)} deposit
+          Create sample booking
         </Primary>
         {!ready && <p className="mt-2 text-center text-[0.7rem] text-foreground/50">Still need {missing}.</p>}
       </aside>
 
       {loading && (
-        <div className="dark fixed inset-0 z-[100] grid place-items-center bg-[#0d0910]/95 backdrop-blur-xl text-foreground px-4">
-          <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-[#16111a] p-7 sm:p-9 shadow-2xl">
+        <div className="dark fixed inset-0 z-[100] grid place-items-center bg-night/95 backdrop-blur-xl text-foreground px-4">
+          <div className="w-full max-w-lg rounded-card border border-hairline bg-surface p-7 sm:p-9 shadow-raised">
             {/* Luxury Dual-Ring Orbital Animation */}
             <div className="relative flex items-center justify-center size-20">
               <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl animate-pulse" />
               <div className="absolute inset-0 rounded-full border-2 border-white/10 border-t-primary animate-spin [animation-duration:1.2s]" />
               <div className="absolute inset-2 rounded-full border-2 border-white/10 border-b-primary/60 border-l-primary/40 animate-spin [animation-duration:2s] [animation-direction:reverse]" />
-              <div className="relative flex size-9 items-center justify-center rounded-full bg-primary/15 border border-primary/40 shadow-[0_0_15px_rgba(255,45,85,0.4)]">
+              <div className="relative flex size-9 items-center justify-center rounded-full bg-primary/15 border border-primary/40">
                 <span className="text-[0.65rem] font-black tracking-wider text-primary">BZ</span>
               </div>
             </div>
 
-            <h2 className="display mt-6 text-3xl sm:text-4xl text-white tracking-tight">Completing your booking</h2>
+            <h2 className="display mt-6 text-3xl sm:text-4xl text-white tracking-tight">Preparing your preview</h2>
             <p className="mt-1 text-xs text-white/60">Preparing a simulated confirmation. No partner calendars are locked.</p>
 
             <ul className="mt-6 space-y-3">
@@ -511,7 +511,7 @@ ol.terms li b { color: #151118; }
   return (
     <div className="flex flex-col gap-3">
       <section className="dark relative overflow-hidden rounded-2xl bg-background px-5 py-6 text-foreground md:px-8 shadow-sm">
-        <Confetti />
+        {!demo && <Confetti />}
         <div className="relative grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
           <div>
             <p className="eyebrow flex flex-wrap items-center gap-3">

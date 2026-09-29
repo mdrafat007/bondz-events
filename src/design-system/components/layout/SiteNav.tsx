@@ -18,7 +18,7 @@ export const SiteNav = forwardRef<HTMLElement, SiteNavProps>(function SiteNav({ 
       <div className="hidden shrink-0 items-center gap-2 lg:flex"><ThemeSoundToggle />{action}</div>
       <div className="flex shrink-0 items-center gap-2 lg:hidden">{!open && <ThemeSoundToggle variant="icons" />}<Button variant="outline" size="sm" aria-expanded={open} aria-controls="bondz-mobile-nav" onClick={() => { setOpen(!open); triggerTap(); }}>{open ? "✕ CLOSE" : "☰ MENU"}</Button></div>
     </div>
-    {open && <div id="bondz-mobile-nav" className="scroll-quiet absolute inset-x-0 top-full max-h-[82vh] overflow-y-auto border-b border-hairline bg-canvas p-4 shadow-raised lg:hidden">
+    {open && <div id="bondz-mobile-nav" className="scroll-quiet popover-shadow absolute inset-x-0 top-full max-h-[82vh] overflow-y-auto border-b border-hairline bg-canvas p-4 lg:hidden">
       <nav aria-label="Mobile navigation" className="divide-y divide-hairline">{items.map((item, i) => item.href ? <a key={item.label} href={item.href} aria-current={item.active ? "page" : undefined} onClick={triggerTap} className="flex min-h-14 items-center gap-4 font-extrabold uppercase text-ink focus-visible:outline-2 focus-visible:outline-primary"><span className="font-serif text-lg italic text-primary">{String(i + 1).padStart(2, "0")}</span>{item.label}<span className="ml-auto" aria-hidden="true">→</span></a> : <span key={item.label} className="flex min-h-14 items-center gap-4 font-extrabold uppercase text-subtle"><span className="font-serif text-lg italic text-primary">{String(i + 1).padStart(2, "0")}</span>{item.label}</span>)}</nav>
       <ThemeSoundToggle className="mt-4 justify-center border-t border-hairline pt-4" />
     </div>}

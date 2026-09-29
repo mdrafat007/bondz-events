@@ -10,6 +10,7 @@
   --bondz-subtle: oklch(0.45 0.01 300);
   --bondz-shadow-raised: 0 10px 30px -5px oklch(0.16 0.015 300 / 0.13), 0 4px 12px -2px oklch(0.16 0.015 300 / 0.09);
   --bondz-shadow-soft: 0 5px 18px -5px oklch(0.16 0.015 300 / 0.1);
+  --bondz-shadow-popover: 0 20px 40px -10px oklch(0.16 0.015 300 / 0.2);
 }
 .dark {
   --bondz-canvas: oklch(0.14 0.015 300);
@@ -21,6 +22,7 @@
   --bondz-subtle: oklch(0.70 0.01 85);
   --bondz-shadow-raised: 0 10px 30px -5px oklch(0 0 0 / 0.75), 0 4px 12px -2px oklch(0 0 0 / 0.5);
   --bondz-shadow-soft: 0 5px 18px -5px oklch(0 0 0 / 0.7);
+  --bondz-shadow-popover: 0 20px 40px -10px oklch(0 0 0 / 0.85);
 }
 @theme inline {
   --color-canvas: var(--bondz-canvas);
@@ -34,6 +36,7 @@
   --font-serif: "Instrument Serif", serif;
   --shadow-raised: var(--bondz-shadow-raised);
   --shadow-soft: var(--bondz-shadow-soft);
+  --shadow-popover: var(--bondz-shadow-popover);
   --radius-card: 0.375rem;
   --radius-control: 0.25rem;
 }
@@ -45,3 +48,4 @@
 }
 @utility card-shadow { box-shadow: var(--bondz-shadow-raised); }
 @utility soft-shadow { box-shadow: var(--bondz-shadow-soft); }
+@utility popover-shadow { box-shadow: var(--bondz-shadow-popover); }

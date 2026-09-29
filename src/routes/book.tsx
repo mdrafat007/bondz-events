@@ -20,6 +20,8 @@ export const Route = createFileRoute("/book")({
       { name: "description", content: "Six steps from “what are we celebrating?” to “You're Booked!” - only dates every partner can make are ever shown." },
       { property: "og:title", content: "Get a Booking - Bondz Events" },
       { property: "og:description", content: "Build your event and see only the dates that genuinely work." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: BookPage,

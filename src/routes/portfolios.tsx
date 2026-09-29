@@ -14,6 +14,8 @@ export const Route = createFileRoute("/portfolios")({
       { name: "description", content: "Curated masonry bento gallery of verified celebrations booked and organized end-to-end by Bondz Events." },
       { property: "og:title", content: "Events Gallery - Bondz Events" },
       { property: "og:description", content: "Explore verified photography proofs from 700+ celebrations across all event categories." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: EventsGallery,

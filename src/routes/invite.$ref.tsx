@@ -12,6 +12,8 @@ export const Route = createFileRoute("/invite/$ref")({
       { name: "description", content: "You are invited to an extraordinary celebration orchestrated by Mr. Bondz." },
       { property: "og:title", content: "You're Invited · Bondz Events" },
       { property: "og:description", content: "Confirm your attendance, select dietary preferences, and add to your calendar." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex" },
     ],
   }),

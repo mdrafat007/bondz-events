@@ -16,6 +16,8 @@ export const Route = createFileRoute("/contact")({
       },
       { property: "og:title", content: "Contact - Bondz Events" },
       { property: "og:description", content: "Tell Mr. Bondz what you're celebrating." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Contact,
@@ -37,7 +39,7 @@ function Contact() {
       toast.error("Name, a valid email and a message, please.");
       return;
     }
-    toast.success(`Thanks ${f.name.split(" ")[0]} - Mr. Bondz will reply within a business day.`);
+    toast.success(`Thanks ${f.name.split(" ")[0]}. This preview hasn't sent your message; please email Mr. Bondz directly.`);
     setF({ name: "", email: "", interest: "", msg: "" });
   };
 

@@ -18,6 +18,8 @@ export const Route = createFileRoute("/partners")({
       },
       { property: "og:title", content: "Partners - Bondz Events" },
       { property: "og:description", content: "Every partner here syncs its calendar live with Bondz Events." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Partners,

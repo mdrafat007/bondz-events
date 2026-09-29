@@ -13,6 +13,8 @@ export const Route = createFileRoute("/how-it-works")({
       { name: "description", content: "Solo Event Organizer for 16 years and 700+ celebrations. One point of contact, live calendar sync, and zero telephone tag." },
       { property: "og:title", content: "Who is Mr. Bondz - Bondz Events" },
       { property: "og:description", content: "The event organizer, the rule, and the architecture behind Bondz Events." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: WhoIsBondz,

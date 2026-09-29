@@ -50,3 +50,7 @@
 - [x] `/partners`: 17 partners and 5 venues with live availability and a detail drawer.
 - [x] `/contact`: inquiry form with validation toasts and fast-track booking.
 - [x] Shared source of truth in `src/lib/bondz-data.ts` with the deterministic availability engine.
+
+# Booking engine
+- [x] `/book`: 3-step engine (celebration, live 75-day calendar + add-ons + ledger, review/sign/deposit) with confirmation, reschedule and cancel modals.
+- [ ] `/invite/$ref` guest portal.

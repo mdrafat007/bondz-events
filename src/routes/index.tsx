@@ -1,10 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AppShell, Button, SiteFooter } from "../index";
+import { AppShell, SiteFooter } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
+import { HeroBookingCTA } from "../components/site/HeroBookingCTA";
 import { useBookingLaunch } from "../lib/use-booking-launch";
-import { playPeekabooSound } from "../design-system/lib/haptics";
-import redMascot from "../design-system/assets/icons/BONDZ_LOGO_ICON_-_LIGHT.png";
-import whiteMascot from "../design-system/assets/icons/BONDZ_LOGO_ICON_DARK.png";
 import dinner from "../assets/photography/celebration-dinner.jpg";
 import amira from "../assets/photography/amira.asset.json";
 import jonah from "../assets/photography/jonah.asset.json";
@@ -59,8 +57,8 @@ const partners = [
 
 function ReviewMarquee() {
   return <div className="overflow-x-hidden border-b border-hairline py-4 sm:py-5" aria-label="Client reviews">
-    <div className="bondz-marquee flex w-max items-center gap-3 sm:gap-4">
-      {[0, 1].map((copy) => <div key={copy} className="flex shrink-0 items-center gap-3 sm:gap-4" aria-hidden={copy === 1 ? true : undefined}>{reviews.map((review) => <figure key={review.name} className="flex w-[min(86vw,24rem)] shrink-0 items-center gap-4 rounded-2xl border border-review-hairline bg-review px-5 py-3.5 text-white shadow-raised">
+    <div className="ticker-marquee-left">
+      {[0, 1].map((copy) => <div key={copy} className="flex shrink-0 items-center gap-3 pr-3 sm:gap-4 sm:pr-4" aria-hidden={copy === 1 ? true : undefined}>{reviews.map((review) => <figure key={review.name} className="flex w-[min(86vw,24rem)] shrink-0 items-center gap-4 rounded-2xl border border-review-hairline bg-review px-5 py-3.5 text-white shadow-raised">
         <img src={review.avatar} alt="" loading="lazy" className="size-11 shrink-0 rounded-full border-2 border-primary object-cover" />
         <figcaption className="min-w-0 flex-1"><blockquote className="line-clamp-2 min-h-9 text-[0.8rem] font-medium leading-snug"><span className="font-serif italic text-primary">“</span>{review.quote}<span className="font-serif italic text-primary">”</span></blockquote><div className="mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1"><strong className="font-sans text-[0.75rem] font-extrabold text-primary">{review.name}</strong><span className="rounded-full border border-primary/30 bg-primary/20 px-2 py-0.5 font-sans text-[0.65rem] font-black uppercase leading-tight text-primary">{review.tag}</span></div></figcaption>
       </figure>)}</div>)}
@@ -70,8 +68,8 @@ function ReviewMarquee() {
 
 function PartnerMarquee() {
   return <div className="overflow-x-hidden border-b border-hairline py-3" aria-label="Event partners">
-    <div className="bondz-marquee bondz-marquee-reverse flex w-max items-center gap-3">
-      {[0, 1].map((copy) => <div key={copy} className="flex shrink-0 items-center gap-3" aria-hidden={copy === 1 ? true : undefined}>{partners.map((partner) => <div key={partner.name} className="flex shrink-0 items-center gap-2 rounded-full border border-hairline bg-surface-light px-4 py-1.5 shadow-soft"><span className="font-serif text-xs italic text-primary">{partner.category}</span><span className="font-sans text-xs font-extrabold uppercase tracking-tight text-ink">{partner.name}</span><span className="size-1.5 shrink-0 rounded-full bg-status" aria-label="Available" /></div>)}</div>)}
+    <div className="ticker-marquee-right">
+      {[0, 1].map((copy) => <div key={copy} className="flex shrink-0 items-center gap-3 pr-3" aria-hidden={copy === 1 ? true : undefined}>{partners.map((partner) => <div key={partner.name} className="flex shrink-0 items-center gap-2 rounded-full border border-hairline bg-surface-light px-4 py-1.5 shadow-soft"><span className="font-serif text-xs italic text-primary">{partner.category}</span><span className="font-sans text-xs font-extrabold uppercase tracking-tight text-ink">{partner.name}</span><span className="size-1.5 shrink-0 rounded-full bg-status" aria-label="Available" /></div>)}</div>)}
     </div>
   </div>;
 }
@@ -86,12 +84,7 @@ function LandingPage() {
           <div className="mb-6 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 font-sans text-[0.62rem] font-extrabold uppercase leading-snug tracking-tight text-ink sm:mb-8 sm:text-xs"><span className="hidden sm:inline">Solo Event Organizer · 16 Years · 700+ Celebrations</span><span className="sm:hidden">Solo Organizer · 16 Yrs · 700+ Events</span></div>
           <h1 id="hero-title" className="bondz-hero-title font-sans font-black text-ink [font-variation-settings:'wdth'_85]"><span className="block">Get <span className="font-serif font-normal italic text-primary">“yourself booked”</span></span><span className="block">and Leave the <span className="font-serif font-normal italic text-primary">“rest on us”!</span></span></h1>
           <div className="mt-36 flex flex-col items-start sm:mt-48">
-            <div className="bondz-cta-wrap relative isolate max-w-full">
-              <div className="pointer-events-none absolute inset-x-0 bottom-full z-0 flex justify-center overflow-visible [clip-path:inset(-400px_-100px_0px_-100px)]" aria-hidden="true">
-                <div className="bondz-mascot-peek flex origin-bottom items-center justify-center"><img src={redMascot} alt="" className="h-auto w-32 max-w-none select-none object-contain drop-shadow-md sm:w-40 dark:hidden" /><img src={whiteMascot} alt="" className="hidden h-auto w-32 max-w-none select-none object-contain drop-shadow-md sm:w-40 dark:block" /></div>
-              </div>
-              <Button variant="primary" size="lg" onClick={launchBooking} onMouseEnter={playPeekabooSound} onFocus={playPeekabooSound} disabled={launching} className="bondz-hero-cta group relative z-10 flex min-h-14 max-w-full items-center justify-between gap-2 rounded-full px-4 py-3.5 font-sans text-[0.62rem] font-black uppercase tracking-normal text-white ring-1 ring-inset ring-white/20 sm:gap-4 sm:px-8 sm:py-4 sm:text-sm sm:tracking-wider"><span className="whitespace-nowrap">Get started your booking</span><span aria-hidden="true" className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white text-base font-bold text-primary shadow-sm transition-transform group-hover:rotate-45 sm:size-10">↗</span></Button>
-            </div>
+            <HeroBookingCTA onClick={launchBooking} disabled={launching} />
             <p className="mt-4 max-w-full font-sans text-sm font-black uppercase tracking-tight text-ink [font-variation-settings:'wdth'_85] sm:text-base">Tell us what you're celebrating!</p>
           </div>
         </div>

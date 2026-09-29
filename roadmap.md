@@ -27,3 +27,8 @@
 - [x] Expand the hero to a full-width balanced split and restore Bricolage headline with serif accents.
 - [x] Layer the tactile CTA over theme-aware mascot art and complete the media progress rule.
 - [x] Verify first-visit light and sound defaults, mobile-to-wide layout, and both curtain launch paths.
+
+# Home page motion repair
+- [x] Replace CSS-only mascot hover with motion-driven hover, idle, and push-jump states.
+- [x] Restore continuous opposing testimonial and partner tracks with matching duplicated halves.
+- [x] Verify motion, reduced-motion behavior, responsive layout, and booking launch in the browser.

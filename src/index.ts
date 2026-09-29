@@ -17,3 +17,4 @@ export type { SiteFooterProps } from "./design-system/components/layout/SiteFoot
 export { cn } from "./design-system/lib/utils";
 export { useSoundState, isSoundEnabled, setSoundEnabled, toggleSound } from "./design-system/lib/sound-state";
 export { playTapSound, playPeekabooSound, playCelebrationSound, playSwitchSound, triggerHaptic, triggerTap } from "./design-system/lib/haptics";
+export { useTheme, setTheme, THEME_STORAGE_KEY } from "./design-system/lib/theme";

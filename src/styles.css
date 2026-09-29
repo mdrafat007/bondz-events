@@ -10,17 +10,31 @@ button, input { font: inherit; }
 
 .bondz-hero-title { font-size: clamp(2.1rem, 6.8vw, 5.2rem); line-height: 0.90; letter-spacing: -0.04em; }
 @media (min-width: 1024px) and (max-width: 1800px) { .bondz-hero-title { font-size: clamp(2.1rem, 4.1vw, 5.2rem); } }
-.bondz-mascot-peek { transform: translateY(48px); transition: transform 550ms cubic-bezier(.2, 1.6, .4, 1); }
-@media (min-width: 1024px) { .bondz-mascot-peek { transform: translateY(68px); } }
-.bondz-cta-wrap:has(.bondz-hero-cta:is(:hover, :focus-visible)) .bondz-mascot-peek { transform: translateY(-15px); animation: bondz-mascot-wave 550ms ease-out; }
-@keyframes bondz-mascot-wave { 35% { rotate: 10deg; } 70% { rotate: 10deg; } 100% { rotate: 0deg; } }
 .bondz-hero-cta { background: linear-gradient(to bottom, var(--bondz-cta-top), var(--bondz-cta-mid), var(--bondz-cta-bottom)); box-shadow: var(--bondz-cta-shadow); }
-.bondz-hero-cta:hover { filter: brightness(1.04); }
-.bondz-marquee { animation: bondz-marquee 28s linear infinite; }
-.bondz-marquee-reverse { animation-direction: reverse; }
-@keyframes bondz-marquee { to { transform: translateX(-50%); } }
+@keyframes marqueeLeftTrack {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes marqueeRightTrack {
+  0% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+.ticker-marquee-left {
+  display: flex !important;
+  width: max-content !important;
+  animation: marqueeLeftTrack 38s linear infinite !important;
+  will-change: transform;
+}
+.ticker-marquee-right {
+  display: flex !important;
+  width: max-content !important;
+  animation: marqueeRightTrack 42s linear infinite !important;
+  will-change: transform;
+}
+.ticker-marquee-left:hover,
+.ticker-marquee-right:hover { animation-play-state: paused !important; }
 .bondz-curtain-left { transform: translateX(-100%); animation: bondz-curtain-left 450ms ease-in-out forwards; }
 .bondz-curtain-right { transform: translateX(100%); animation: bondz-curtain-right 450ms ease-in-out forwards; }
 @keyframes bondz-curtain-left { to { transform: translateX(0); } }
 @keyframes bondz-curtain-right { to { transform: translateX(0); } }
-@media (prefers-reduced-motion: reduce) { .bondz-marquee { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .ticker-marquee-left, .ticker-marquee-right { animation: none !important; transform: none !important; will-change: auto; } }

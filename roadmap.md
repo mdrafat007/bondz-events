@@ -22,3 +22,8 @@
 - [x] Match editorial hero typography, red mascot booking action, and cinematic dinner media.
 - [x] Unbox the four pillars and refine both proof tickers to the supplied visual benchmark.
 - [x] Verify the refined page across mobile, desktop, dark mode, and booking launch.
+
+# Home page full-width benchmark correction
+- [x] Expand the hero to a full-width balanced split and restore Bricolage headline with serif accents.
+- [x] Layer the tactile CTA over theme-aware mascot art and complete the media progress rule.
+- [ ] Verify first-visit light and sound defaults, mobile-to-wide layout, and both curtain launch paths.

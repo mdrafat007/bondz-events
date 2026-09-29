@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { AppShell, SiteFooter, Button } from "../index";
+import { AppShell, Button } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
+import { SiteFooter } from "../components/layout/SiteFooter";
 import { SERVICE_ICONS } from "../components/site/ServiceIcons";
 import { SERVICES_11, CATEGORIES, PARTNERS, priceLabel, type ServiceTab } from "../lib/bondz-data";
 import { useBookingLaunch } from "../lib/use-booking-launch";
@@ -55,7 +56,7 @@ function ServicesPage() {
   const { launchBooking, launching, curtain } = useBookingLaunch();
   const visible = SERVICES_11.filter((service) => tab === "All" || service.tab === (tab as ServiceTab));
 
-  return <AppShell header={<MarketingNav active="/services" />} footer={<SiteFooter className="hidden sm:block" />}>
+  return <AppShell header={<MarketingNav active="/services" />} footer={<SiteFooter />}>
     <div className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 sm:px-6 sm:pt-12 md:px-8">
       <span className="font-sans text-[0.68rem] font-extrabold uppercase tracking-widest text-primary">Eleven services</span>
       <h1 className="mt-3 max-w-3xl font-sans text-[clamp(2.1rem,5.4vw,4rem)] font-black uppercase leading-[0.95] tracking-tight text-ink [font-variation-settings:'wdth'_85]">

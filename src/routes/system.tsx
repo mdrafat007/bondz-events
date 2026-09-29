@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AppShell, Badge, BrandLockup, Button, Card, SiteFooter, SiteNav } from "../index";
+import { AppShell, Badge, BrandLockup, Button, Card, SiteNav } from "../index";
+import { SiteFooter } from "../components/layout/SiteFooter";
 import { playCelebrationSound, playPeekabooSound } from "../design-system/bondz-events---design-system-9e1fdf/design-system/lib/haptics";
 import lightInvite from "../design-system/bondz-events---design-system-9e1fdf/design-system/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_LIGHT.png";
 import darkInvite from "../design-system/bondz-events---design-system-9e1fdf/design-system/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_DARK.png";

@@ -12,7 +12,7 @@ const items = [
 
 export function MarketingNav({ active }: { active?: string }) {
   const { launchBooking, curtain } = useBookingLaunch();
-  return <><SiteNav items={items.map((item) => ({ ...item, active: item.href === active }))} onNavigate={(event, item) => {
+  return <><SiteNav className="bondz-nav-right" items={items.map((item) => ({ ...item, active: item.href === active }))} onNavigate={(event, item) => {
     if (item.href === "/book" && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
       event.preventDefault();
       launchBooking();

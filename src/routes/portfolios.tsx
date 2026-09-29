@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { AppShell, SiteFooter } from "../index";
+import { AppShell } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
+import { SiteFooter } from "../components/layout/SiteFooter";
 import pfWedding from "../assets/photography/pf-wedding.jpg";
 import pfBbq from "../assets/photography/pf-bbq.jpg";
 import pfCorporate from "../assets/photography/pf-corporate.jpg";
@@ -60,7 +61,7 @@ function PortfoliosPage() {
   const [filter, setFilter] = useState<Filter>("All");
   const visible = ITEMS.filter((item) => filter === "All" || item.cat === filter);
 
-  return <AppShell header={<MarketingNav active="/portfolios" />} footer={<SiteFooter className="hidden sm:block" />}>
+  return <AppShell header={<MarketingNav active="/portfolios" />} footer={<SiteFooter />}>
     <div className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 sm:px-6 sm:pt-12 md:px-8">
       <span className="font-sans text-[0.68rem] font-extrabold uppercase tracking-widest text-primary">700+ celebrations</span>
       <h1 className="mt-3 max-w-3xl font-sans text-[clamp(2.1rem,5.4vw,4rem)] font-black uppercase leading-[0.95] tracking-tight text-ink [font-variation-settings:'wdth'_85]">

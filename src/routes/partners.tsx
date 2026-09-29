@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AppShell, SiteFooter, Button, Badge } from "../index";
+import { AppShell, Button, Badge } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
+import { SiteFooter } from "../components/layout/SiteFooter";
 import { useBookingLaunch } from "../lib/use-booking-launch";
 import { PARTNERS, VENUES, CATEGORIES, HORIZON, categoryLabel, priceLabel, openDayCount, nextOpenDay, dayLabel, type Partner, type Venue } from "../lib/bondz-data";
 
@@ -76,7 +77,7 @@ function PartnersPage() {
   const { launchBooking, curtain } = useBookingLaunch();
   const visible = PARTNERS.filter((partner) => category === "all" || partner.category === category);
 
-  return <AppShell header={<MarketingNav active="/partners" />} footer={<SiteFooter className="hidden sm:block" />}>
+  return <AppShell header={<MarketingNav active="/partners" />} footer={<SiteFooter />}>
     <div className="w-full">
       <div className="overflow-x-hidden border-b border-hairline bg-surface py-3" aria-label="Partner network">
         <div className="ticker-marquee-left">

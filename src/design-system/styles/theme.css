@@ -1,6 +1,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  --bondz-night: #130f16;
+  --bondz-paper: #f6f1e7;
   --bondz-canvas: oklch(0.965 0.012 85);
   --bondz-surface: oklch(0.985 0.008 85);
   --bondz-surface-light: oklch(0.995 0.004 85);
@@ -25,6 +27,8 @@
   --bondz-shadow-popover: 0 20px 40px -10px oklch(0 0 0 / 0.85);
 }
 @theme inline {
+  --color-night: var(--bondz-night);
+  --color-paper: var(--bondz-paper);
   --color-canvas: var(--bondz-canvas);
   --color-surface: var(--bondz-surface);
   --color-surface-light: var(--bondz-surface-light);

@@ -1,50 +1,83 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { AppShell, Badge, BrandLockup, Button, Card, SiteFooter, SiteNav } from "../index";
-import { playCelebrationSound, playPeekabooSound } from "../design-system/lib/haptics";
-import lightInvite from "../design-system/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_LIGHT.png";
-import darkInvite from "../design-system/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_DARK.png";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { AppShell, Button, SiteFooter, SiteNav } from "../index";
+import { playPeekabooSound } from "../design-system/lib/haptics";
+import mascot from "../design-system/assets/icons/BONDZ_LOGO_ICON_-_LIGHT.png";
+import invitation from "../design-system/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_LIGHT.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
-    { title: "Bondz Events — Design System" },
-    { name: "description", content: "A preview of Bondz Events brand colors, typography, controls, audio, and invitation artwork." },
-    { property: "og:title", content: "Bondz Events — Design System" },
-    { property: "og:description", content: "A preview of Bondz Events brand colors, typography, controls, audio, and invitation artwork." },
+    { title: "Bondz Events — Celebrations, Beautifully Booked" },
+    { name: "description", content: "Plan your celebration in one sitting with Mr. Bondz, your solo event organizer with 16 years and 700+ celebrations behind him." },
+    { property: "og:title", content: "Bondz Events — Celebrations, Beautifully Booked" },
+    { property: "og:description", content: "One organizer. Every detail considered. Book a celebration with Mr. Bondz." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary_large_image" },
   ] }),
-  component: Index,
+  component: LandingPage,
 });
 
-const palette = [
-  { name: "Canvas", token: "canvas", usage: "The backdrop" },
-  { name: "Surface", token: "surface", usage: "The stage" },
-  { name: "Surface Light", token: "surface-light", usage: "The highlight" },
-  { name: "Ink", token: "ink", usage: "The signature" },
-  { name: "Primary", token: "primary", usage: "The spark" },
-  { name: "Hairline", token: "hairline", usage: "The detail" },
-  { name: "Subtle", token: "subtle", usage: "The whisper" },
-] as const;
-const swatchClasses = ["bg-canvas", "bg-surface", "bg-surface-light", "bg-ink", "bg-primary", "bg-hairline", "bg-subtle"];
+const pillars = [
+  { number: "01", title: "Curated availability", detail: "Only dates that work for everyone." },
+  { number: "02", title: "Real-time sync", detail: "Your plans, all in one place." },
+  { number: "03", title: "One simple sitting", detail: "From first idea to booked." },
+  { number: "04", title: "360° confirmation", detail: "Every partner in the picture." },
+];
 
-function Index() {
-  return <AppShell header={<SiteNav items={[{ label: "System", href: "/", active: true }, { label: "Who is Mr. Bondz" }, { label: "Events Gallery" }, { label: "Event Services" }, { label: "Partners" }, { label: "Contact" }]} />} footer={<SiteFooter />}>
-    <div>
-      <div className="mx-auto max-w-7xl px-4 pb-16 pt-7 sm:px-6 md:px-8 md:pt-12">
-        <div className="flex flex-wrap items-center gap-2 text-[0.7rem] font-bold uppercase text-primary"><span className="h-1.5 w-1.5 rounded-full bg-primary" /> Bondz Events <span className="text-subtle">/</span> Foundation <span className="text-subtle">/</span> 01</div>
-        <div className="mt-8 grid items-end gap-8 border-b border-hairline pb-12 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
-          <div><h1 className="font-serif text-6xl leading-[0.95] text-ink sm:text-7xl lg:text-8xl">Every celebration<br /><em className="font-normal text-primary">has a signature.</em></h1><p className="mt-6 max-w-lg text-base leading-relaxed text-subtle">The visual language of Bondz Events. Thoughtful details, bold gestures, and a personal touch in every moment.</p><div className="mt-8 flex flex-wrap gap-3"><Button>Feel the tap <span aria-hidden="true">↗</span></Button><Button variant="dark" onMouseEnter={playPeekabooSound} onFocus={playPeekabooSound}>Hear the peekaboo <span aria-hidden="true">♫</span></Button></div></div>
-          <div className="flex justify-start lg:justify-end"><BrandLockup size="lg" className="w-56 sm:w-72 lg:w-80" /></div>
-        </div>
-        <section className="py-10 md:py-14" aria-labelledby="color-heading"><SectionTitle number="01" title="The palette" id="color-heading" detail="Seven roles. Two moods." /><div className="mt-7 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">{palette.map((item, i) => <div key={item.name} className="min-w-0"><div className={`aspect-[4/3] rounded-card border border-hairline ${swatchClasses[i]}`} /><p className="mt-3 text-xs font-extrabold uppercase text-ink">{item.name}</p><p className="mt-0.5 text-xs text-subtle">{item.usage}</p><code className="mt-1 block break-words text-[0.65rem] text-primary">{item.token}</code></div>)}</div></section>
-        <section className="border-t border-hairline py-10 md:py-14" aria-labelledby="type-heading"><SectionTitle number="02" title="Type with character" id="type-heading" detail="Editorial meets exacting." /><div className="mt-7 grid gap-10 lg:grid-cols-2"><div><p className="mb-4 text-xs font-bold uppercase text-primary">Instrument Serif / Display</p><p className="font-serif text-6xl leading-none sm:text-7xl">Make it <em>memorable.</em></p><p className="mt-4 font-serif text-2xl italic text-subtle">The art of bringing people together.</p></div><div><p className="mb-4 text-xs font-bold uppercase text-primary">Bricolage Grotesque / Interface</p><p className="text-3xl font-extrabold leading-tight sm:text-4xl">A little magic. <br />A lot of heart.</p><p className="mt-4 text-base leading-relaxed text-subtle">Celebrations of every shape and size, made personal by Mr. Bondz.</p><p className="mt-4 font-mono text-xs text-subtle">01 — 02 — 03 / EVERY DETAIL COUNTS</p></div></div></section>
-        <section className="border-t border-hairline py-10 md:py-14" aria-labelledby="controls-heading"><SectionTitle number="03" title="The essentials" id="controls-heading" detail="A tactile little toolkit." /><div className="mt-7 grid gap-8 lg:grid-cols-2"><div><p className="mb-4 text-xs font-bold uppercase text-subtle">BUTTONS / INTERACTION</p><div className="flex flex-wrap items-center gap-3"><Button>Primary action →</Button><Button variant="dark">Dark action ↗</Button><Button variant="outline">Outline action</Button><Button variant="ghost">Ghost action</Button></div><p className="mb-4 mt-9 text-xs font-bold uppercase text-subtle">BADGES / SIGNALS</p><div className="flex flex-wrap gap-2"><Badge variant="accent">Featured</Badge><Badge variant="neutral">Available</Badge><Badge variant="outline">Limited</Badge><Badge variant="muted">Coming soon</Badge></div><div className="mt-8"><Button variant="outline" onClick={playCelebrationSound}>Play celebration <span aria-hidden="true">♫</span></Button></div></div><div><p className="mb-4 text-xs font-bold uppercase text-subtle">CARDS / DEPTH</p><div className="grid gap-3 sm:grid-cols-2"><Card variant="flat"><span className="text-xs font-bold uppercase text-primary">01 / Flat</span><p className="mt-4 font-serif text-3xl">The invitation</p><p className="mt-2 text-sm text-subtle">Quiet structure, clear intent.</p></Card><Card variant="elevated"><span className="text-xs font-bold uppercase text-primary">02 / Raised</span><p className="mt-4 font-serif text-3xl">The occasion</p><p className="mt-2 text-sm text-subtle">Physical depth, no glow.</p></Card></div></div></div></section>
-        <section className="border-t border-hairline py-10 md:py-14" aria-labelledby="brand-heading"><SectionTitle number="04" title="A personal signature" id="brand-heading" detail="Original Bondz artwork." /><div className="mt-7 grid items-center gap-8 md:grid-cols-2"><div className="border border-hairline bg-surface p-5"><img src={lightInvite} alt="Bondz Events light invitation template" className="mx-auto max-h-96 object-contain dark:hidden" /><img src={darkInvite} alt="Bondz Events dark invitation template" className="mx-auto hidden max-h-96 object-contain dark:block" /></div><div><Badge variant="outline">By Mr. Bondz</Badge><p className="mt-5 font-serif text-5xl leading-none">Good times,<br /><em>beautifully made.</em></p><p className="mt-5 max-w-sm text-sm leading-relaxed text-subtle">16 years of making every gathering feel one of a kind. 700+ celebrations and counting.</p><div className="mt-8 border-l-2 border-primary pl-4 text-xs font-bold uppercase text-subtle">The beginning of something brilliant.</div></div></div></section>
-        <div className="border-t border-hairline py-10 text-xs font-bold uppercase text-subtle">Bondz Events · The foundation / End of canvas</div>
-      </div>
+const proofA = ["16 years of celebrations", "700+ celebrations", "One dedicated organizer", "Every detail considered"];
+const proofB = ["No multi-vendor phone tag", "A date that works for everyone", "A single, seamless sitting", "By Mr. Bondz"];
+
+function Marquee({ phrases, reverse = false }: { phrases: string[]; reverse?: boolean }) {
+  return <div className="overflow-x-hidden border-b border-hairline" aria-label={phrases.join(" · ")}>
+    <div aria-hidden="true" className={`bondz-marquee flex w-max items-center py-3.5 ${reverse ? "bondz-marquee-reverse" : ""}`}>
+      {[0, 1].map((copy) => <div key={copy} className="flex shrink-0 items-center">{phrases.map((phrase) => <span key={`${copy}-${phrase}`} className="flex items-center gap-4 px-4 text-[0.68rem] font-bold uppercase text-ink sm:gap-8 sm:px-8 sm:text-xs"><span className="font-serif text-xl italic text-primary" aria-hidden="true">✳</span>{phrase}</span>)}</div>)}
     </div>
-  </AppShell>;
+  </div>;
 }
-function SectionTitle({ number, title, detail, id }: { number: string; title: string; detail: string; id: string }) {
-  return <div className="flex flex-wrap items-end justify-between gap-2"><div className="flex items-baseline gap-3"><span className="font-serif text-2xl italic text-primary">{number}</span><h2 id={id} className="text-2xl font-extrabold text-ink sm:text-3xl">{title}</h2></div><p className="text-sm text-subtle">{detail}</p></div>;
+
+function LandingPage() {
+  const navigate = useNavigate();
+  const [launching, setLaunching] = useState(false);
+  const launchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (launchTimer.current) clearTimeout(launchTimer.current); }, []);
+
+  function launchBooking() {
+    if (launching) return;
+    setLaunching(true);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    launchTimer.current = setTimeout(() => { void navigate({ to: "/book", search: { intro: 1 } }); }, reduced ? 0 : 470);
+  }
+
+  return <AppShell header={<SiteNav items={[{ label: "Home", href: "/", active: true }, { label: "Design system", href: "/system" }]} />} footer={<SiteFooter className="hidden sm:block" />}>
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section aria-labelledby="hero-title" className="grid min-w-0 items-center gap-8 pb-8 pt-9 sm:pt-12 lg:grid-cols-2 lg:gap-8 lg:py-10 2xl:py-14">
+        <div className="min-w-0 lg:pr-4">
+          <div className="mb-6 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 text-[0.62rem] font-extrabold uppercase leading-snug text-ink sm:mb-8 sm:text-xs"><span className="hidden sm:inline">Solo Event Organizer · 16 Years · 700+ Celebrations</span><span className="sm:hidden">Solo Organizer · 16 Yrs · 700+ Events</span></div>
+          <h1 id="hero-title" className="bondz-hero-title max-w-[14ch] font-serif text-ink">Turn <em className="font-normal text-primary">‘can we book you?’</em> into ‘you’re booked.’</h1>
+          <div className="mt-8 flex flex-col items-start gap-4 sm:mt-10">
+            <div className="relative isolate pt-3">
+              <span aria-hidden="true" className="bondz-mascot-peek pointer-events-none absolute left-[57%] z-10 w-16 -translate-x-1/2 sm:w-20"><img src={mascot} alt="" className="block h-auto w-full" /></span>
+              <Button variant="dark" size="lg" onClick={launchBooking} onMouseEnter={playPeekabooSound} onFocus={playPeekabooSound} disabled={launching} className="bondz-hero-cta group relative z-20 min-h-14 gap-6 rounded-full bg-night py-2 pl-6 pr-2 text-sm text-paper shadow-raised hover:bg-night/85 sm:text-base">Get a Booking <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-xl text-paper transition-transform group-hover:rotate-45">↗</span></Button>
+            </div>
+            <p className="max-w-sm text-sm leading-relaxed text-subtle sm:text-base">One conversation. One date that works for everyone. A celebration that feels entirely yours.</p>
+          </div>
+        </div>
+        <div className="min-w-0">
+          <div className="relative aspect-video max-h-[34vh] min-h-0 w-full overflow-hidden border border-hairline bg-night shadow-raised lg:ml-auto" aria-label="Preview of a Bondz Events invitation">
+            <div className="absolute inset-0 grid grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] gap-0">
+              <div className="relative min-w-0 overflow-hidden bg-white"><img src={invitation} alt="Bondz Events invitation artwork" className="h-full w-full object-cover object-bottom" /><div className="absolute left-[7%] top-[10%] max-w-[80%] text-night"><span className="text-[0.5rem] font-extrabold uppercase text-primary sm:text-[0.6rem]">The invitation</span><p className="mt-2 font-serif text-[clamp(1.1rem,2.7vw,3rem)] leading-none">A celebration<br /><em>made for you.</em></p></div></div>
+              <div className="flex min-w-0 flex-col justify-between bg-night p-[clamp(0.75rem,2vw,2rem)] text-paper"><div className="flex items-start justify-between gap-2"><span className="text-[0.55rem] font-extrabold uppercase text-primary sm:text-xs">A little preview</span><span className="font-serif text-lg italic text-primary sm:text-3xl">B.</span></div><div><p className="font-serif text-[clamp(1.25rem,3vw,3.5rem)] leading-[0.95]">Good things<br />are worth<br /><em className="text-primary">celebrating.</em></p><span className="mt-3 block border-t border-paper/20 pt-2 text-[0.5rem] font-bold uppercase text-paper/70 sm:mt-5 sm:text-[0.65rem]">An occasion, entirely yours ↗</span></div></div>
+            </div>
+          </div>
+          <div className="mt-3 flex items-center justify-between gap-3 text-[0.62rem] font-bold uppercase text-subtle"><span>Made personal by Mr. Bondz</span><span>01 / 04</span></div>
+        </div>
+      </section>
+      <section aria-label="Why book with Bondz Events" className="grid grid-cols-2 gap-2 border-t border-hairline py-3 lg:grid-cols-4 lg:gap-2.5 lg:py-2">
+        {pillars.map((pillar) => <div key={pillar.number} className="min-w-0 border border-hairline bg-surface p-3 sm:p-5"><span className="block font-serif text-lg italic text-primary sm:text-2xl">{pillar.number}</span><h2 className="mt-4 text-[0.68rem] font-extrabold uppercase leading-snug text-ink sm:text-sm">{pillar.title}</h2><p className="mt-2 text-[0.67rem] leading-snug text-subtle sm:text-xs">{pillar.detail}</p></div>)}
+      </section>
+    </div>
+    <section aria-label="Bondz Events at a glance" className="mt-6 border-t border-hairline bg-surface sm:mt-9"><Marquee phrases={proofA} /><Marquee phrases={proofB} reverse /></section>
+    <div className="mx-auto max-w-7xl px-4 py-8 text-center font-serif text-2xl italic text-ink sm:py-12 sm:text-4xl">Good times, beautifully made<span className="text-primary">.</span></div>
+    {launching && <div className="pointer-events-none fixed inset-0 z-50" aria-hidden="true"><div className="bondz-curtain-left absolute inset-y-0 left-0 w-1/2 bg-night" /><div className="bondz-curtain-right absolute inset-y-0 right-0 w-1/2 bg-night" /></div>}
+  </AppShell>;
 }

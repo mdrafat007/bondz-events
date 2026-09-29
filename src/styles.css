@@ -3,7 +3,20 @@
 
 html, body, #app { height: 100%; }
 html, body { overflow: hidden; }
-body { margin: 0; background: var(--bondz-canvas); color: var(--bondz-ink); font-family: var(--font-sans); }
+body { margin: 0; }
 button, input { font: inherit; }
 ::selection { background: var(--bondz-primary); color: var(--bondz-surface-light); }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+
+.bondz-hero-title { font-size: clamp(2.7rem, 6.1vw, 6rem); line-height: 0.99; }
+.bondz-mascot-peek { top: 0; opacity: 0; transform: translate(-50%, 48px); clip-path: inset(-400px -100px 0px -100px); transition: transform 550ms cubic-bezier(.2, 1.6, .4, 1), opacity 180ms ease; }
+div:has(> .bondz-hero-cta):hover > .bondz-mascot-peek, div:has(> .bondz-hero-cta):focus-within > .bondz-mascot-peek { transform: translate(-50%, -15px); opacity: 1; }
+@media (min-width: 1024px) { .bondz-mascot-peek { transform: translate(-50%, 68px); } }
+.bondz-marquee { animation: bondz-marquee 28s linear infinite; }
+.bondz-marquee-reverse { animation-direction: reverse; }
+@keyframes bondz-marquee { to { transform: translateX(-50%); } }
+.bondz-curtain-left { transform: translateX(-100%); animation: bondz-curtain-left 450ms ease-in-out forwards; }
+.bondz-curtain-right { transform: translateX(100%); animation: bondz-curtain-right 450ms ease-in-out forwards; }
+@keyframes bondz-curtain-left { to { transform: translateX(0); } }
+@keyframes bondz-curtain-right { to { transform: translateX(0); } }
+@media (prefers-reduced-motion: reduce) { .bondz-marquee { animation: none; } }

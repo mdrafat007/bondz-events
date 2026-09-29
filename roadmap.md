@@ -8,6 +8,12 @@
 
 # Phase 2
 - [x] Replace the test bench with the responsive editorial landing page and product preview.
-- [x] Add four feature pillars and two accessible, reduced-motion-aware proof tickers using supplied brand facts; verified review copy was not supplied.
+- [x] Add four feature pillars and two accessible, reduced-motion-aware proof tickers using approved client quotes and partner names.
 - [x] Add mascot CTA and split-curtain handoff to `/book?intro=1`.
 - [x] Verify 320px through ultra-wide layouts, theme states, scrolling, and navigation.
+
+# Home page polish
+- [x] Wire the six-link navigation, booking curtain, and five secondary holding pages.
+- [x] Refine the headline, mascot clearance, and responsive feature pillars.
+- [x] Replace proof text with approved testimonials, portraits, and partner badges.
+- [ ] Verify mobile, tablet, desktop, dark mode, and booking navigation.

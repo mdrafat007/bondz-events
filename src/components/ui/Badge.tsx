@@ -1,1 +1,1 @@
-export { Badge } from "../../design-system/components/ui/Badge";
+export { Badge } from "@/design-system/bondz-events---design-system-9e1fdf";

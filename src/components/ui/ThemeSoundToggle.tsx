@@ -1,1 +1,1 @@
-export { ThemeSoundToggle } from "../../design-system/components/ui/ThemeSoundToggle";
+export { ThemeSoundToggle } from "@/design-system/bondz-events---design-system-9e1fdf";

@@ -1,1 +1,1 @@
-export { SiteFooter } from "../../design-system/components/layout/SiteFooter";
+export { SiteFooter } from "@/design-system/bondz-events---design-system-9e1fdf";

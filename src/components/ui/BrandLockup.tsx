@@ -1,1 +1,1 @@
-export { BrandLockup } from "../../design-system/components/ui/BrandLockup";
+export { BrandLockup } from "@/design-system/bondz-events---design-system-9e1fdf";

@@ -2,7 +2,7 @@ import { motion, useAnimationControls, useReducedMotion, type Variants } from "f
 import { useEffect, useState, useRef, useCallback } from "react";
 import mascotWhite from "../../design-system/assets/icons/BONDZ_LOGO_ICON_DARK.png";
 import mascotRed from "../../design-system/assets/icons/BONDZ_LOGO_ICON_-_LIGHT.png";
-import { useTheme } from "../../lib/theme";
+import { useTheme } from "../../design-system/lib/theme";
 import { playPeekabooSound } from "../../lib/haptics";
 import { cn } from "../../lib/utils";
 import { Button } from "../../design-system/components/ui/Button";

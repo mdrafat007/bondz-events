@@ -1,7 +1,13 @@
 import { useSyncExternalStore } from "react";
 
-/** The pre-paint theme initializer lives in the root route head. */
+/** The preview app applies the saved theme before first paint. */
 export const THEME_STORAGE_KEY = "bondz-theme";
+
+export function setTheme(theme: "light" | "dark") {
+  if (typeof document === "undefined") return;
+  document.documentElement.classList.toggle("dark", theme === "dark");
+  try { localStorage.setItem(THEME_STORAGE_KEY, theme); } catch { /* Storage may be blocked. */ }
+}
 
 function subscribeTheme(notify: () => void) {
   const observer = new MutationObserver(notify);

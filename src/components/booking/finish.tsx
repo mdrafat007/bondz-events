@@ -379,6 +379,13 @@ export function Step6() {
   const link = typeof window !== "undefined" ? `${window.location.origin}/invite/${ref}` : `/invite/${ref}`;
   const guestMsg = `${head}\n${tag}\n${dateStr} · ${slot}\n${place}\n\nDetails & RSVP: ${link}`;
 
+  useEffect(() => {
+    if (demo || !ref || !day || !slot) return;
+    try {
+      localStorage.setItem(`bondz_invite_${ref}`, JSON.stringify({ title: head, host: details.name, date: dayToDate(anchor, day).toISOString(), slot, place, tagline: tag }));
+    } catch { /* storage may be unavailable */ }
+  }, [demo, ref, day, slot, anchor, head, tag, details.name, place]);
+
   const download = async () => {
     const S = 1080;
     const c = document.createElement("canvas");
@@ -650,7 +657,7 @@ ol.terms li b { color: #151118; }
         {/* Bento 3: Receipt & Signed Contract (Underneath, Right) */}
         <section className="col-span-1 flex flex-col justify-between rounded-2xl border hairline bg-surface-light p-5 shadow-sm">
           <div>
-            <p className="eyebrow text-ink/55">Receipt & signed contract</p>
+            <p className="eyebrow text-ink/55">Sample receipt & agreement</p>
             <p className="display mt-3 text-4xl sm:text-5xl tabular-nums font-black text-ink">{money(est.total)}</p>
             <p className="text-xs font-semibold text-primary mt-1">
               {money(est.deposit)} demo deposit · {money(est.balance)} balance 7 days prior
@@ -663,7 +670,7 @@ ol.terms li b { color: #151118; }
                 <span className="text-success font-bold">✓</span> Itemised vendor & venue breakdown
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-success font-bold">✓</span> Dual verified digital signature blocks
+                <span className="text-success font-bold">✓</span> Client signature preview
               </li>
             </ul>
           </div>

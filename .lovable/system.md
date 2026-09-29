@@ -8,6 +8,7 @@ Build high-trust, expressive event-booking interfaces with warm editorial restra
 - User preference keys are `bondz-theme` and `bondz-sound`. Theme falls back to system preference and is selected in a pre-paint head script. Sound defaults to on but playback only begins after a user gesture; muting is silent.
 - Use semantic elements, visible keyboard focus, accessible names for icon controls, and a minimum comfortable touch area on mobile. Honor reduced-motion preferences.
 - Components have typed named props and named variants; consumers import from the attached library barrel. Use `Button`, `Badge`, `Card`, and `BrandLockup` before making bespoke copies.
+- In a Tailwind v4 consumer, import the attached `styles/theme.css` once from the app's main stylesheet after `@import "tailwindcss"`; the theme defines both the CSS tokens and the Tailwind utility mappings. A component import alone does not install the theme.
 
 ## Patterns
 ```tsx

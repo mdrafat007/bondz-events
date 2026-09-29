@@ -156,7 +156,7 @@ function DemoDirector({
         state.setDetails((d) => ({ ...d, name: sc.name, honor: sc.name }));
         state.setSignature("demo-signature");
       } else {
-        state.setRef("BZ-" + sc.event.slice(0, 2).toUpperCase() + "-" + String(1000 + Math.floor(Math.random() * 8999)));
+        state.setRef(sc.ref);
       }
       if (step === 1 || step === 3 || step === 5 || step === 6) {
         canvas.current?.scrollTo({ top: micro === 0 ? 0 : micro === 1 ? canvas.current.scrollHeight * 0.45 : canvas.current.scrollHeight, behavior: "smooth" });

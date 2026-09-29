@@ -50,7 +50,7 @@ export function ConnectAIAssistant() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="bondz-ai-link inline-flex max-w-full shrink-0 origin-left cursor-pointer items-center gap-1.5 text-left font-sans text-xs font-black uppercase tracking-tight text-ink underline-offset-4 hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:origin-center sm:whitespace-nowrap xl:text-sm [font-variation-settings:'wdth'_85]"
+        className="bondz-ai-link inline-flex max-w-full shrink-0 origin-left cursor-pointer items-center gap-1.5 text-left font-sans text-xs font-black uppercase tracking-tight text-ink underline-offset-4 hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:origin-center sm:whitespace-nowrap xl:text-sm"
       >
         ✦ Connect your AI agent →
       </button>
@@ -73,7 +73,7 @@ export function ConnectAIAssistant() {
                   <Badge variant="accent">Works with any AI</Badge>
                   <h3 className="mt-2 font-sans text-sm font-black uppercase tracking-tight text-ink">Booking prompt — no setup needed</h3>
                   <p className="mt-1 text-xs text-subtle">Paste this into any assistant that can browse the web. It guides you through a Bondz booking step by step.</p>
-                  <pre className="scroll-quiet mt-2 max-h-40 overflow-auto whitespace-pre-wrap rounded-control border border-hairline bg-canvas p-3 font-mono text-xs leading-relaxed text-ink">{AGENT_PROMPT}</pre>
+                  <pre className="scroll-quiet mt-2 max-h-48 overflow-auto whitespace-pre-wrap rounded-control border border-hairline bg-canvas p-3 font-mono text-xs leading-relaxed text-ink">{AGENT_PROMPT}</pre>
                   <div className="mt-3"><Button size="sm" onClick={() => copy(AGENT_PROMPT, "Prompt")}>Copy prompt</Button></div>
                 </section>
 

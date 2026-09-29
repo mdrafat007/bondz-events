@@ -57,16 +57,16 @@ function LandingPage() {
           <div className="mt-8 flex flex-col items-start gap-4 sm:mt-10">
             <div className="relative isolate pt-3">
               <span aria-hidden="true" className="bondz-mascot-peek pointer-events-none absolute left-[57%] z-10 w-16 -translate-x-1/2 sm:w-20"><img src={mascot} alt="" className="block h-auto w-full" /></span>
-              <Button variant="dark" size="lg" onClick={launchBooking} onMouseEnter={playPeekabooSound} onFocus={playPeekabooSound} disabled={launching} className="bondz-hero-cta group relative z-20 min-h-14 gap-6 rounded-full py-2 pl-6 pr-2 text-sm shadow-raised sm:text-base">Get a Booking <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-xl text-surface-light transition-transform group-hover:rotate-45">↗</span></Button>
+              <Button variant="dark" size="lg" onClick={launchBooking} onMouseEnter={playPeekabooSound} onFocus={playPeekabooSound} disabled={launching} className="bondz-hero-cta group relative z-20 min-h-14 gap-6 rounded-full bg-night py-2 pl-6 pr-2 text-sm text-paper shadow-raised hover:bg-night/85 sm:text-base">Get a Booking <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-xl text-paper transition-transform group-hover:rotate-45">↗</span></Button>
             </div>
             <p className="max-w-sm text-sm leading-relaxed text-subtle sm:text-base">One conversation. One date that works for everyone. A celebration that feels entirely yours.</p>
           </div>
         </div>
         <div className="min-w-0">
-          <div className="relative aspect-video max-h-[34vh] min-h-0 w-full overflow-hidden border border-hairline bg-ink shadow-raised lg:ml-auto" aria-label="Preview of a Bondz Events invitation">
+          <div className="relative aspect-video max-h-[34vh] min-h-0 w-full overflow-hidden border border-hairline bg-night shadow-raised lg:ml-auto" aria-label="Preview of a Bondz Events invitation">
             <div className="absolute inset-0 grid grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] gap-0">
-              <div className="relative min-w-0 overflow-hidden bg-surface-light"><img src={invitation} alt="Bondz Events invitation artwork" className="h-full w-full object-cover object-bottom" /><div className="absolute left-[7%] top-[10%] max-w-[80%] text-ink"><span className="text-[0.5rem] font-extrabold uppercase text-primary sm:text-[0.6rem]">The invitation</span><p className="mt-2 font-serif text-[clamp(1.1rem,2.7vw,3rem)] leading-none">A celebration<br /><em>made for you.</em></p></div></div>
-              <div className="flex min-w-0 flex-col justify-between bg-ink p-[clamp(0.75rem,2vw,2rem)] text-canvas"><div className="flex items-start justify-between gap-2"><span className="text-[0.55rem] font-extrabold uppercase text-primary sm:text-xs">A little preview</span><span className="font-serif text-lg italic text-primary sm:text-3xl">B.</span></div><div><p className="font-serif text-[clamp(1.25rem,3vw,3.5rem)] leading-[0.95]">Good things<br />are worth<br /><em className="text-primary">celebrating.</em></p><span className="mt-3 block border-t border-canvas/20 pt-2 text-[0.5rem] font-bold uppercase text-canvas/70 sm:mt-5 sm:text-[0.65rem]">An occasion, entirely yours ↗</span></div></div>
+              <div className="relative min-w-0 overflow-hidden bg-white"><img src={invitation} alt="Bondz Events invitation artwork" className="h-full w-full object-cover object-bottom" /><div className="absolute left-[7%] top-[10%] max-w-[80%] text-night"><span className="text-[0.5rem] font-extrabold uppercase text-primary sm:text-[0.6rem]">The invitation</span><p className="mt-2 font-serif text-[clamp(1.1rem,2.7vw,3rem)] leading-none">A celebration<br /><em>made for you.</em></p></div></div>
+              <div className="flex min-w-0 flex-col justify-between bg-night p-[clamp(0.75rem,2vw,2rem)] text-paper"><div className="flex items-start justify-between gap-2"><span className="text-[0.55rem] font-extrabold uppercase text-primary sm:text-xs">A little preview</span><span className="font-serif text-lg italic text-primary sm:text-3xl">B.</span></div><div><p className="font-serif text-[clamp(1.25rem,3vw,3.5rem)] leading-[0.95]">Good things<br />are worth<br /><em className="text-primary">celebrating.</em></p><span className="mt-3 block border-t border-paper/20 pt-2 text-[0.5rem] font-bold uppercase text-paper/70 sm:mt-5 sm:text-[0.65rem]">An occasion, entirely yours ↗</span></div></div>
             </div>
           </div>
           <div className="mt-3 flex items-center justify-between gap-3 text-[0.62rem] font-bold uppercase text-subtle"><span>Made personal by Mr. Bondz</span><span>01 / 04</span></div>
@@ -78,6 +78,6 @@ function LandingPage() {
     </div>
     <section aria-label="Bondz Events at a glance" className="mt-6 border-t border-hairline bg-surface sm:mt-9"><Marquee phrases={proofA} /><Marquee phrases={proofB} reverse /></section>
     <div className="mx-auto max-w-7xl px-4 py-8 text-center font-serif text-2xl italic text-ink sm:py-12 sm:text-4xl">Good times, beautifully made<span className="text-primary">.</span></div>
-    {launching && <div className="pointer-events-none fixed inset-0 z-50" aria-hidden="true"><div className="bondz-curtain-left absolute inset-y-0 left-0 w-1/2 bg-ink" /><div className="bondz-curtain-right absolute inset-y-0 right-0 w-1/2 bg-ink" /></div>}
+    {launching && <div className="pointer-events-none fixed inset-0 z-50" aria-hidden="true"><div className="bondz-curtain-left absolute inset-y-0 left-0 w-1/2 bg-night" /><div className="bondz-curtain-right absolute inset-y-0 right-0 w-1/2 bg-night" /></div>}
   </AppShell>;
 }

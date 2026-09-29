@@ -331,18 +331,21 @@ export function Step6() {
 
   useEffect(() => {
     if (demo) return;
+    // Tactile synthetic confirm first, then the recorded human celebration.
+    playConfirmFlourish();
     cheer();
     signalBot({ mood: "happy", tip: "Your sample booking is ready. No messages have been sent." });
 
     let audio: HTMLAudioElement | null = null;
     let fadeInterval: number | null = null;
     let stopTimeout: number | null = null;
+    let startTimeout: number | null = null;
 
     if (isSoundEnabled()) {
       try {
         audio = new Audio("/celebration.wav");
         audio.volume = 0.85;
-        audio.play().catch(() => {});
+        startTimeout = window.setTimeout(() => audio?.play().catch(() => {}), 520);
 
         // Play celebration audio for first 5.8s, then smooth fade out over 1s (total ~6.8s)
         stopTimeout = window.setTimeout(() => {
@@ -354,7 +357,7 @@ export function Step6() {
               if (fadeInterval) window.clearInterval(fadeInterval);
             }
           }, 80);
-        }, 5800);
+        }, 6300);
       } catch {
         /* audio optional */
       }

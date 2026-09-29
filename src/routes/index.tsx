@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Bondz Events - Celebrations, Beautifully Booked" },
       {
         property: "og:description",
-        content: "One organizer. Every detail considered. Book a celebration with Mr. Bondz.",
+        content: "One organizer. Every detail considered. Explore a sample celebration with Mr. Bondz.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

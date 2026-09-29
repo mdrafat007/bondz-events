@@ -11,9 +11,9 @@ export const Route = createFileRoute("/portfolios")({
   head: () => ({
     meta: [
       { title: "Events Gallery - Bondz Events" },
-      { name: "description", content: "Curated masonry bento gallery of verified celebrations booked and organized end-to-end by Bondz Events." },
+      { name: "description", content: "Explore an editorial gallery of celebration ideas and example event briefs from Bondz Events." },
       { property: "og:title", content: "Events Gallery - Bondz Events" },
-      { property: "og:description", content: "Explore verified photography proofs from 700+ celebrations across all event categories." },
+      { property: "og:description", content: "Explore sample event concepts across celebrations of every kind." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

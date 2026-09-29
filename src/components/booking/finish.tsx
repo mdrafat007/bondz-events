@@ -522,7 +522,7 @@ ol.terms li b { color: #151118; }
               <span className="rounded-full bg-success px-2.5 py-1 text-success-foreground font-bold">✓ Demo booking - no payment</span>
             </p>
             <h1 className="mt-3 text-[clamp(3rem,min(8vw,13vh),7.5rem)] font-extrabold leading-[0.85] tracking-[-0.04em]">
-              You’re <span className="font-serif-i text-primary">Booked!</span>
+              You’re <span className="font-serif-i text-primary">Almost Booked!</span>
             </h1>
             <p className="mt-3 text-sm text-foreground/80 font-medium">
               {ev?.title} · {sel.guests} guests · {dateStr}, {slot} · {place}

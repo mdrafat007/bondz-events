@@ -84,7 +84,7 @@ function LandingPage() {
           <div className="flex min-w-0 flex-col justify-between lg:h-full">
             <div className="min-w-0">
               <div className="mb-3 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 font-sans text-[0.62rem] font-extrabold uppercase leading-snug tracking-tight text-ink sm:mb-4 sm:text-xs"><span className="hidden sm:inline">Solo Event Organizer · 16 Years · 700+ Celebrations</span><span className="sm:hidden">Solo Organizer · 16 Yrs · 700+ Events</span></div>
-              <h1 id="hero-title" className="bondz-hero-title font-sans font-black tracking-tight text-ink [font-variation-settings:'wdth'_85]"><span className="block">Get <span className="font-serif font-normal italic tracking-normal text-primary">“yourself booked”</span></span><span className="block">and Leave the <span className="font-serif font-normal italic tracking-normal text-primary">“rest on us”!</span></span></h1>
+              <h1 id="hero-title" className="bondz-hero-title font-sans font-black tracking-tight text-ink [font-variation-settings:'wdth'_85]"><span className="block">Get <span className="font-serif font-normal italic tracking-normal text-primary">“yourself booked”</span></span><span className="block">and{"\n"}Leave the <span className="font-serif font-normal italic tracking-normal text-primary">“rest on us”!</span></span></h1>
             </div>
             <div className="mt-5 flex flex-col items-start sm:mt-6">
               <HeroBookingCTA onClick={launchBooking} disabled={launching} />

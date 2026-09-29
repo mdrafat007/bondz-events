@@ -96,12 +96,12 @@ function LandingPage() {
             <HeroBookingDemo onLaunchBooking={launchBooking} className="w-full" />
           </div>
         </section>
-        <section aria-label="Why book with Bondz Events" className="grid shrink-0 grid-cols-1 gap-4 border-t border-hairline px-1 py-3 sm:grid-cols-2 md:px-4 lg:grid-cols-4 lg:gap-6 lg:px-0 lg:py-2">
+        <section aria-label="Why book with Bondz Events" className="grid shrink-0 grid-cols-1 gap-3 border-t border-hairline px-1 py-2.5 sm:grid-cols-2 sm:gap-4 md:px-4 lg:grid-cols-4 lg:gap-6 lg:px-0 lg:py-2">
           {pillars.map((pillar) => <div key={pillar.number} className="flex min-w-0 items-start gap-3"><span className="shrink-0 font-serif text-xl italic text-primary sm:text-2xl">{pillar.number}</span><h2 className="min-w-0 pt-0.5 font-sans text-xs font-black uppercase leading-tight tracking-tight text-ink sm:text-sm">{pillar.title}</h2></div>)}
         </section>
       </div>
-      <section aria-label="Client reviews and event partners" className="mt-2 shrink-0 border-t border-hairline bg-surface sm:mt-4 lg:mt-0"><ReviewMarquee /><PartnerMarquee /></section>
-      <div className="mx-auto max-w-7xl px-4 py-8 text-center font-serif text-2xl italic text-ink sm:py-12 sm:text-4xl lg:hidden">Good times, beautifully made<span className="text-primary">.</span></div>
+      <section aria-label="Client reviews and event partners" className="mt-1.5 shrink-0 border-t border-hairline bg-surface sm:mt-2.5 lg:mt-0"><ReviewMarquee /><PartnerMarquee /></section>
+      <div className="mx-auto max-w-7xl px-4 py-6 text-center font-serif text-2xl italic text-ink sm:py-8 sm:text-4xl lg:hidden">Good times, beautifully made<span className="text-primary">.</span></div>
     </div>
     {curtain}
   </AppShell>;

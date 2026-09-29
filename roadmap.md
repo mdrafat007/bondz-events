@@ -37,3 +37,16 @@
 - [x] Conceal the mascot fully at rest and keep the 3.8s idle peek with wobble and arrow push-jump.
 - [x] Fit the whole home page inside one desktop viewport with no page scrolling.
 - [x] Keep both proof tickers running smoothly and seamlessly, pausing only on hover.
+
+# Hero CTA mascot geometry
+- [x] Anchor the mascot to a measured head crop and clip it at the button's top rim.
+- [x] Drive resting, hover, and idle-loop states with opacity, scale, y, and rotate transitions.
+- [x] Replace the text arrow with the bespoke editorial arrow and keep the push-jump clash-free.
+
+# Phase 3 — Secondary content pages
+- [x] `/how-it-works`: manifesto, credentials, the Three-Way Calendar Rule, and Before/After.
+- [x] `/services`: 11 services with Plan/Host/Produce filters, editorial icons, and pricing indicators.
+- [x] `/portfolios`: filterable masonry gallery with event tags, guest counts, and outcomes.
+- [x] `/partners`: 17 partners and 5 venues with live availability and a detail drawer.
+- [x] `/contact`: inquiry form with validation toasts and fast-track booking.
+- [x] Shared source of truth in `src/lib/bondz-data.ts` with the deterministic availability engine.

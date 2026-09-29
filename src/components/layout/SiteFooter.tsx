@@ -1,4 +1,5 @@
-import { SiteFooter as BaseSiteFooter, type SiteFooterProps } from "@/design-system/bondz-events---design-system-9e1fdf";
+import { SiteFooter as BaseSiteFooter } from "@/design-system/bondz-events---design-system-9e1fdf";
+import type { SiteFooterProps } from "@/design-system/bondz-events---design-system-9e1fdf/design-system/components/layout/SiteFooter";
 import { cn } from "../../lib/utils";
 
 /**

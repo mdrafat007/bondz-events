@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { availableDays, slotOpen, SLOTS } from "@/lib/bondz-data";
+import { EVENT_TYPES, VENUES, VIBES_BY_EVENT, availableDays, slotOpen, SLOTS } from "@/lib/bondz-data";
 import { Lockup, StatusLine } from "@/components/site/Brand";
-import type { EventTypeId } from "@/lib/bondz-data";
+import type { CategoryId, EventTypeId, Slot } from "@/lib/bondz-data";
+
 import { cn } from "@/lib/utils";
 import { EstimatePanel, EstimateSheet, RealityPanel } from "./panels";
 import { Ghost, Primary, SlotPicker, Step1, Step2, Step3A, Step3B, Step4 } from "./steps";

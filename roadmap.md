@@ -52,5 +52,6 @@
 - [x] Shared source of truth in `src/lib/bondz-data.ts` with the deterministic availability engine.
 
 # Booking engine
-- [x] `/book`: 3-step engine (celebration, live 75-day calendar + add-ons + ledger, review/sign/deposit) with confirmation, reschedule and cancel modals.
+- [x] `/book`: full 6-step engine (event + category vibes, guests/location, services & venue, 75-day intersection calendar with shifts, details/agreement/signature/deposit with orbital loader, booked confirmation with invitation themes, dispatch, receipt, reschedule and cancel).
+- [ ] `/invite/$ref`: guest portal with live attendee counter, dietary pills and calendar links.
 - [ ] `/invite/$ref` guest portal.

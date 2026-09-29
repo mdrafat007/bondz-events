@@ -21,4 +21,4 @@
 # Home page benchmark refinement
 - [x] Match editorial hero typography, red mascot booking action, and cinematic dinner media.
 - [x] Unbox the four pillars and refine both proof tickers to the supplied visual benchmark.
-- [ ] Verify the refined page across mobile, desktop, dark mode, and booking launch.
+- [x] Verify the refined page across mobile, desktop, dark mode, and booking launch.

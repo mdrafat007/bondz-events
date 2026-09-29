@@ -3,7 +3,7 @@ import { AppShell } from "../index";
 import { MarketingNav } from "../components/layout/MarketingNav";
 import { SiteFooter } from "../components/layout/SiteFooter";
 import { HeroBookingCTA } from "../components/site/HeroBookingCTA";
-import { HeroBookingDemo } from "../components/site/HeroBookingDemo";
+import { ActualBookingDemo } from "../components/site/ActualBookingDemo";
 import { useBookingLaunch } from "../lib/use-booking-launch";
 import dinner from "../assets/photography/celebration-dinner.jpg";
 import amira from "../assets/photography/amira.asset.json";
@@ -96,7 +96,7 @@ function LandingPage() {
             </p>
           </div>
           <div className="min-w-0 lg:flex lg:min-h-0 lg:items-center">
-            <HeroBookingDemo onLaunchBooking={launchBooking} className="w-full" />
+            <ActualBookingDemo onLaunchBooking={launchBooking} className="w-full" />
           </div>
         </section>
         <section aria-label="Why book with Bondz Events" className="grid shrink-0 grid-cols-1 gap-4 border-t border-hairline px-1 py-3 sm:grid-cols-2 md:px-4 lg:grid-cols-4 lg:gap-6 lg:px-0 lg:py-2">

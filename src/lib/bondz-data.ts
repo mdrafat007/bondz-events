@@ -1,6 +1,6 @@
 ﻿export type EventTypeId = "wedding" | "anniversary" | "birthday" | "bbq" | "family" | "corporate" | "hybrid" | "custom";
 export type CategoryId = "catering" | "decor" | "dj" | "equipment" | "staff" | "cleaning" | "photo" | "lighting" | "hybrid";
-export type Slot = "Morning" | "Evening" | "Night";
+export type Slot = "Morning" | "Afternoon" | "Evening";
 
 export interface Partner {
   id: string;
@@ -31,7 +31,7 @@ export interface Venue {
 }
 
 export const HORIZON = 75;
-export const SLOTS: readonly Slot[] = ["Morning", "Evening", "Night"] as const;
+export const SLOTS: readonly Slot[] = ["Morning", "Afternoon", "Evening"] as const;
 export const BONDZ_FEE = { home: 450, venue: 650 };
 
 export const EVENT_TYPES = [
@@ -191,8 +191,8 @@ export const VIBES_BY_EVENT: Record<EventTypeId, string[]> = {
 
 export const SLOT_TIMES: Record<Slot, string> = {
   Morning: "10:00 AM - 2:00 PM",
+  Afternoon: "2:00 PM - 6:00 PM",
   Evening: "5:00 PM - 10:00 PM",
-  Night: "9:00 PM - 2:00 AM",
 };
 
 function fitsEvent(list: EventTypeId[] | "all", e: EventTypeId | null): boolean {
@@ -290,14 +290,23 @@ export const CONTACT = {
 };
 
 export const TERMS: { t: string; b: string }[] = [
-  { t: "Deposit", b: "A 25% deposit locks your date, your venue and every partner in one sitting." },
+  { t: "Deposit", b: "A 25% demo deposit illustrates how your date, venue and partners would be reserved in one sitting." },
   { t: "Balance", b: "The remaining balance is due 7 days before your celebration." },
-  { t: "Rescheduling", b: "Move your date once, free, up to 14 days out. Inside 14 days a 5% fee applies." },
-  { t: "Cancellation", b: "Cancel up to 30 days out for a full deposit refund. Inside 30 days the deposit is held." },
+  { t: "Rescheduling", b: "One free reschedule up to 30 days before the event, subject to availability. Later changes are handled personally by Mr. Bondz." },
+  { t: "Cancellation", b: "Over 60 days: deposit refunded minus a 5% processing fee. 30 to 60 days: 50% of deposit refunded. Under 30 days: deposit is non-refundable." },
   { t: "Availability", b: "Only dates where Mr. Bondz, the venue and every partner are free are shown - what you see is what you get." },
   { t: "Partners", b: "Every partner is vetted, insured and briefed by Mr. Bondz personally." },
   { t: "Weather", b: "Outdoor plans always carry an indoor fallback at no extra cost." },
   { t: "One point of contact", b: "You never chase a vendor. One call, one person, one plan." },
+];
+
+export const CANCELLATION_POLICY: { t: string; b: string }[] = [
+  { t: "Booking & Deposit", b: "Your booking is confirmed once the 25% deposit is paid and these terms are signed. The balance is due 7 days before the event." },
+  { t: "Availability Guarantee", b: "Every date shown was free across Mr. Bondz, your venue (if any) and every assigned partner at the moment of booking. Those calendars are locked for you." },
+  { t: "Rescheduling", b: "One free reschedule up to 30 days before the event, subject to live availability across the same partners. Later changes are handled personally by Mr. Bondz." },
+  { t: "Cancellation Tiers", b: "More than 60 days out: deposit refunded minus a 5% processing fee. 30 to 60 days: 50% of deposit refunded. Under 30 days: deposit is non-refundable." },
+  { t: "Guest Count Flexibility", b: "Final numbers may move up to 10% up to 14 days before the event at the same per-guest rates. Larger changes re-run calendar availability." },
+  { t: "Force Majeure", b: "If an event cannot take place due to causes beyond anyone's control, we move it to the next mutually available date at no additional cost." },
 ];
 
 export const PARTNER_GROUPS: { g: string; names: string[] }[] = [

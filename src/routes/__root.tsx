@@ -26,7 +26,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "No phone calls. Every date shown already works for every partner." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "theme-color", content: "#f6f1e7" },
+      { name: "theme-color", content: "#faf7f2" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -68,14 +68,14 @@ function BookingCurtain() {
         initial={{ x: "-100%" }}
         animate={{ x: isClosed ? "0%" : "-100%" }}
         transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-        className="h-full w-1/2 bg-[#130f16] border-r border-primary/40 shadow-[0_0_40px_rgba(241,69,59,0.3)]"
+        className="h-full w-1/2 bg-bondz-night border-r border-primary/40"
       />
       {/* Right Curtain */}
       <motion.div
         initial={{ x: "100%" }}
         animate={{ x: isClosed ? "0%" : "100%" }}
         transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-        className="h-full w-1/2 bg-[#130f16] border-l border-primary/40 shadow-[0_0_40px_rgba(241,69,59,0.3)]"
+        className="h-full w-1/2 bg-bondz-night border-l border-primary/40"
       />
     </div>
   );

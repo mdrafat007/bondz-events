@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { availableDays, slotOpen, SLOTS } from "@/lib/bondz-data";
 import { Lockup, StatusLine } from "@/components/site/Brand";
 import type { EventTypeId } from "@/lib/bondz-data";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,9 @@ const STEPS = ["Event", "Where", "Services-Addons", "Date", "Details", "Booked"]
 export function BookingEngine({
   init,
   intro,
+  demo = false,
+  paused = false,
+  onDemoProgress,
 }: {
   init: {
     event?: EventTypeId | undefined;
@@ -23,16 +27,68 @@ export function BookingEngine({
     reveal?: boolean | undefined;
   };
   intro: boolean;
+  demo?: boolean;
+  paused?: boolean;
+  onDemoProgress?: (progress: number) => void;
 }) {
-  const state = useBookingState(init);
+  const state = useBookingState(init, demo);
   return (
     <BookingProvider value={state}>
-      <Frame intro={intro} />
+      <Frame intro={intro} demo={demo} paused={paused} onDemoProgress={onDemoProgress} />
     </BookingProvider>
   );
 }
 
-function Frame({ intro }: { intro: boolean }) {
+function DemoDirector({ paused, canvas, onProgress }: { paused: boolean; canvas: React.RefObject<HTMLDivElement | null>; onProgress?: (progress: number) => void }) {
+  const b = useBooking();
+  const current = useRef(b);
+  current.current = b;
+  const progress = useRef(onProgress);
+  progress.current = onProgress;
+  const elapsed = useRef(0);
+  const lastAction = useRef(-1);
+  useEffect(() => {
+    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setInterval(() => {
+      elapsed.current = (elapsed.current + 100) % 19200;
+      const step = (Math.floor(elapsed.current / 3200) + 1) as Step;
+      const micro = Math.floor((elapsed.current % 3200) / 1000);
+      progress.current?.((elapsed.current / 19200) * 100);
+      const state = current.current;
+      if (state.step !== step) {
+        state.setStep(step);
+        canvas.current?.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      const action = step * 10 + micro;
+      if (action === lastAction.current) return;
+      lastAction.current = action;
+      if (step === 1) {
+        state.setSel((s) => ({ ...s, event: "wedding" }));
+        state.setVibes(micro % 2 ? ["Romantic Garden", "Intimate Candlelight"] : ["Black Tie Glamour"]);
+      } else if (step === 2) {
+        state.setSel((s) => ({ ...s, where: "venue", venue: "smokestack", guests: [45, 60, 90, 60][micro] ?? 60 }));
+      } else if (step === 3) {
+        state.setSel((s) => ({ ...s, services: micro % 2 ? ["catering", "dj", "lighting", "decor"] : ["catering", "dj"] }));
+      } else if (step === 4) {
+        const open = availableDays(state.sel).filter((day) => slotOpen(day, SLOTS.indexOf("Evening")));
+        state.setDay(open[micro % Math.max(open.length, 1)] ?? null);
+        state.setSlot("Evening");
+      } else if (step === 5) {
+        state.setDetails((d) => ({ ...d, name: "Amira & Jonah", honor: "Amira & Jonah" }));
+        state.setSignature("demo-signature");
+      } else {
+        state.setRef("BZ-7492-OCT26");
+      }
+      if (step === 1 || step === 3 || step === 5 || step === 6) {
+        canvas.current?.scrollTo({ top: micro === 0 ? 0 : micro === 1 ? canvas.current.scrollHeight * 0.45 : canvas.current.scrollHeight, behavior: "smooth" });
+      }
+    }, 100);
+    return () => window.clearInterval(timer);
+  }, [paused, canvas]);
+  return null;
+}
+
+function Frame({ intro, demo, paused, onDemoProgress }: { intro: boolean; demo: boolean; paused: boolean; onDemoProgress?: (progress: number) => void }) {
   const b = useBooking();
   const { step, setStep, reveal, setReveal, sel, day, slot } = b;
   const [split, setSplit] = useState(intro);
@@ -79,7 +135,8 @@ function Frame({ intro }: { intro: boolean }) {
 
   return (
     <div className="flex h-full flex-col max-w-full overflow-x-hidden">
-      <header className="shrink-0 border-b hairline bg-canvas transition-colors duration-300">
+      {demo && <DemoDirector paused={paused} canvas={scroller} onProgress={onDemoProgress} />}
+      {!demo && <header className="shrink-0 border-b hairline bg-canvas transition-colors duration-300">
         <div className="flex h-14 sm:h-16 items-center justify-between gap-1.5 sm:gap-4 px-2.5 sm:px-6">
           {/* Brand Logo */}
           <Link
@@ -284,7 +341,7 @@ function Frame({ intro }: { intro: boolean }) {
             </label>
           )}
         </div>
-      </header>
+      </header>}
 
       <div
         className={cn(
@@ -295,7 +352,7 @@ function Frame({ intro }: { intro: boolean }) {
         )}
       >
         <div className="flex w-full max-w-full min-w-0 min-h-0 flex-col">
-          <div ref={scroller} className={cn("scroll-quiet w-full max-w-full min-w-0 min-h-0 flex-1", step <= 2 ? "overflow-y-auto md:overflow-hidden" : "overflow-y-auto pr-1")}>
+          <div ref={scroller} data-booking-canvas className={cn("scroll-quiet w-full max-w-full min-w-0 min-h-0 flex-1", demo ? "overflow-y-auto" : step <= 2 ? "overflow-y-auto md:overflow-hidden" : "overflow-y-auto pr-1")}>
             {step === 1 && <Step1 />}
             {step === 2 && <Step2 />}
             {step === 3 && (sel.where === "venue" ? <Step3B /> : <Step3A />)}
@@ -336,7 +393,7 @@ function Frame({ intro }: { intro: boolean }) {
         )}
       </div>
 
-      {split && (
+      {split && !demo && (
         <div aria-hidden className="pointer-events-none fixed inset-0 z-[70] flex">
           <div className="split-left relative h-full w-1/2 bg-ink flex items-center justify-end pr-4 sm:pr-8">
             <span className="display text-[clamp(2.4rem,8vw,7.5rem)] text-canvas whitespace-nowrap">Let’s get</span>

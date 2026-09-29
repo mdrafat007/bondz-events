@@ -28,9 +28,8 @@ button, input { font: inherit; }
   --invite-tie-hi: oklch(0.64 0.21 28);
 }
 
-.bondz-hero-title { font-size: clamp(2.2875rem, 6.9vw, 5.5375rem); line-height: 0.94; letter-spacing: -0.04em; }
-@media (min-width: 1024px) { .bondz-hero-title { font-size: clamp(2.6875rem, 4.72vw, 5.7375rem); line-height: 0.94; } }
-@media (min-width: 1440px) { .bondz-hero-title { font-size: clamp(3.1375rem, 5.32vw, 6.3375rem); line-height: 0.92; } }
+.bondz-hero-title { font-size: clamp(1.16rem, 4.2vw, 3rem); line-height: 1.05; letter-spacing: -0.04em; }
+@media (min-width: 1024px) { .bondz-hero-title { font-size: clamp(1.9rem, 3.05vw, 4rem); } }
 
 /* Marketing header: push the primary links to the right, beside the toggles. */
 .bondz-nav-right nav[aria-label="Main navigation"] { margin-left: auto; }

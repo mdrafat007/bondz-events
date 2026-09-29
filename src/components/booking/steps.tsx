@@ -519,8 +519,8 @@ export function Step3B() {
 /* ───────────────── STEP 4 ───────────────── */
 export const SHIFT_DETAILS: Record<Slot, { label: string; time: string; shortTime: string }> = {
   Morning: { label: "Morning", time: "9:00 AM - 2:00 PM", shortTime: "9 AM - 2 PM" },
-  Evening: { label: "Evening", time: "3:00 PM - 8:00 PM", shortTime: "3 PM - 8 PM" },
-  Night: { label: "Night", time: "7:00 PM - 1:00 AM", shortTime: "7 PM - 1 AM" },
+  Afternoon: { label: "Afternoon", time: "2:00 PM - 6:00 PM", shortTime: "2 PM - 6 PM" },
+  Evening: { label: "Evening", time: "5:00 PM - 10:00 PM", shortTime: "5 PM - 10 PM" },
 };
 
 export function Step4() {

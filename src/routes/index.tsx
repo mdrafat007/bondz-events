@@ -148,17 +148,16 @@ function LandingPage() {
             <div className="flex min-w-0 flex-col gap-6 sm:gap-8 lg:h-full lg:justify-between">
               <div className="min-w-0">
                 <div className="mb-3 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 font-sans text-[0.62rem] font-extrabold uppercase leading-snug tracking-tight text-ink sm:mb-4 sm:text-xs">
-                  <span className="hidden sm:inline">Solo Event Organizer · 16 Years · 700+ Celebrations</span>
-                  <span className="sm:hidden">Solo Organizer · 16 Yrs · 700+ Events</span>
+                  <span>Solo Event Organizer · 16 Years · 700+ Celebrations</span>
                 </div>
                 <h1
                   id="hero-title"
                   className="bondz-hero-title font-sans font-black tracking-tight text-ink [font-variation-settings:'wdth'_85]"
                 >
-                  <span className="block whitespace-normal lg:whitespace-nowrap">
+                  <span className="block whitespace-nowrap">
                     Get <span className="font-serif font-normal italic tracking-normal text-primary">“yourself booked”</span>
                   </span>
-                  <span className="block whitespace-normal lg:whitespace-nowrap">
+                  <span className="block whitespace-nowrap">
                     and Leave the <span className="font-serif font-normal italic tracking-normal text-primary">“rest on us”!</span>
                   </span>
                 </h1>
@@ -192,7 +191,7 @@ function LandingPage() {
         {/* Generous editorial breathing space before client reviews and event partners */}
         <section
           aria-label="Client reviews and event partners"
-          className="mt-8 sm:mt-12 lg:mt-16 shrink-0 border-t border-hairline bg-surface"
+          className="mt-10 sm:mt-14 lg:mt-16 shrink-0 border-t border-hairline bg-surface"
         >
           <ReviewMarquee />
           <PartnerMarquee />

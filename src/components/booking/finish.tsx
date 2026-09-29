@@ -1,5 +1,6 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { Link } from "@tanstack/react-router";
 import { CATEGORIES, EVENT_TYPES, TERMS, VENUES, assignPartner, dayToDate, estimate, money, priceOf } from "@/lib/bondz-data";
 import { signalBot } from "@/lib/bot-bus";
 import { cn } from "@/lib/utils";
@@ -105,16 +106,16 @@ function SignaturePad({ onChange }: { onChange: (d: string | null) => void }) {
 /* ───────────────── STEP 5 ───────────────── */
 export function Step5() {
   const s = useSummary();
-  const { sel, setSel, details, setDetails, signature, setSignature, setStep, setRef, est, parties } = s;
+  const { sel, setSel, details, setDetails, signature, setSignature, setStep, setRef, est, parties, demo } = s;
   const [agree, setAgree] = useState(false);
-  const [card, setCard] = useState({ n: "", exp: "", cvc: "" });
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState(0);
 
-  const ready = details.name.trim() && /\S+@\S+\.\S+/.test(details.email) && details.phone.trim().length >= 6 && agree && signature && card.n.replace(/\s/g, "").length >= 12 && card.exp.length >= 4 && card.cvc.length >= 3;
-  const missing = !details.name.trim() ? "your name" : !/\S+@\S+\.\S+/.test(details.email) ? "a valid email" : details.phone.trim().length < 6 ? "a phone number" : !agree ? "agreement to the terms" : !signature ? "your signature" : "demo card details";
+  const ready = details.name.trim() && /\S+@\S+\.\S+/.test(details.email) && details.phone.trim().length >= 6 && agree && signature;
+  const missing = !details.name.trim() ? "your name" : !/\S+@\S+\.\S+/.test(details.email) ? "a valid email" : details.phone.trim().length < 6 ? "a phone number" : !agree ? "agreement to the terms" : "your signature";
 
   const pay = () => {
+    if (demo) return;
     setLoading(true);
     signalBot({ mood: "think" });
     [1, 2, 3, 4].forEach((i) => window.setTimeout(() => setPhase(i), i * 750));
@@ -127,10 +128,10 @@ export function Step5() {
   const set = (k: keyof typeof details) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setDetails({ ...details, [k]: e.target.value });
 
   const checklist = [
-    `Authorizing deposit of ${money(est.deposit)}`,
-    `Locking ${parties - 1} partner calendars`,
-    "Writing signed terms & receipt",
-    `Emitting ${parties}-way confirmations`,
+    `Calculating sample deposit of ${money(est.deposit)}`,
+    `Checking ${parties - 1} partner calendars`,
+    "Preparing agreement preview",
+    `Preparing ${parties}-way dispatch preview`,
   ];
 
   return (
@@ -172,28 +173,12 @@ export function Step5() {
       </div>
 
       <aside className="dark flex flex-col rounded-2xl bg-background p-5 text-foreground lg:sticky lg:top-0 lg:self-start">
-        <p className="eyebrow text-primary">Secure deposit</p>
+        <p className="eyebrow text-primary">Demo deposit - no payment collected</p>
         <p className="display mt-3 text-6xl tabular-nums">{money(est.deposit)}</p>
         <p className="mt-1 text-xs text-foreground/60">due today · balance {money(est.balance)} due 7 days before</p>
-        <div className="mt-5 space-y-3">
-          <label className="block">
-            <span className="eyebrow text-foreground/60">Card number</span>
-            <input inputMode="numeric" placeholder="4242 4242 4242 4242" value={card.n} onChange={(e) => setCard({ ...card, n: e.target.value.replace(/[^\d ]/g, "").slice(0, 19) })} className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm tabular-nums outline-none focus:ring-2 focus:ring-primary" />
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            <label className="block">
-              <span className="eyebrow text-foreground/60">Expiry</span>
-              <input placeholder="12/28" value={card.exp} onChange={(e) => setCard({ ...card, exp: e.target.value.slice(0, 5) })} className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary" />
-            </label>
-            <label className="block">
-              <span className="eyebrow text-foreground/60">CVC</span>
-              <input placeholder="123" inputMode="numeric" value={card.cvc} onChange={(e) => setCard({ ...card, cvc: e.target.value.replace(/\D/g, "").slice(0, 4) })} className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary" />
-            </label>
-          </div>
-          <p className="eyebrow text-foreground/45">Demo sandbox · no real charge</p>
-        </div>
-        <Primary disabled={!ready} onClick={pay} className="mt-5 w-full py-4">
-          Pay {money(est.deposit)} & book
+        <p className="mt-5 text-xs text-foreground/70">This is a client-side preview. No card details are requested, no money is collected and no notifications are sent.</p>
+        <Primary disabled={!ready || demo} onClick={pay} className="mt-5 w-full py-4">
+          Preview booking - {money(est.deposit)} deposit
         </Primary>
         {!ready && <p className="mt-2 text-center text-[0.7rem] text-foreground/50">Still need {missing}.</p>}
       </aside>
@@ -212,7 +197,7 @@ export function Step5() {
             </div>
 
             <h2 className="display mt-6 text-3xl sm:text-4xl text-white tracking-tight">Completing your booking</h2>
-            <p className="mt-1 text-xs text-white/60">Dispatching instant 360° synchronization locks across all partner calendars...</p>
+            <p className="mt-1 text-xs text-white/60">Preparing a simulated confirmation. No partner calendars are locked.</p>
 
             <ul className="mt-6 space-y-3">
               {checklist.map((c, i) => (
@@ -337,13 +322,14 @@ function loadImg(src: string) {
 /* ───────────────── STEP 6 ───────────────── */
 export function Step6() {
   const s = useSummary();
-  const { ev, sel, dateStr, slot, place, ref, parties, assigned, venue, details, est, signature, reset } = s;
+  const { ev, sel, dateStr, slot, place, ref, parties, assigned, venue, details, est, signature, reset, demo, anchor, day } = s;
   const [tab, setTab] = useState(0);
   const [head, setHead] = useState(`${details.honor || details.name.split(" ")[0] || "You"}’s ${ev?.title ?? "Celebration"}`);
   const [tag, setTag] = useState("Come hungry. Leave with stories.");
   const [theme, setTheme] = useState(THEMES[0]!);
 
   useEffect(() => {
+    if (demo) return;
     cheer();
     signalBot({ mood: "happy", tip: "You're booked! Everyone's been told. Go celebrate." });
 
@@ -522,7 +508,7 @@ ol.terms li b { color: #151118; }
           <div>
             <p className="eyebrow flex flex-wrap items-center gap-3">
               <span className="text-foreground/60 font-mono">Ref {ref}</span>
-              <span className="rounded-full bg-success px-2.5 py-1 text-success-foreground font-bold">✓ Deposit paid</span>
+              <span className="rounded-full bg-success px-2.5 py-1 text-success-foreground font-bold">✓ Demo booking - no payment</span>
             </p>
             <h1 className="mt-3 text-[clamp(3rem,min(8vw,13vh),7.5rem)] font-extrabold leading-[0.85] tracking-[-0.04em]">
               You’re <span className="font-serif-i text-primary">Booked!</span>
@@ -532,7 +518,7 @@ ol.terms li b { color: #151118; }
             </p>
           </div>
           <p className="max-w-[16rem] text-sm text-foreground/70">
-            <b className="text-foreground">{parties} parties</b> were notified at the same second. Nobody picked up a phone.
+            <b className="text-foreground">{parties} parties</b> in the simulated dispatch. No messages were sent.
           </p>
         </div>
       </section>
@@ -542,7 +528,7 @@ ol.terms li b { color: #151118; }
         {/* Bento 1: Instant notifications spanning full width across the top */}
         <section className="col-span-1 md:col-span-2 flex min-h-[19rem] flex-col rounded-2xl border hairline bg-surface-light shadow-sm overflow-hidden">
           <div className="border-b hairline p-3 sm:p-4 bg-surface-light/80">
-            <p className="eyebrow text-ink/55">Instant {parties}-way notifications</p>
+            <p className="eyebrow text-ink/55">Simulated {parties}-way dispatch - messages not sent</p>
             <div className="scroll-quiet mt-2 flex gap-1.5 overflow-x-auto">
               {recipients.map((x, i) => (
                 <button
@@ -666,7 +652,7 @@ ol.terms li b { color: #151118; }
             <p className="eyebrow text-ink/55">Receipt & signed contract</p>
             <p className="display mt-3 text-4xl sm:text-5xl tabular-nums font-black text-ink">{money(est.total)}</p>
             <p className="text-xs font-semibold text-primary mt-1">
-              {money(est.deposit)} paid today · {money(est.balance)} balance 7 days prior
+              {money(est.deposit)} demo deposit · {money(est.balance)} balance 7 days prior
             </p>
             <ul className="mt-4 space-y-2 text-xs text-ink/80">
               <li className="flex items-center gap-2">
@@ -681,6 +667,20 @@ ol.terms li b { color: #151118; }
             </ul>
           </div>
           <div className="space-y-2 pt-6 border-t hairline mt-4">
+            <button onClick={() => {
+              if (!day || !slot) return;
+              const date = dayToDate(anchor, day);
+              const start = new Date(date);
+              start.setHours(slot === "Morning" ? 10 : slot === "Afternoon" ? 14 : 17, 0, 0, 0);
+              const end = new Date(start.getTime() + 4 * 60 * 60 * 1000);
+              const stamp = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+              const safe = (text: string) => text.replace(/[\\;,\n]/g, " ");
+              const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Bondz Events//Booking//EN\r\nBEGIN:VEVENT\r\nUID:${safe(ref)}@bondzevents.lovable.app\r\nDTSTAMP:${stamp(new Date())}\r\nDTSTART:${stamp(start)}\r\nDTEND:${stamp(end)}\r\nSUMMARY:${safe(ev?.title ?? "Celebration")} with Mr. Bondz\r\nLOCATION:${safe(place)}\r\nDESCRIPTION:Booking reference ${safe(ref)} - demonstration only\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n`;
+              const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
+              const a = document.createElement("a"); a.href = url; a.download = `bondz-${ref}.ics`; a.click();
+              window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+            }} className="w-full rounded-full border hairline py-2.5 text-xs sm:text-sm font-bold text-ink hover:bg-canvas">Download calendar .ics</button>
+            <Link to="/invite/$ref" params={{ ref }} className="block w-full rounded-full border hairline py-2.5 text-center text-xs sm:text-sm font-bold text-ink hover:bg-canvas">View VIP invitation</Link>
             <Primary onClick={printPdf} className="w-full text-center">
               Download / Print PDF
             </Primary>

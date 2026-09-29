@@ -112,7 +112,7 @@ const EVENT_NARRATIVES: Record<EventTypeId, { kicker: string; highlight: string;
 };
 
 export function Step1() {
-  const { sel, setSel, setStep, vibes, setVibes } = useBooking();
+  const { sel, setSel, setStep, vibes, setVibes, setDay, setSlot } = useBooking();
   const narrative = sel.event ? EVENT_NARRATIVES[sel.event] : null;
 
   return (
@@ -127,6 +127,9 @@ export function Step1() {
               onClick={() => {
                 playTapSound();
                 setSel((s) => ({ ...s, event: e.id }));
+                setDay(null);
+                setSlot(null);
+                setVibes([]);
                 signalBot({ mood: "happy", tip: `${e.title}. Great choice - next, where?` });
               }}
               aria-pressed={on}
@@ -187,7 +190,7 @@ export function Step1() {
             </span>
           </div>
           <div className="mt-4 flex flex-wrap gap-2 sm:gap-2.5">
-            {((VIBES_BY_EVENT as any)[sel.event] ?? []).map((v: string) => {
+            {(sel.event ? VIBES_BY_EVENT[sel.event] : []).map((v) => {
               const on = vibes.includes(v);
               return (
                 <button
@@ -210,7 +213,7 @@ export function Step1() {
             })}
           </div>
           <p className="mt-4 text-xs text-ink/50">
-            Your vibe steers the styling brief every partner receives - it does not change your price.
+            Your vibe steers the sample styling brief for your partners - it does not change your price.
           </p>
         </div>
       )}

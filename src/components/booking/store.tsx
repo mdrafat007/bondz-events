@@ -109,6 +109,7 @@ export function useBookingState(init: { event?: EventTypeId | undefined; where?:
   const reset = () => {
     setStep(1);
     setSel({ event: null, guests: 60, where: null, venue: null, services: [] });
+    setVibes([]);
     setDay(null);
     setSlot(null);
     setLog([]);

@@ -322,7 +322,7 @@ function loadImg(src: string) {
 /* ───────────────── STEP 6 ───────────────── */
 export function Step6() {
   const s = useSummary();
-  const { ev, sel, dateStr, slot, place, ref, parties, assigned, venue, details, est, signature, reset, demo, anchor, day } = s;
+  const { ev, sel, dateStr, slot, place, ref, parties, assigned, venue, details, est, signature, reset, demo, anchor, day, vibes } = s;
   const [tab, setTab] = useState(0);
   const [head, setHead] = useState(`${details.honor || details.name.split(" ")[0] || "You"}’s ${ev?.title ?? "Celebration"}`);
   const [tag, setTag] = useState("Come hungry. Leave with stories.");
@@ -371,9 +371,9 @@ export function Step6() {
 
   const recipients = [
     { who: "Client", to: details.email || "you@example.com", subj: `Sample booking - ${ev?.title} on ${dateStr}`, body: `Hi ${details.name || "there"},\n\nThis is a preview for ${sel.guests} guests on ${dateStr} (${slot}) at ${place}.\n\nSample deposit: ${money(est.deposit)}. Estimated balance: ${money(est.balance)}. Reference: ${ref}. No payment was taken and no date was reserved.` },
-    { who: "Mr. Bondz", to: "bondz@bondzevents.com", subj: `Sample brief ${ref} · ${ev?.title}`, body: `Preview only - not sent.\nClient: ${details.name} · ${details.phone} · ${details.email}\nWhen: ${dateStr}, ${slot}\nWhere: ${place}\nSuggested partners: ${assigned.map((a) => a.p?.name).filter(Boolean).join(", ") || "Solo event"}\nNotes: ${details.notes || "-"}` },
+    { who: "Mr. Bondz", to: "Organizer preview", subj: `Sample brief ${ref} · ${ev?.title}`, body: `Preview only - not sent.\nClient: ${details.name} · ${details.phone} · ${details.email}\nWhen: ${dateStr}, ${slot}\nWhere: ${place}\nCelebration vibe: ${vibes.join(", ") || "Not specified"}\nSuggested partners: ${assigned.map((a) => a.p?.name).filter(Boolean).join(", ") || "Solo event"}\nNotes: ${details.notes || "-"}` },
     ...(venue ? [{ who: venue.name, to: "Venue preview", subj: `Sample venue brief - ${dateStr}`, body: `Preview only - not sent. Suggested venue: ${venue.name}. Estimated hire: ${money(venue.price)}. No hold was placed.` }] : []),
-    ...assigned.map((a) => ({ who: a.p?.name ?? a.cat, to: "Partner preview", subj: `Sample work order: ${a.cat} · ${dateStr}`, body: `Preview only - not sent. Proposed ${a.cat.toLowerCase()} for ${ev?.title?.toLowerCase()}, ${sel.guests} guests, ${dateStr} (${slot}) at ${place}. Estimated: ${money(priceOf(a.p!, sel.guests))}.` })),
+    ...assigned.map((a) => ({ who: a.p?.name ?? a.cat, to: "Partner preview", subj: `Sample work order: ${a.cat} · ${dateStr}`, body: `Preview only - not sent. Proposed ${a.cat.toLowerCase()} for ${ev?.title?.toLowerCase()}, ${sel.guests} guests, ${dateStr} (${slot}) at ${place}. Celebration vibe: ${vibes.join(", ") || "Not specified"}. Estimated: ${money(priceOf(a.p!, sel.guests))}.` })),
   ];
   const r = recipients[Math.min(tab, recipients.length - 1)]!;
   const link = typeof window !== "undefined" ? `${window.location.origin}/invite/${ref}` : `/invite/${ref}`;

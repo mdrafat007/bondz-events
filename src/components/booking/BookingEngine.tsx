@@ -324,8 +324,8 @@ function Frame({ intro, demo, paused, onDemoProgress }: { intro: boolean; demo: 
           {canReveal && (
             <label className="flex cursor-pointer items-center gap-1 sm:gap-2 shrink-0">
               <span className="eyebrow text-ink text-[0.58rem] sm:text-[0.66rem] font-bold">
-                <span className="hidden sm:inline">Who gets notified instantly</span>
-                <span className="sm:hidden">Instant Sync</span>
+                <span className="hidden sm:inline">Preview sample dispatch</span>
+                <span className="sm:hidden">Dispatch preview</span>
               </span>
               <button
                 role="switch"

@@ -124,7 +124,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
 
   return (
     <div className={cn("relative inline-flex max-w-full flex-col items-center justify-end overflow-visible select-none", className)}>
-      <div className="pointer-events-none absolute inset-x-0 bottom-full z-0 flex justify-center overflow-visible [clip-path:inset(-400px_-100px_0px_-100px)]" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 flex justify-center overflow-visible [clip-path:inset(-400px_-100px_0px_-100px)]" aria-hidden="true">
         <motion.div initial="resting" animate={animState} variants={mascotVariants} style={{ transformOrigin: "50% 85%" }} className="flex origin-bottom items-center justify-center">
           <img src={mascotImg} alt="" className="h-auto w-28 max-w-none select-none object-contain drop-shadow-md sm:w-36 md:w-44" draggable={false} />
         </motion.div>

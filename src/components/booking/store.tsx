@@ -83,16 +83,21 @@ export function useBookingState(init: { event?: EventTypeId | undefined; where?:
   };
 
   const setGuests = (g: number, commit = false) => {
+    if (g === sel.guests) return;
     const next = pruneFor({ ...sel, guests: g });
+    const nextDays = availableDays(next);
     if (commit) {
       const before = availableDays(sel).length;
-      const after = availableDays(next).length;
+      const after = nextDays.length;
       if (before !== after || next.services.length !== sel.services.length)
         push(`Guests set to ${g} - partner eligibility re-checked`, before, after);
     }
     setSel(next);
-    setDay(null);
-    setSlot(null);
+    // Keep an already-picked date whenever it survives the new intersection.
+    if (day === null || !nextDays.includes(day)) {
+      setDay(null);
+      setSlot(null);
+    }
   };
 
   const chooseVenue = (id: string | null) => {

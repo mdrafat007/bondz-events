@@ -1,8 +1,14 @@
-import { useState } from "react";
-import { TERMS } from "@/lib/bondz-data";
+import { useEffect, useState } from "react";
+import { CANCELLATION_POLICY } from "@/lib/bondz-data";
 
 export function PolicyDialog({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
     <>
@@ -14,6 +20,7 @@ export function PolicyDialog({ children }: { children: React.ReactNode }) {
         <div
           role="dialog"
           aria-modal="true"
+          aria-label="Cancellation and rescheduling policy"
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
           onClick={() => setOpen(false)}
         >
@@ -36,7 +43,7 @@ export function PolicyDialog({ children }: { children: React.ReactNode }) {
               </button>
             </div>
             <ol className="scroll-quiet max-h-[60dvh] overflow-y-auto px-6 py-4">
-              {TERMS.map((t, i) => (
+              {CANCELLATION_POLICY.map((t, i) => (
                 <li key={t.t} className="grid grid-cols-[2rem_1fr] gap-2 border-b hairline py-3 last:border-0">
                   <span className="text-sm font-bold text-primary">{String(i + 1).padStart(2, "0")}</span>
                   <div>
@@ -55,11 +62,11 @@ export function PolicyDialog({ children }: { children: React.ReactNode }) {
 
 export function SiteFooter() {
   return (
-    <footer className="flex h-8 shrink-0 items-center justify-between gap-4 px-4 text-ink/55 md:px-8 border-t border-hairline/60 bg-canvas transition-colors duration-300">
-      <span className="eyebrow truncate">© 2026 Bondz Events - by Mr. Bondz</span>
+    <footer className="flex min-h-8 shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-1 text-ink/55 md:px-8 border-t border-hairline/60 bg-canvas transition-colors duration-300">
+      <span className="eyebrow">© 2026 Bondz Events<span className="hidden sm:inline"> - by Mr. Bondz</span></span>
       <PolicyDialog>
         <button type="button" className="eyebrow underline-offset-4 hover:text-ink hover:underline cursor-pointer">
-          Cancellation & Rescheduling Policy
+          Cancellation & Rescheduling<span className="hidden sm:inline"> Policy</span>
         </button>
       </PolicyDialog>
     </footer>

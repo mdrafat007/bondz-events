@@ -12,10 +12,12 @@ export const Route = createFileRoute("/services")({
       {
         name: "description",
         content:
-          "Eleven services, one coordinator: production, catering, decor, photo & video, lights & sound, DJ, hybrid events, PR and cleaning.",
+          "Eleven services, one Solo Event Organizer: production, catering, decor, photo & video, lights & sound, DJ, hybrid events, PR and cleaning.",
       },
       { property: "og:title", content: "Event Services - Bondz Events" },
       { property: "og:description", content: "Everything an event needs, coordinated by Mr. Bondz." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Services,

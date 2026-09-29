@@ -11,9 +11,11 @@ export const Route = createFileRoute("/portfolios")({
   head: () => ({
     meta: [
       { title: "Events Gallery - Bondz Events" },
-      { name: "description", content: "Curated masonry bento gallery of verified celebrations booked and organized end-to-end by Bondz Events." },
+      { name: "description", content: "Explore an editorial gallery of celebration ideas and example event briefs from Bondz Events." },
       { property: "og:title", content: "Events Gallery - Bondz Events" },
-      { property: "og:description", content: "Explore verified photography proofs from 700+ celebrations across all event categories." },
+      { property: "og:description", content: "Explore sample event concepts across celebrations of every kind." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: EventsGallery,
@@ -389,7 +391,7 @@ function EventsGallery() {
       <div className="flex shrink-0 flex-wrap items-end justify-between gap-4 border-b border-ink/15 pb-4">
         <div>
           <p className="eyebrow text-primary font-bold tracking-widest uppercase">
-            Proof of Execution · 100% Verified By Clients & Venues
+            Editorial concepts · Sample event briefs
           </p>
           <h1 className="display mt-1 text-4xl sm:text-5xl md:text-6xl tracking-tight">
             Events Gallery
@@ -474,7 +476,7 @@ function EventsGallery() {
                   </span>
 
                   <span className="inline-flex items-center rounded-full bg-white/20 px-2.5 py-0.5 font-display text-[0.65rem] font-bold text-white uppercase backdrop-blur-md">
-                    {item.rating}
+                    Concept
                   </span>
                 </div>
 
@@ -491,7 +493,7 @@ function EventsGallery() {
                   </p>
 
                   <div className="mt-3 flex items-center justify-between border-t border-white/15 pt-2 text-[0.72rem] text-white/70">
-                    <span className="truncate pr-2">{item.booked}</span>
+                    <span className="truncate pr-2">Suggested: {item.booked}</span>
                     <span className="font-bold text-primary shrink-0 group-hover:translate-x-1 transition-transform">
                       Inspect →
                     </span>
@@ -546,18 +548,18 @@ function EventsGallery() {
                   <p className="mt-1 font-medium text-ink/85">{activeItem.vibe}</p>
                 </div>
                 <div className="rounded-2xl border hairline bg-canvas p-4">
-                  <p className="eyebrow text-primary font-bold">Booked Partners</p>
+                  <p className="eyebrow text-primary font-bold">Suggested Partners</p>
                   <p className="mt-1 font-medium text-ink/85">{activeItem.booked}</p>
                 </div>
               </div>
 
               <div className="rounded-2xl border hairline bg-canvas p-4 text-ink flex items-center justify-between shadow-xs">
                 <div>
-                  <p className="eyebrow text-primary font-bold">Verified Outcome</p>
-                  <p className="text-sm font-semibold text-ink mt-0.5">{activeItem.outcome}</p>
+                  <p className="eyebrow text-primary font-bold">Planning Concept</p>
+                  <p className="text-sm font-semibold text-ink mt-0.5">Example brief for inspiration. No booking or partner availability is verified here.</p>
                 </div>
                 <span className="font-display font-black text-primary text-xl">
-                  {activeItem.rating}
+                  ✦
                 </span>
               </div>
             </div>

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { BookingEngine } from "@/components/booking/BookingEngine";
+import type { Step } from "@/components/booking/store";
 import { EVENT_TYPES, type EventTypeId } from "@/lib/bondz-data";
 
 const search = z.object({
@@ -17,9 +18,11 @@ export const Route = createFileRoute("/book")({
   head: () => ({
     meta: [
       { title: "Get a Booking - Bondz Events" },
-      { name: "description", content: "Six steps from “what are we celebrating?” to “You're Booked!” - only dates every partner can make are ever shown." },
+      { name: "description", content: "Explore six steps to plan a sample celebration with Mr. Bondz using simulated partner availability and estimated pricing." },
       { property: "og:title", content: "Get a Booking - Bondz Events" },
-      { property: "og:description", content: "Build your event and see only the dates that genuinely work." },
+      { property: "og:description", content: "Build a sample event and compare available dates in the planning preview." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: BookPage,
@@ -33,7 +36,7 @@ function BookPage() {
   return (
     <BookingEngine
       key={`${s.event}-${s.where}-${s.step}-${s.reveal}`}
-      init={{ event: s.event, where: s.where, step: s.step as any, reveal: !!s.reveal }}
+      init={{ event: s.event, where: s.where, step: s.step as Step | undefined, reveal: !!s.reveal }}
       intro={!!s.intro}
     />
   );

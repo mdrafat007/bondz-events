@@ -93,7 +93,7 @@ export function EstimatePanel({ cta }: { cta?: React.ReactNode }) {
       <div className="border-b hairline p-4">
         <p className="eyebrow flex items-center justify-between text-ink/55">
           <span>Live estimate</span>
-          <span className="inline-flex items-center gap-1.5"><span className="live-dot size-1.5 rounded-full bg-success" />synced</span>
+          <span className="inline-flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-success" />sample</span>
         </p>
         <p className="display mt-2 text-5xl tabular-nums">{money(est.total)}</p>
         <p className="mt-1 text-xs text-ink/60">
@@ -112,7 +112,7 @@ export function EstimatePanel({ cta }: { cta?: React.ReactNode }) {
         ))}
       </ul>
       <div className="space-y-2 border-t hairline p-4 text-sm">
-        <div className="flex justify-between"><span className="text-ink/60">Deposit today (25%)</span><span className="font-bold text-primary tabular-nums">{money(est.deposit)}</span></div>
+        <div className="flex justify-between"><span className="text-ink/60">Sample deposit (25%)</span><span className="font-bold text-primary tabular-nums">{money(est.deposit)}</span></div>
         <div className="flex justify-between"><span className="text-ink/60">Bookable dates · next {HORIZON} days</span><span className="font-bold tabular-nums">{days.length}</span></div>
         {date && (
           <div className="flex justify-between"><span className="text-ink/60">Selected</span><span className="font-bold">{date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}{slot ? ` · ${slot}` : ""}</span></div>
@@ -132,7 +132,7 @@ export function EstimateSheet({ cta }: { cta?: React.ReactNode }) {
     <div className="lg:hidden">
       <div className="flex items-center justify-between gap-3 border-t hairline bg-surface-light px-4 py-2.5">
         <button onClick={() => setOpen(true)} className="text-left">
-          <span className="eyebrow block text-ink/50">Live estimate · tap</span>
+          <span className="eyebrow block text-ink/50">Sample estimate · tap</span>
           <span className="display text-2xl tabular-nums">{money(est.total)}</span>
         </button>
         {cta}
@@ -172,13 +172,13 @@ export function RealityPanel({ onClose }: { onClose?: () => void }) {
     list.push({
       who: venue.name,
       role: "Venue",
-      detail: `Locked for ${dateStr}${slot ? ` (${slot})` : ""}`,
+      detail: `Suggested for ${dateStr}${slot ? ` (${slot})` : ""}`,
     });
   } else if (sel.where === "home") {
     list.push({
       who: "Private Location",
       role: "Host Residence",
-      detail: `Site access window locked for ${dateStr}${slot ? ` (${slot})` : ""}`,
+      detail: `Proposed site window for ${dateStr}${slot ? ` (${slot})` : ""}`,
     });
   }
 
@@ -188,7 +188,7 @@ export function RealityPanel({ onClose }: { onClose?: () => void }) {
     const cat = CATEGORIES.find((x) => x.id === c);
     const name = p ? p.name : (cat?.label ?? "Partner");
 
-    let detail = "Service order & calendar hold confirmed";
+    let detail = "Sample service order and calendar hold";
     if (c === "catering") {
       detail = `${sel.guests} Plate kitchen work order & dietary sheet`;
     } else if (c === "dj") {
@@ -228,10 +228,10 @@ export function RealityPanel({ onClose }: { onClose?: () => void }) {
         <div>
           <div className="flex items-center gap-2">
             <span className="live-dot size-2 rounded-full bg-success" />
-            <p className="eyebrow text-primary">Instant Dispatch</p>
+            <p className="eyebrow text-primary">Dispatch preview</p>
           </div>
           <p className="mt-1 text-sm font-extrabold text-ink tracking-tight">
-            Who Gets Notified Instantly:
+            Who would receive a work order:
           </p>
         </div>
         {onClose && (

@@ -1,5 +1,6 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { Link } from "@tanstack/react-router";
 import { CATEGORIES, EVENT_TYPES, TERMS, VENUES, assignPartner, dayToDate, estimate, money, priceOf } from "@/lib/bondz-data";
 import { signalBot } from "@/lib/bot-bus";
 import { cn } from "@/lib/utils";
@@ -105,16 +106,16 @@ function SignaturePad({ onChange }: { onChange: (d: string | null) => void }) {
 /* ───────────────── STEP 5 ───────────────── */
 export function Step5() {
   const s = useSummary();
-  const { sel, setSel, details, setDetails, signature, setSignature, setStep, setRef, est, parties } = s;
+  const { sel, setGuests, day, slot, details, setDetails, signature, setSignature, setStep, setRef, est, parties, demo } = s;
   const [agree, setAgree] = useState(false);
-  const [card, setCard] = useState({ n: "", exp: "", cvc: "" });
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState(0);
 
-  const ready = details.name.trim() && /\S+@\S+\.\S+/.test(details.email) && details.phone.trim().length >= 6 && agree && signature && card.n.replace(/\s/g, "").length >= 12 && card.exp.length >= 4 && card.cvc.length >= 3;
-  const missing = !details.name.trim() ? "your name" : !/\S+@\S+\.\S+/.test(details.email) ? "a valid email" : details.phone.trim().length < 6 ? "a phone number" : !agree ? "agreement to the terms" : !signature ? "your signature" : "demo card details";
+  const ready = day !== null && slot !== null && details.name.trim() && /\S+@\S+\.\S+/.test(details.email) && details.phone.trim().length >= 6 && agree && signature;
+  const missing = day === null || slot === null ? "a valid date and time" : !details.name.trim() ? "your name" : !/\S+@\S+\.\S+/.test(details.email) ? "a valid email" : details.phone.trim().length < 6 ? "a phone number" : !agree ? "agreement to the terms" : "your signature";
 
   const pay = () => {
+    if (demo) return;
     setLoading(true);
     signalBot({ mood: "think" });
     [1, 2, 3, 4].forEach((i) => window.setTimeout(() => setPhase(i), i * 750));
@@ -127,22 +128,23 @@ export function Step5() {
   const set = (k: keyof typeof details) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setDetails({ ...details, [k]: e.target.value });
 
   const checklist = [
-    `Authorizing deposit of ${money(est.deposit)}`,
-    `Locking ${parties - 1} partner calendars`,
-    "Writing signed terms & receipt",
-    `Emitting ${parties}-way confirmations`,
+    `Calculating sample deposit of ${money(est.deposit)}`,
+    `Checking ${parties - 1} partner calendars`,
+    "Preparing agreement preview",
+    `Preparing ${parties}-way dispatch preview`,
   ];
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_21rem]">
       <div className="flex flex-col gap-4">
-        <StepHead no="05" title="Lock it in." sub="Almost booked. This is the only form you will ever fill." />
+        <StepHead no="05" title="Your details." sub="Create a sample booking brief. No payment is taken and no date is held." />
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Full name" value={details.name} onChange={set("name")} autoComplete="name" required />
           <Field label="Phone" value={details.phone} onChange={set("phone")} type="tel" autoComplete="tel" required />
           <Field label="Email" value={details.email} onChange={set("email")} type="email" autoComplete="email" required />
           <Field label="Guest of honor (optional)" value={details.honor} onChange={set("honor")} />
-          <Field label="Guest count" type="number" min={10} max={300} value={sel.guests} onChange={(e) => setSel({ ...sel, guests: Math.min(300, Math.max(10, +e.target.value || 10)) })} />
+          <Field label="Guest count" type="number" min={10} max={300} value={sel.guests} onChange={(e) => setGuests(Math.min(300, Math.max(10, +e.target.value || 10)))} />
+          {(day === null || slot === null) && <p className="text-xs text-primary sm:col-span-2">Please return to Dates and choose a time for your updated guest count.</p>}
           <label className="block sm:row-span-1">
             <span className="eyebrow text-ink/60">Anything we should know?</span>
             <textarea value={details.notes} onChange={set("notes")} rows={1} className="mt-1 w-full resize-none rounded-xl border hairline bg-surface-light px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/25" />
@@ -172,47 +174,31 @@ export function Step5() {
       </div>
 
       <aside className="dark flex flex-col rounded-2xl bg-background p-5 text-foreground lg:sticky lg:top-0 lg:self-start">
-        <p className="eyebrow text-primary">Secure deposit</p>
+        <p className="eyebrow text-primary">Demo deposit - no payment collected</p>
         <p className="display mt-3 text-6xl tabular-nums">{money(est.deposit)}</p>
-        <p className="mt-1 text-xs text-foreground/60">due today · balance {money(est.balance)} due 7 days before</p>
-        <div className="mt-5 space-y-3">
-          <label className="block">
-            <span className="eyebrow text-foreground/60">Card number</span>
-            <input inputMode="numeric" placeholder="4242 4242 4242 4242" value={card.n} onChange={(e) => setCard({ ...card, n: e.target.value.replace(/[^\d ]/g, "").slice(0, 19) })} className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm tabular-nums outline-none focus:ring-2 focus:ring-primary" />
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            <label className="block">
-              <span className="eyebrow text-foreground/60">Expiry</span>
-              <input placeholder="12/28" value={card.exp} onChange={(e) => setCard({ ...card, exp: e.target.value.slice(0, 5) })} className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary" />
-            </label>
-            <label className="block">
-              <span className="eyebrow text-foreground/60">CVC</span>
-              <input placeholder="123" inputMode="numeric" value={card.cvc} onChange={(e) => setCard({ ...card, cvc: e.target.value.replace(/\D/g, "").slice(0, 4) })} className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary" />
-            </label>
-          </div>
-          <p className="eyebrow text-foreground/45">Demo sandbox · no real charge</p>
-        </div>
-        <Primary disabled={!ready} onClick={pay} className="mt-5 w-full py-4">
-          Pay {money(est.deposit)} & book
+        <p className="mt-1 text-xs text-foreground/60">illustrative 25% deposit · 75% balance {money(est.balance)} due 7 days before</p>
+        <p className="mt-5 text-xs text-foreground/70">This is a client-side preview. No card details are requested, no money is collected and no notifications are sent.</p>
+        <Primary disabled={!ready || demo} onClick={pay} className="mt-5 w-full py-4">
+          Create sample booking
         </Primary>
         {!ready && <p className="mt-2 text-center text-[0.7rem] text-foreground/50">Still need {missing}.</p>}
       </aside>
 
       {loading && (
-        <div className="dark fixed inset-0 z-[100] grid place-items-center bg-[#0d0910]/95 backdrop-blur-xl text-foreground px-4">
-          <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-[#16111a] p-7 sm:p-9 shadow-2xl">
+        <div className="dark fixed inset-0 z-[100] grid place-items-center bg-night/95 backdrop-blur-xl text-foreground px-4">
+          <div className="w-full max-w-lg rounded-card border border-hairline bg-surface p-7 sm:p-9 shadow-raised">
             {/* Luxury Dual-Ring Orbital Animation */}
             <div className="relative flex items-center justify-center size-20">
               <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl animate-pulse" />
               <div className="absolute inset-0 rounded-full border-2 border-white/10 border-t-primary animate-spin [animation-duration:1.2s]" />
               <div className="absolute inset-2 rounded-full border-2 border-white/10 border-b-primary/60 border-l-primary/40 animate-spin [animation-duration:2s] [animation-direction:reverse]" />
-              <div className="relative flex size-9 items-center justify-center rounded-full bg-primary/15 border border-primary/40 shadow-[0_0_15px_rgba(255,45,85,0.4)]">
+              <div className="relative flex size-9 items-center justify-center rounded-full bg-primary/15 border border-primary/40">
                 <span className="text-[0.65rem] font-black tracking-wider text-primary">BZ</span>
               </div>
             </div>
 
-            <h2 className="display mt-6 text-3xl sm:text-4xl text-white tracking-tight">Completing your booking</h2>
-            <p className="mt-1 text-xs text-white/60">Dispatching instant 360° synchronization locks across all partner calendars...</p>
+            <h2 className="display mt-6 text-3xl sm:text-4xl text-white tracking-tight">Preparing your preview</h2>
+            <p className="mt-1 text-xs text-white/60">Preparing a simulated confirmation. No partner calendars are locked.</p>
 
             <ul className="mt-6 space-y-3">
               {checklist.map((c, i) => (
@@ -337,15 +323,16 @@ function loadImg(src: string) {
 /* ───────────────── STEP 6 ───────────────── */
 export function Step6() {
   const s = useSummary();
-  const { ev, sel, dateStr, slot, place, ref, parties, assigned, venue, details, est, signature, reset } = s;
+  const { ev, sel, dateStr, slot, place, ref, parties, assigned, venue, details, est, signature, reset, demo, anchor, day, vibes } = s;
   const [tab, setTab] = useState(0);
   const [head, setHead] = useState(`${details.honor || details.name.split(" ")[0] || "You"}’s ${ev?.title ?? "Celebration"}`);
   const [tag, setTag] = useState("Come hungry. Leave with stories.");
   const [theme, setTheme] = useState(THEMES[0]!);
 
   useEffect(() => {
+    if (demo) return;
     cheer();
-    signalBot({ mood: "happy", tip: "You're booked! Everyone's been told. Go celebrate." });
+    signalBot({ mood: "happy", tip: "Your sample booking is ready. No messages have been sent." });
 
     let audio: HTMLAudioElement | null = null;
     let fadeInterval: number | null = null;
@@ -384,14 +371,23 @@ export function Step6() {
   }, []);
 
   const recipients = [
-    { who: "Client", to: details.email || "you@example.com", subj: `You're booked - ${ev?.title} on ${dateStr}`, body: `Hi ${details.name || "there"},\n\nIt's official. Your ${ev?.title?.toLowerCase()} for ${sel.guests} guests is locked for ${dateStr} (${slot}) at ${place}.\n\nDeposit paid: ${money(est.deposit)}. Balance of ${money(est.balance)} is due 7 days before.\nReference: ${ref}\n\nYour signed agreement and receipt are attached. Nothing else to do - Mr. Bondz has it from here.` },
-    { who: "Mr. Bondz", to: "bondz@bondzevents.com", subj: `New booking ${ref} · ${ev?.title} · ${sel.guests} guests`, body: `Client: ${details.name} · ${details.phone} · ${details.email}\nWhen: ${dateStr}, ${slot}\nWhere: ${place}\nPartners locked: ${assigned.map((a) => a.p!.name).join(", ") || "Solo event"}\nNotes: ${details.notes || "-"}\n\nCalendar blocked. Deposit cleared.` },
-    ...(venue ? [{ who: venue.name, to: `bookings@${venue.id}.venue`, subj: `Confirmed hold - ${dateStr}`, body: `Hello ${venue.name} team,\n\nConfirmed: ${ev?.title} for ${sel.guests} guests on ${dateStr} (${slot}). Organizer: Mr. Bondz. Venue fee ${money(venue.price)} is covered under ref ${ref}.\n\nYour calendar has been locked for this date.` }] : []),
-    ...assigned.map((a) => ({ who: a.p!.name, to: `jobs@${a.p!.id}.partner`, subj: `You're on: ${a.cat} · ${dateStr}`, body: `Hi ${a.p!.name},\n\nYou're booked for ${a.cat.toLowerCase()} - ${ev?.title?.toLowerCase()}, ${sel.guests} guests, ${dateStr} (${slot}) at ${place}.\nAgreed: ${money(priceOf(a.p!, sel.guests))}. Ref ${ref}.\n\nMr. Bondz will share the run-of-show 14 days out.` })),
+    { who: "Client", to: details.email || "you@example.com", subj: `Sample booking - ${ev?.title} on ${dateStr}`, body: `Hi ${details.name || "there"},\n\nThis is a preview for ${sel.guests} guests on ${dateStr} (${slot}) at ${place}.\n\nSample deposit: ${money(est.deposit)}. Estimated balance: ${money(est.balance)}. Reference: ${ref}. No payment was taken and no date was reserved.` },
+    { who: "Mr. Bondz", to: "Organizer preview", subj: `Sample brief ${ref} · ${ev?.title}`, body: `Preview only - not sent.\nClient: ${details.name} · ${details.phone} · ${details.email}\nWhen: ${dateStr}, ${slot}\nWhere: ${place}\nCelebration vibe: ${vibes.join(", ") || "Not specified"}\nSuggested partners: ${assigned.map((a) => a.p?.name).filter(Boolean).join(", ") || "Solo event"}\nNotes: ${details.notes || "-"}` },
+    ...(venue ? [{ who: venue.name, to: "Venue preview", subj: `Sample venue brief - ${dateStr}`, body: `Preview only - not sent. Suggested venue: ${venue.name}. Estimated hire: ${money(venue.price)}. No hold was placed.` }] : []),
+    ...assigned.map((a) => ({ who: a.p?.name ?? a.cat, to: "Partner preview", subj: `Sample work order: ${a.cat} · ${dateStr}`, body: `Preview only - not sent. Proposed ${a.cat.toLowerCase()} for ${ev?.title?.toLowerCase()}, ${sel.guests} guests, ${dateStr} (${slot}) at ${place}. Celebration vibe: ${vibes.join(", ") || "Not specified"}. Estimated: ${money(priceOf(a.p!, sel.guests))}.` })),
   ];
   const r = recipients[Math.min(tab, recipients.length - 1)]!;
-  const link = typeof window !== "undefined" ? `${window.location.origin}/invite/${ref}` : `/invite/${ref}`;
+  const inviteData = day && slot ? { title: head, host: details.name, date: dayToDate(anchor, day).toISOString(), slot, place, tagline: tag } : null;
+  const inviteToken = inviteData ? btoa(Array.from(new TextEncoder().encode(JSON.stringify(inviteData)), (byte) => String.fromCharCode(byte)).join("")) : "";
+  const link = typeof window !== "undefined" ? `${window.location.origin}/invite/${encodeURIComponent(ref)}?invite=${encodeURIComponent(inviteToken)}` : `/invite/${encodeURIComponent(ref)}?invite=${encodeURIComponent(inviteToken)}`;
   const guestMsg = `${head}\n${tag}\n${dateStr} · ${slot}\n${place}\n\nDetails & RSVP: ${link}`;
+
+  useEffect(() => {
+    if (demo || !ref || !day || !slot) return;
+    try {
+      localStorage.setItem(`bondz_invite_${ref}`, JSON.stringify({ title: head, host: details.name, date: dayToDate(anchor, day).toISOString(), slot, place, tagline: tag }));
+    } catch { /* storage may be unavailable */ }
+  }, [demo, ref, day, slot, anchor, head, tag, details.name, place]);
 
   const download = async () => {
     const S = 1080;
@@ -440,8 +436,9 @@ export function Step6() {
   const printPdf = (): void => {
     const w = window.open("", "_blank");
     if (!w) { toast.error("Allow pop-ups to download your contract."); return; }
-    const rows = est.lines.map((l) => `<tr><td><b>${l.label}</b><small>${l.note ?? ""}</small></td><td style="text-align:right">${money(l.amount)}</td></tr>`).join("");
-    const terms = TERMS.map((t, i) => `<li><b>${i + 1}. ${t.t}.</b> ${t.b}</li>`).join("");
+    const esc = (value: unknown) => String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    const rows = est.lines.map((l) => `<tr><td><b>${esc(l.label)}</b><small>${esc(l.note)}</small></td><td style="text-align:right">${money(l.amount)}</td></tr>`).join("");
+    const terms = TERMS.map((t, i) => `<li><b>${i + 1}. ${esc(t.t)}.</b> ${esc(t.b)}</li>`).join("");
     w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Bondz Events Agreement & Receipt - ${ref}</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
@@ -480,20 +477,20 @@ ol.terms li b { color: #151118; }
   <div style="text-align:right">
     <div class="k">Service Agreement & Receipt</div>
     <h1>You’re booked.</h1>
-    <div style="font-size:9.5px;color:#555;margin-top:2px">Ref <b>${ref}</b> · Deposit Confirmed</div>
+    <div style="font-size:9.5px;color:#555;margin-top:2px">Ref <b>${esc(ref)}</b> · Demo only - no payment collected</div>
   </div>
 </header>
 <div class="meta-grid">
-  <div><div class="meta-label">Client</div><div class="meta-val"><b>${details.name}</b><br>${details.email}<br>${details.phone}</div></div>
-  <div><div class="meta-label">Event</div><div class="meta-val"><b>${ev?.title}</b> · ${sel.guests} guests<br>${dateStr}<br>${slot}</div></div>
-  <div><div class="meta-label">Location & Venue</div><div class="meta-val">${place}</div></div>
+  <div><div class="meta-label">Client</div><div class="meta-val"><b>${esc(details.name)}</b><br>${esc(details.email)}<br>${esc(details.phone)}</div></div>
+  <div><div class="meta-label">Event</div><div class="meta-val"><b>${esc(ev?.title)}</b> · ${sel.guests} guests<br>${esc(dateStr)}<br>${esc(slot)}</div></div>
+  <div><div class="meta-label">Location & Venue</div><div class="meta-val">${esc(place)}</div></div>
 </div>
 <table>
   <thead><tr><th>Item & Scope</th><th style="text-align:right">Amount</th></tr></thead>
   <tbody>
     ${rows}
     <tr class="t"><td>Total Event Cost</td><td style="text-align:right">${money(est.total)}</td></tr>
-    <tr class="r"><td>Deposit Paid Today (25%)</td><td style="text-align:right">${money(est.deposit)}</td></tr>
+    <tr class="r"><td>Sample Deposit (25%, not paid)</td><td style="text-align:right">${money(est.deposit)}</td></tr>
     <tr class="b"><td>Balance Due (7 Days Prior)</td><td style="text-align:right">${money(est.balance)}</td></tr>
   </tbody>
 </table>
@@ -502,7 +499,7 @@ ol.terms li b { color: #151118; }
 <div class="signatures">
   <div class="sig-box">
     ${signature ? `<img src="${signature}" alt="Client Signature" />` : ""}
-    <span class="sig-label">Client Authorized - ${details.name}</span>
+    <span class="sig-label">Client preview signature - ${esc(details.name)}</span>
   </div>
   <div class="sig-box">
     <span class="sig-name">Mr. Bondz</span>
@@ -517,22 +514,22 @@ ol.terms li b { color: #151118; }
   return (
     <div className="flex flex-col gap-3">
       <section className="dark relative overflow-hidden rounded-2xl bg-background px-5 py-6 text-foreground md:px-8 shadow-sm">
-        <Confetti />
+        {!demo && <Confetti />}
         <div className="relative grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
           <div>
             <p className="eyebrow flex flex-wrap items-center gap-3">
               <span className="text-foreground/60 font-mono">Ref {ref}</span>
-              <span className="rounded-full bg-success px-2.5 py-1 text-success-foreground font-bold">✓ Deposit paid</span>
+              <span className="rounded-full bg-success px-2.5 py-1 text-success-foreground font-bold">✓ Demo booking - no payment</span>
             </p>
             <h1 className="mt-3 text-[clamp(3rem,min(8vw,13vh),7.5rem)] font-extrabold leading-[0.85] tracking-[-0.04em]">
-              You’re <span className="font-serif-i text-primary">Booked!</span>
+              You’re <span className="font-serif-i text-primary">Almost Booked!</span>
             </h1>
             <p className="mt-3 text-sm text-foreground/80 font-medium">
               {ev?.title} · {sel.guests} guests · {dateStr}, {slot} · {place}
             </p>
           </div>
           <p className="max-w-[16rem] text-sm text-foreground/70">
-            <b className="text-foreground">{parties} parties</b> were notified at the same second. Nobody picked up a phone.
+            <b className="text-foreground">{parties} parties</b> in the simulated dispatch. No messages were sent.
           </p>
         </div>
       </section>
@@ -542,7 +539,7 @@ ol.terms li b { color: #151118; }
         {/* Bento 1: Instant notifications spanning full width across the top */}
         <section className="col-span-1 md:col-span-2 flex min-h-[19rem] flex-col rounded-2xl border hairline bg-surface-light shadow-sm overflow-hidden">
           <div className="border-b hairline p-3 sm:p-4 bg-surface-light/80">
-            <p className="eyebrow text-ink/55">Instant {parties}-way notifications</p>
+            <p className="eyebrow text-ink/55">Simulated {parties}-way dispatch - messages not sent</p>
             <div className="scroll-quiet mt-2 flex gap-1.5 overflow-x-auto">
               {recipients.map((x, i) => (
                 <button
@@ -663,10 +660,10 @@ ol.terms li b { color: #151118; }
         {/* Bento 3: Receipt & Signed Contract (Underneath, Right) */}
         <section className="col-span-1 flex flex-col justify-between rounded-2xl border hairline bg-surface-light p-5 shadow-sm">
           <div>
-            <p className="eyebrow text-ink/55">Receipt & signed contract</p>
+            <p className="eyebrow text-ink/55">Sample receipt & agreement</p>
             <p className="display mt-3 text-4xl sm:text-5xl tabular-nums font-black text-ink">{money(est.total)}</p>
             <p className="text-xs font-semibold text-primary mt-1">
-              {money(est.deposit)} paid today · {money(est.balance)} balance 7 days prior
+              {money(est.deposit)} demo deposit · {money(est.balance)} balance 7 days prior
             </p>
             <ul className="mt-4 space-y-2 text-xs text-ink/80">
               <li className="flex items-center gap-2">
@@ -676,11 +673,25 @@ ol.terms li b { color: #151118; }
                 <span className="text-success font-bold">✓</span> Itemised vendor & venue breakdown
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-success font-bold">✓</span> Dual verified digital signature blocks
+                <span className="text-success font-bold">✓</span> Client signature preview
               </li>
             </ul>
           </div>
           <div className="space-y-2 pt-6 border-t hairline mt-4">
+            <button onClick={() => {
+              if (!day || !slot) return;
+              const date = dayToDate(anchor, day);
+              const start = new Date(date);
+              start.setHours(slot === "Morning" ? 10 : slot === "Afternoon" ? 14 : 17, 0, 0, 0);
+              const end = new Date(start.getTime() + 4 * 60 * 60 * 1000);
+              const stamp = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+              const safe = (text: string) => text.replace(/[\\;,\n]/g, " ");
+              const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Bondz Events//Booking//EN\r\nBEGIN:VEVENT\r\nUID:${safe(ref)}@bondzevents.lovable.app\r\nDTSTAMP:${stamp(new Date())}\r\nDTSTART:${stamp(start)}\r\nDTEND:${stamp(end)}\r\nSUMMARY:${safe(ev?.title ?? "Celebration")} with Mr. Bondz\r\nLOCATION:${safe(place)}\r\nDESCRIPTION:Booking reference ${safe(ref)} - demonstration only\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n`;
+              const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
+              const a = document.createElement("a"); a.href = url; a.download = `bondz-${ref}.ics`; a.click();
+              window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+            }} className="w-full rounded-full border hairline py-2.5 text-xs sm:text-sm font-bold text-ink hover:bg-canvas">Download calendar .ics</button>
+            <Link to="/invite/$ref" params={{ ref }} search={{ invite: inviteToken }} className="block w-full rounded-full border hairline py-2.5 text-center text-xs sm:text-sm font-bold text-ink hover:bg-canvas">View VIP invitation</Link>
             <Primary onClick={printPdf} className="w-full text-center">
               Download / Print PDF
             </Primary>

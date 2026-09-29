@@ -2,7 +2,7 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import face from "@/assets/face-dark.png.asset.json";
 import { type BotSignal, type Mood } from "@/lib/bot-bus";
-import { CONTACT, EVENT_TYPES, TERMS, type EventTypeId } from "@/lib/bondz-data";
+import { EVENT_TYPES, TERMS, type EventTypeId } from "@/lib/bondz-data";
 import { cn } from "@/lib/utils";
 
 type Msg = { from: "bot" | "me"; text: string; action?: { label: string; event?: EventTypeId | undefined; where?: "home" | "venue" | undefined; to?: string } };
@@ -70,9 +70,9 @@ function answer(q: string): Msg {
   if (has("service", "offer", "do you do", "catering", "dj", "decor", "clean"))
     return { from: "bot", text: "Eleven services: production, design, media & PR, catering, decorations, music & DJ, post-event cleaning, photo & video, equipment, lights & sound and hybrid events.", action: { label: "See all services →", to: "/services" } };
   if (has("contact", "email", "phone", "call", "talk", "human"))
-    return { from: "bot", text: `Write to ${CONTACT.email} or ${CONTACT.phone}. ${CONTACT.hours}. Honestly though - you'll be booked faster than I can reply.`, action: { label: "Contact page →", to: "/contact" } };
+    return { from: "bot", text: "Direct contact details are being confirmed. The contact form is a preview and does not send messages yet.", action: { label: "Contact page →", to: "/contact" } };
   if (has("confirm", "notif", "after", "email", "contract", "receipt"))
-    return { from: "bot", text: "The second you pay, every party - you, me, your venue, each vendor - gets its own confirmation. You get a signed contract PDF, receipt, and a guest invitation you can download." };
+    return { from: "bot", text: "This planning preview creates a sample receipt and guest invitation. No money is collected, dates held or work orders sent." };
   if (has("hi", "hello", "hey", "yo"))
     return { from: "bot", text: "Hey! I'm Mr. Bondz. Tell me what you're celebrating and roughly how many people - I'll take it from there." };
   if (ev)

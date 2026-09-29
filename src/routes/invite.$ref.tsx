@@ -1,17 +1,22 @@
 ﻿import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Lockup } from "@/components/site/Brand";
 import { triggerTap, triggerHaptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
+import { SLOT_TIMES, type Slot } from "@/lib/bondz-data";
+import { z } from "zod";
 
 export const Route = createFileRoute("/invite/$ref")({
+  validateSearch: z.object({ invite: z.string().max(4000).optional().catch(undefined) }),
   head: ({ params }) => ({
     meta: [
       { title: `You're Invited - ${params.ref} · Bondz Events` },
       { name: "description", content: "You are invited to an extraordinary celebration orchestrated by Mr. Bondz." },
       { property: "og:title", content: "You're Invited · Bondz Events" },
       { property: "og:description", content: "Confirm your attendance, select dietary preferences, and add to your calendar." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -22,15 +27,25 @@ const DIETARY_TAGS = ["Halal", "Vegan", "Gluten-Free", "Nut-Free", "Vegetarian",
 
 function InvitePage() {
   const { ref } = Route.useParams();
+  const { invite: inviteToken } = Route.useSearch();
 
-  // Mock details derived from reference code
-  const eventTitle = "Celebration of Vows & Dinner";
-  const hostName = "Alex Vance";
-  const dateStr = "Saturday, October 17, 2026";
-  const timeWindow = "Evening · 6:00 PM - 11:30 PM";
-  const locationName = "Smokestack Yard";
-  const locationArea = "Riverside Arts District";
-  const attire = "Cocktail Attire · Good Vibes Only";
+  const [invite, setInvite] = useState<{ title: string; host: string; date: string; slot: Slot; place: string; tagline: string } | null>(null);
+  useEffect(() => {
+    try {
+      const raw = inviteToken ? new TextDecoder().decode(Uint8Array.from(atob(inviteToken), (char) => char.charCodeAt(0))) : localStorage.getItem(`bondz_invite_${ref}`);
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (typeof data.title === "string" && typeof data.host === "string" && typeof data.place === "string" && typeof data.date === "string" && !Number.isNaN(new Date(data.date).getTime()) && ["Morning", "Afternoon", "Evening"].includes(data.slot)) setInvite(data);
+      }
+    } catch { /* local preview unavailable */ }
+  }, [ref, inviteToken]);
+  const eventTitle = invite?.title ?? "Invitation preview";
+  const hostName = invite?.host ?? "Your host";
+  const dateStr = invite ? new Date(invite.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : "Date to be confirmed";
+  const timeWindow = invite?.slot ? `${invite.slot} · ${SLOT_TIMES[invite.slot]}` : "Time to be confirmed";
+  const locationName = invite?.place ?? "Location to be confirmed";
+  const locationArea = "Preview only";
+  const attire = invite?.tagline ?? "Details will appear after the booking preview";
 
   const storageKey = `bondz_rsvp_${ref}`;
   const [attending, setAttending] = useState<boolean | null>(true);
@@ -39,18 +54,13 @@ function InvitePage() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [rsvpCount, setRsvpCount] = useState<number>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = localStorage.getItem(`bondz_rsvp_${ref}`);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (typeof parsed.count === "number") return parsed.count;
-        }
-      } catch {}
-    }
-    return 48;
-  });
+  const [rsvpCount, setRsvpCount] = useState(0);
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      setRsvpCount(saved && JSON.parse(saved).attending ? 1 : 0);
+    } catch { /* optional */ }
+  }, [storageKey]);
 
   const toggleTag = (tag: string) => {
     triggerTap();
@@ -68,32 +78,25 @@ function InvitePage() {
     triggerTap();
     triggerHaptic([30, 40, 50]);
     setSubmitted(true);
-    if (attending) {
-      setRsvpCount((c) => {
-        const next = c + 1;
-        try {
-          localStorage.setItem(storageKey, JSON.stringify({ count: next, attending: true, name }));
-        } catch {}
-        return next;
-      });
-      toast.success(`RSVP confirmed! We can't wait to see you, ${name.split(" ")[0]}.`);
-    } else {
-      try {
-        localStorage.setItem(storageKey, JSON.stringify({ count: rsvpCount, attending: false, name }));
-      } catch {}
-      toast.info(`Thank you for letting us know, ${name.split(" ")[0]}. You will be missed!`);
-    }
+    setRsvpCount(attending ? 1 : 0);
+    try { localStorage.setItem(storageKey, JSON.stringify({ attending, name, email, selectedTags, notes })); } catch {}
+    toast.success("Response saved on this device only. Your host has not been notified.");
   };
 
   const addToGoogleCalendar = () => {
     triggerTap();
-    const start = "20261017T180000Z";
-    const end = "20261017T233000Z";
+    if (!invite) { toast.error("Event details are not available on this device."); return; }
+    const startDate = new Date(invite.date);
+    startDate.setHours(invite.slot === "Morning" ? 10 : invite.slot === "Afternoon" ? 14 : 17, 0, 0, 0);
+    const endDate = new Date(startDate.getTime() + 4 * 60 * 60 * 1000);
+    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    const start = fmt(startDate);
+    const end = fmt(endDate);
     const title = encodeURIComponent(eventTitle);
     const details = encodeURIComponent(
       `Celebration hosted by ${hostName}.\nAttire: ${attire}\nRef: ${ref}\nGuest Invitation: ${typeof window !== "undefined" ? window.location.href : ""}`
     );
-    const location = encodeURIComponent(`${locationName}, ${locationArea}`);
+    const location = encodeURIComponent(locationName);
     const gCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`;
     window.open(gCalUrl, "_blank", "noopener,noreferrer");
     toast.success("Opening Google Calendar...");
@@ -111,7 +114,7 @@ function InvitePage() {
           </div>
           <span className="eyebrow rounded-full border hairline bg-surface-light px-3.5 py-1 text-ink/70 flex items-center gap-1.5">
             <span className="live-dot size-1.5 rounded-full bg-success" />
-            Verified Event
+            Local preview
           </span>
         </div>
 
@@ -124,7 +127,7 @@ function InvitePage() {
                 <Lockup className="h-6 sm:h-7" />
                 <span className="eyebrow inline-flex items-center gap-1.5 rounded-full border hairline bg-canvas px-3 py-1 font-bold text-xs uppercase text-primary">
                   <span className="live-dot size-1.5 rounded-full bg-success" />
-                  Official Invitation
+                  Invitation preview
                 </span>
               </div>
 
@@ -170,14 +173,14 @@ function InvitePage() {
                 <div className="flex items-center gap-2 rounded-lg bg-canvas px-3 py-2 border hairline text-xs text-ink/80">
                   <span className="live-dot size-2 rounded-full bg-emerald-500" />
                   <span>
-                    <strong className="font-black text-ink tabular-nums">{rsvpCount}</strong> guests attending (live)
+                    <strong className="font-black text-ink tabular-nums">{rsvpCount}</strong> response on this device
                   </span>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center justify-between px-2 text-xs text-ink/50">
-              <span>Coordinated exclusively by Mr. Bondz</span>
+              <span>This preview is not a confirmed event</span>
               <Link to="/book" className="font-bold text-primary hover:underline">
                 Plan your celebration →
               </Link>
@@ -189,7 +192,7 @@ function InvitePage() {
             <div className="rounded-3xl border hairline bg-surface-light p-6 shadow-xl md:p-8">
               <h2 className="display text-3xl">Your RSVP</h2>
               <p className="mt-1 text-xs text-ink/60">
-                Let your host and the catering team prepare for your arrival.
+                 Preview a response here. It remains on this device and is not sent to the host.
               </p>
 
               {submitted ? (
@@ -202,8 +205,8 @@ function InvitePage() {
                   </h3>
                   <p className="mt-2 text-xs leading-relaxed text-ink/70">
                     {attending
-                      ? `We have confirmed your spot for ${dateStr}. A reminder will be sent to ${email || "your inbox"}.`
-                      : "We're sorry you can't make it, but thank you for letting the host know."}
+                      ? `Your sample response for ${dateStr} is saved on this device. No reminder will be sent.`
+                      : "Your sample response is saved on this device. The host has not been notified."}
                   </p>
                   <button
                     onClick={() => {

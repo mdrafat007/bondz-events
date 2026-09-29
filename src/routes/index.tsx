@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Bondz Events - Celebrations, Beautifully Booked" },
       {
         property: "og:description",
-        content: "One organizer. Every detail considered. Book a celebration with Mr. Bondz.",
+        content: "One organizer. Every detail considered. Explore a sample celebration with Mr. Bondz.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -35,9 +35,9 @@ export const Route = createFileRoute("/")({
 
 const pillars = [
   { number: "01", title: "Curated availability" },
-  { number: "02", title: "Real-time sync" },
+  { number: "02", title: "Sample date matching" },
   { number: "03", title: "One simple sitting" },
-  { number: "04", title: "360° notification confirmation" },
+  { number: "04", title: "360° dispatch preview" },
 ];
 
 // Managed portraits are served by the public preview host
@@ -148,17 +148,16 @@ function LandingPage() {
             <div className="flex min-w-0 flex-col gap-6 sm:gap-8 lg:h-full lg:justify-between">
               <div className="min-w-0">
                 <div className="mb-3 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 font-sans text-[0.62rem] font-extrabold uppercase leading-snug tracking-tight text-ink sm:mb-4 sm:text-xs">
-                  <span className="hidden sm:inline">Solo Event Organizer · 16 Years · 700+ Celebrations</span>
-                  <span className="sm:hidden">Solo Organizer · 16 Yrs · 700+ Events</span>
+                  <span>Solo Event Organizer · 16 Years · 700+ Celebrations</span>
                 </div>
                 <h1
                   id="hero-title"
                   className="bondz-hero-title font-sans font-black tracking-tight text-ink [font-variation-settings:'wdth'_85]"
                 >
-                  <span className="block whitespace-normal lg:whitespace-nowrap">
+                  <span className="block whitespace-nowrap">
                     Get <span className="font-serif font-normal italic tracking-normal text-primary">“yourself booked”</span>
                   </span>
-                  <span className="block whitespace-normal lg:whitespace-nowrap">
+                  <span className="block whitespace-nowrap">
                     and Leave the <span className="font-serif font-normal italic tracking-normal text-primary">“rest on us”!</span>
                   </span>
                 </h1>
@@ -174,7 +173,7 @@ function LandingPage() {
                       <span className="shrink-0 font-serif text-base sm:text-lg italic font-bold text-primary">
                         {pillar.number}
                       </span>
-                      <h2 className="min-w-0 font-sans text-[0.72rem] sm:text-xs font-black uppercase leading-tight tracking-tight text-ink truncate [font-variation-settings:'wdth'_85]">
+                      <h2 className="min-w-0 font-sans text-xs font-black uppercase leading-tight text-ink [font-variation-settings:'wdth'_85]">
                         {pillar.title}
                       </h2>
                     </div>
@@ -192,7 +191,7 @@ function LandingPage() {
         {/* Generous editorial breathing space before client reviews and event partners */}
         <section
           aria-label="Client reviews and event partners"
-          className="mt-8 sm:mt-12 lg:mt-16 shrink-0 border-t border-hairline bg-surface"
+          className="mt-10 sm:mt-14 lg:mt-16 shrink-0 border-t border-hairline bg-surface"
         >
           <ReviewMarquee />
           <PartnerMarquee />

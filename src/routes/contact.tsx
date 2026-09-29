@@ -1,7 +1,7 @@
 ﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { CONTACT, EVENT_TYPES } from "@/lib/bondz-data";
+import { EVENT_TYPES } from "@/lib/bondz-data";
 import { playTapSound, triggerTap } from "@/lib/haptics";
 import { triggerBookingTransition } from "@/lib/booking-transition";
 import mascotWhite from "@/assets/mascot-white.png";
@@ -12,10 +12,12 @@ export const Route = createFileRoute("/contact")({
       { title: "Contact - Bondz Events" },
       {
         name: "description",
-        content: "Say hello to Mr. Bondz. Tell us what you're celebrating and we'll get back within a business day.",
+        content: "Explore ways to plan a celebration with Mr. Bondz, Solo Event Organizer.",
       },
       { property: "og:title", content: "Contact - Bondz Events" },
       { property: "og:description", content: "Tell Mr. Bondz what you're celebrating." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Contact,
@@ -37,8 +39,7 @@ function Contact() {
       toast.error("Name, a valid email and a message, please.");
       return;
     }
-    toast.success(`Thanks ${f.name.split(" ")[0]} - Mr. Bondz will reply within a business day.`);
-    setF({ name: "", email: "", interest: "", msg: "" });
+    toast.info("This preview cannot send messages yet. Your message is still here so you can copy it.");
   };
 
   const input =
@@ -79,29 +80,7 @@ function Contact() {
           </div>
         </div>
 
-        {/* Studio & Contact Footnotes */}
-        <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-ink/15 pt-5 text-sm">
-          <div>
-            <dt className="eyebrow text-ink/50 text-xs uppercase tracking-wider font-bold">Direct Email</dt>
-            <dd className="font-semibold text-ink mt-0.5">
-              <a href={`mailto:${CONTACT.email}`} className="hover:text-primary transition-colors">
-                {CONTACT.email}
-              </a>
-            </dd>
-          </div>
-          <div>
-            <dt className="eyebrow text-ink/50 text-xs uppercase tracking-wider font-bold">Phone</dt>
-            <dd className="font-semibold text-ink mt-0.5">{CONTACT.phone}</dd>
-          </div>
-          <div>
-            <dt className="eyebrow text-ink/50 text-xs uppercase tracking-wider font-bold">Private Studio</dt>
-            <dd className="font-semibold text-ink mt-0.5">{CONTACT.studio}</dd>
-          </div>
-          <div>
-            <dt className="eyebrow text-ink/50 text-xs uppercase tracking-wider font-bold">Turnaround</dt>
-            <dd className="font-semibold text-ink mt-0.5">{CONTACT.hours}</dd>
-          </div>
-        </dl>
+        <p className="mt-8 border-t border-hairline pt-5 text-sm text-ink/70">This contact form is a preview and cannot send messages yet. You can explore a sample booking while direct contact details are being confirmed.</p>
       </div>
 
       {/* Right Column: Editorial Contact Form */}

@@ -112,7 +112,7 @@ const EVENT_NARRATIVES: Record<EventTypeId, { kicker: string; highlight: string;
 };
 
 export function Step1() {
-  const { sel, setSel, setStep, vibes, setVibes } = useBooking();
+  const { sel, setSel, setStep, vibes, setVibes, setDay, setSlot } = useBooking();
   const narrative = sel.event ? EVENT_NARRATIVES[sel.event] : null;
 
   return (
@@ -127,6 +127,9 @@ export function Step1() {
               onClick={() => {
                 playTapSound();
                 setSel((s) => ({ ...s, event: e.id }));
+                setDay(null);
+                setSlot(null);
+                setVibes([]);
                 signalBot({ mood: "happy", tip: `${e.title}. Great choice - next, where?` });
               }}
               aria-pressed={on}
@@ -187,7 +190,7 @@ export function Step1() {
             </span>
           </div>
           <div className="mt-4 flex flex-wrap gap-2 sm:gap-2.5">
-            {((VIBES_BY_EVENT as any)[sel.event] ?? []).map((v: string) => {
+            {(sel.event ? VIBES_BY_EVENT[sel.event] : []).map((v) => {
               const on = vibes.includes(v);
               return (
                 <button
@@ -210,7 +213,7 @@ export function Step1() {
             })}
           </div>
           <p className="mt-4 text-xs text-ink/50">
-            Your vibe steers the styling brief every partner receives - it does not change your price.
+            Your vibe steers the sample styling brief for your partners - it does not change your price.
           </p>
         </div>
       )}
@@ -519,8 +522,8 @@ export function Step3B() {
 /* ───────────────── STEP 4 ───────────────── */
 export const SHIFT_DETAILS: Record<Slot, { label: string; time: string; shortTime: string }> = {
   Morning: { label: "Morning", time: "9:00 AM - 2:00 PM", shortTime: "9 AM - 2 PM" },
-  Evening: { label: "Evening", time: "3:00 PM - 8:00 PM", shortTime: "3 PM - 8 PM" },
-  Night: { label: "Night", time: "7:00 PM - 1:00 AM", shortTime: "7 PM - 1 AM" },
+  Afternoon: { label: "Afternoon", time: "2:00 PM - 6:00 PM", shortTime: "2 PM - 6 PM" },
+  Evening: { label: "Evening", time: "5:00 PM - 10:00 PM", shortTime: "5 PM - 10 PM" },
 };
 
 export function Step4() {
@@ -550,7 +553,7 @@ export function Step4() {
 
   return (
     <div className="flex flex-col gap-4">
-      <StepHead no="04" title={<>Pick a date. <span className="font-serif-i text-primary">Every one works.</span></>} sub={`We intersected ${calCount} live calendars. Days where anyone is booked aren't shown at all.`} />
+      <StepHead no="04" title={<>Pick a date. <span className="font-serif-i text-primary">Every one works.</span></>} sub={`This preview intersects ${calCount} simulated calendars. Days where anyone is unavailable aren't shown.`} />
       <div className="scroll-quiet flex items-stretch gap-1.5 overflow-x-auto pb-1">
         {sources.map((s, i) => (
           <div key={s.n} className="flex shrink-0 items-center gap-1.5">
@@ -584,18 +587,18 @@ export function Step4() {
                     playTapSound();
                     setDay(d);
                     setSlot(null);
-                    signalBot({ mood: "happy", tip: "That date works for everyone. Pick a time." });
+                    signalBot({ mood: "happy", tip: "That sample date works for everyone. Pick a time." });
                   }}
                   aria-pressed={on}
                   className={cn(
                     "flex flex-col justify-between rounded-xl p-3 text-left transition-all border shadow-2xs group cursor-pointer",
                     on
                       ? "border-primary bg-primary text-white shadow-md ring-2 ring-primary/30 -translate-y-0.5"
-                      : "border-[#e2ded6] bg-white text-[#151118] hover:border-primary/60 hover:shadow-sm hover:-translate-y-0.5"
+                      : "border-hairline bg-surface-light text-ink hover:border-primary/60 hover:shadow-sm hover:-translate-y-0.5"
                   )}
                 >
                   <div className="flex items-center justify-between w-full">
-                    <span className={cn("text-[0.68rem] font-bold uppercase tracking-wider", on ? "text-white/80" : "text-[#151118]/60")}>
+                    <span className={cn("text-[0.68rem] font-bold uppercase tracking-wider", on ? "text-white/80" : "text-ink/60")}>
                       {date.toLocaleDateString("en-US", { weekday: "short" })}
                     </span>
                     <span
@@ -613,7 +616,7 @@ export function Step4() {
                   <div
                     className={cn(
                       "mt-1 flex flex-col gap-1 border-t pt-1.5 text-[0.63rem] leading-tight w-full",
-                      on ? "border-white/20 text-white/90" : "border-black/10 text-[#151118]/80"
+                      on ? "border-white/20 text-white/90" : "border-hairline text-ink/80"
                     )}
                   >
                     {openSlots.map((s) => (
@@ -649,7 +652,7 @@ export function SlotPicker() {
         <span className="eyebrow text-ink/75 font-bold uppercase tracking-wider text-[0.65rem] sm:text-xs">
           Available Shifts · {dateStr}
         </span>
-        <span className="text-[0.62rem] sm:text-xs text-primary font-semibold">Select shift to lock</span>
+        <span className="text-[0.62rem] sm:text-xs text-primary font-semibold">Select a sample time</span>
       </div>
       <div className="scroll-quiet flex items-center gap-2 pt-1 overflow-x-auto max-w-full pb-0.5">
         {SLOTS.map((s, i) =>
@@ -665,12 +668,12 @@ export function SlotPicker() {
                 "group shrink-0 flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition shadow-xs cursor-pointer whitespace-nowrap",
                 slot === s
                   ? "border-primary bg-primary text-white shadow-md ring-2 ring-primary/30"
-                  : "bg-white text-[#151118] border-[#e2ded6] hover:border-primary/60 hover:shadow"
+                  : "bg-surface-light text-ink border-hairline hover:border-primary/60 hover:shadow"
               )}
             >
-              <span className={cn("inline-block size-1.5 rounded-full", slot === s ? "bg-white" : "bg-emerald-500")} />
+              <span className={cn("inline-block size-1.5 rounded-full", slot === s ? "bg-white" : "bg-status")} />
               <span>{s}</span>
-              <span className={cn("text-[0.62rem] font-medium opacity-85", slot === s ? "text-white/90" : "text-[#151118]/70")}>
+              <span className={cn("text-[0.62rem] font-medium opacity-85", slot === s ? "text-white/90" : "text-ink/70")}>
                 ({SHIFT_DETAILS[s].shortTime})
               </span>
               {slot === s && <span className="text-xs">✓</span>}

@@ -14,10 +14,12 @@ export const Route = createFileRoute("/partners")({
       {
         name: "description",
         content:
-          "The venues, caterers, decorators, DJs, equipment, staffing and cleaning crews whose calendars sync live with Mr. Bondz.",
+          "Explore sample venues, caterers, decorators, DJs, equipment, staffing and cleaning partners in the Bondz Events planning preview.",
       },
       { property: "og:title", content: "Partners - Bondz Events" },
-      { property: "og:description", content: "Every partner here syncs its calendar live with Bondz Events." },
+      { property: "og:description", content: "Explore the venues and service partners in the Bondz Events planning preview." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Partners,
@@ -313,7 +315,7 @@ function Partners() {
       <div className="flex shrink-0 flex-wrap items-end justify-between gap-4 border-b border-ink/15 pb-4">
         <div>
           <p className="eyebrow text-primary font-bold tracking-widest uppercase">
-            Nº 04 - Vetted Collective · Live Synchronized
+            Nº 04 - Partner Collective · Planning Preview
           </p>
           <h1 className="display mt-1 text-4xl sm:text-5xl md:text-6xl tracking-tight">
             The people behind the curtain.
@@ -325,7 +327,7 @@ function Partners() {
             Hover or tap to inspect specs
           </span>
           <p className="max-w-xs text-xs text-ink/65 leading-relaxed">
-            Every vendor shares their live calendar directly with Mr. Bondz - that’s how impossible dates never reach your screen.
+            Sample availability is calculated together for Mr. Bondz, the venue and each selected partner. No real calendars are connected yet.
           </p>
         </div>
       </div>
@@ -544,9 +546,9 @@ function Partners() {
                 <div className="mt-4 flex items-center justify-between rounded-xl border border-emerald-500/30 bg-emerald-950/20 px-3.5 py-2.5 text-xs text-emerald-300">
                   <span className="flex items-center gap-2 font-semibold">
                     <span className="size-2 rounded-full bg-emerald-400 animate-ping" />
-                    Calendar Synchronized Live
+                    Sample calendar match
                   </span>
-                  <span className="font-mono text-[0.70rem] opacity-80">100% verified</span>
+                  <span className="font-mono text-[0.70rem] opacity-80">Preview only</span>
                 </div>
 
                 {/* Action CTA Button */}

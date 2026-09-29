@@ -404,7 +404,7 @@ export function Step6() {
     await document.fonts.load('700 36px "Bricolage Grotesque"');
     ctx.fillStyle = theme.bg;
     ctx.fillRect(0, 0, S, S);
-    const logoSrc = theme.logo === "dark" ? "/brand-lockup-dark.png" : "/brand-lockup.png";
+    const logoSrc = theme.logo === "dark" ? brandLockupDark : brandLockupLight;
     const img = await loadImg(logoSrc);
     const w = 380;
     ctx.drawImage(img, S - w - 50, S - (w * img.height) / img.width - 50, w, (w * img.height) / img.width);
@@ -621,7 +621,7 @@ ol.terms li b { color: #151118; }
                 style={{ background: theme.bg, color: theme.fg }}
               >
                 <img
-                  src={theme.logo === "dark" ? "/brand-lockup-dark.png" : "/brand-lockup.png"}
+                  src={theme.logo === "dark" ? brandLockupDark : brandLockupLight}
                   alt="Bondz Events"
                   className="absolute bottom-2.5 right-2.5 w-[38%] object-contain"
                 />

@@ -26,4 +26,4 @@
 # Home page full-width benchmark correction
 - [x] Expand the hero to a full-width balanced split and restore Bricolage headline with serif accents.
 - [x] Layer the tactile CTA over theme-aware mascot art and complete the media progress rule.
-- [ ] Verify first-visit light and sound defaults, mobile-to-wide layout, and both curtain launch paths.
+- [x] Verify first-visit light and sound defaults, mobile-to-wide layout, and both curtain launch paths.

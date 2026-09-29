@@ -168,7 +168,7 @@ function DemoDirector({
 }
 
 
-function Frame({ intro, demo, paused, onDemoProgress }: { intro: boolean; demo: boolean; paused: boolean; onDemoProgress?: (progress: number) => void }) {
+function Frame({ intro, demo, paused, onDemoProgress, onDemoRoundEnd }: { intro: boolean; demo: boolean; paused: boolean; onDemoProgress?: (progress: number) => void; onDemoRoundEnd?: () => void }) {
   const b = useBooking();
   const { step, setStep, reveal, setReveal, sel, day, slot } = b;
   const [split, setSplit] = useState(intro);
@@ -215,7 +215,7 @@ function Frame({ intro, demo, paused, onDemoProgress }: { intro: boolean; demo: 
 
   return (
     <div className="flex h-full flex-col max-w-full overflow-x-hidden">
-      {demo && <DemoDirector paused={paused} canvas={scroller} onProgress={onDemoProgress} />}
+      {demo && <DemoDirector paused={paused} canvas={scroller} onProgress={onDemoProgress} onRoundEnd={onDemoRoundEnd} />}
       {!demo && <header className="shrink-0 border-b hairline bg-canvas transition-colors duration-300">
         <div className="flex h-14 sm:h-16 items-center justify-between gap-1.5 sm:gap-4 px-2.5 sm:px-6">
           {/* Brand Logo */}

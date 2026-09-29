@@ -79,7 +79,7 @@ Thank you.`;
           <p className="text-[0.66rem] font-bold uppercase tracking-[0.2em] text-primary">
             Direct line to Mr. Bondz
           </p>
-          <h1 className="display mt-3 text-[clamp(2.4rem,min(5.4vw,10vh),5.5rem)] leading-[0.95] tracking-tight">
+          <h1 className="display mt-3 text-4xl leading-none tracking-tight sm:text-5xl md:text-6xl">
             Tell me what you’re celebrating.
           </h1>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-ink/70">
@@ -88,8 +88,8 @@ Thank you.`;
           </p>
         </div>
 
-        <div className="mt-auto flex max-w-lg items-center gap-4 rounded-2xl border border-white/20 bg-gradient-to-b from-[#1c1622] to-[#0f0b13] p-4 text-white shadow-xl sm:p-5">
-          <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-primary/60 bg-[#0d0a0e] p-1 shadow-inner sm:size-18">
+        <div className="mt-auto flex max-w-lg items-center gap-4 rounded-2xl border border-paper/20 bg-night p-4 text-paper shadow-raised sm:p-5">
+          <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-primary/60 bg-night p-1 shadow-inner sm:size-20">
             <img
               src={mascotWhite}
               alt="Mr. Bondz Seal"
@@ -100,10 +100,10 @@ Thank you.`;
             <span className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-primary">
               Personal Event Organizer Guarantee
             </span>
-            <p className="mt-0.5 font-sans text-base font-black tracking-tight text-white [font-variation-settings:'wdth'_85] sm:text-lg">
+            <p className="mt-0.5 font-sans text-base font-black tracking-tight text-paper [font-variation-settings:'wdth'_85] sm:text-lg">
               “Mr. Bondz will take care of it.”
             </p>
-            <p className="mt-1 font-sans text-xs leading-relaxed text-white/85">
+            <p className="mt-1 font-sans text-xs leading-relaxed text-paper/85">
               No handoffs, no junior reps. From initial concept to 2am strike, you coordinate directly with Mr. Bondz.
             </p>
           </div>

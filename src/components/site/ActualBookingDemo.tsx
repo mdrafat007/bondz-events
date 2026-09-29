@@ -49,7 +49,6 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
         theme === "light" ? "dark bg-canvas text-ink" : "light bg-canvas text-ink",
         className,
       )}
-      style={{ WebkitUserSelect: "none", userSelect: "none" }}
     >
       <div className="pointer-events-none absolute left-0 top-0 h-[143%] w-[143%] origin-top-left scale-[0.7] select-none overflow-hidden pb-20">
         <BookingEngine

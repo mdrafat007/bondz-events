@@ -50,7 +50,7 @@ export function ConnectAIAssistant() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="bondz-ai-link inline-flex max-w-full origin-left cursor-pointer items-center gap-1.5 whitespace-normal text-left font-sans text-xs font-black uppercase tracking-tight text-ink underline-offset-4 hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:origin-center sm:text-sm [font-variation-settings:'wdth'_85]"
+        className="bondz-ai-link inline-flex max-w-full shrink-0 origin-left cursor-pointer items-center gap-1.5 text-left font-sans text-xs font-black uppercase tracking-tight text-ink underline-offset-4 hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:origin-center sm:whitespace-nowrap xl:text-sm [font-variation-settings:'wdth'_85]"
       >
         ✦ Connect your AI agent →
       </button>

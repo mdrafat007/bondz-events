@@ -38,7 +38,7 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
       onFocus={() => setHovered(true)}
       onBlur={() => setHovered(false)}
       className={cn(
-        "relative aspect-[4/5] max-h-[28rem] w-full cursor-pointer select-none overflow-hidden rounded-2xl border border-hairline shadow-raised focus-visible:outline-2 focus-visible:outline-primary xs:aspect-[4/4.4] sm:aspect-[4/3.2] sm:max-h-[24rem] lg:aspect-[4/3.6] lg:h-full lg:max-h-[28rem]",
+        "relative aspect-[4/5] w-full cursor-pointer select-none overflow-hidden rounded-card border border-hairline shadow-raised focus-visible:outline-2 focus-visible:outline-primary sm:aspect-[4/3.2] lg:aspect-[4/3.6] lg:h-full",
         theme === "light" ? "dark bg-canvas text-ink" : "light bg-canvas text-ink",
         className,
       )}

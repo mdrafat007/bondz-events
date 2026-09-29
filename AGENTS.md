@@ -7,3 +7,4 @@
 - Keep marketing pages in `src/routes/` and the design-system showcase at `/system`, because the library preview remains permanent while the flagship landing page owns `/`.
 - Keep only the library's runtime dependencies in production `dependencies`; preview routing and build tools belong in `devDependencies` because attached consumers receive the library, not the preview app.
 - Keep the booking curtain and marketing navigation in preview-only adapters, because library navigation must stay reusable while the site shares one transition behavior.
+- Keep the bespoke Home booking animation in a preview-only semantic CTA and use the existing library Button, because the flagship motion is site-specific while accessible controls remain shared.

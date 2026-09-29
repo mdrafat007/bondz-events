@@ -68,7 +68,7 @@ export function ConnectAIAssistant() {
                 <Button variant="outline" size="icon" aria-label="Close" onClick={() => setOpen(false)}>✕</Button>
               </div>
 
-              <div className="scroll-quiet mt-4 max-h-[70dvh] overflow-y-auto sm:max-h-[60dvh]">
+              <div className="scroll-quiet mt-4 max-h-dvh min-h-0 overflow-y-auto">
                 <section className="rounded-card border border-hairline bg-surface-light p-3 sm:p-4">
                   <Badge variant="accent">Works with any AI</Badge>
                   <h3 className="mt-2 font-sans text-sm font-black uppercase tracking-tight text-ink">Booking prompt — no setup needed</h3>

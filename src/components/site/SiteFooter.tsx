@@ -71,7 +71,7 @@ export function SiteFooter() {
           type="button"
           className="shrink-0 text-[0.6rem] font-semibold uppercase tracking-[0.12em] underline-offset-4 hover:text-ink hover:underline sm:text-[0.66rem] sm:tracking-[0.16em]"
         >
-          Cancellation<span className="hidden xs:inline sm:inline"> &amp; Rescheduling</span>
+          Cancellation<span className="hidden sm:inline"> &amp; Rescheduling</span>
         </button>
       </PolicyDialog>
     </footer>

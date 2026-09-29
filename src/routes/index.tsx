@@ -52,7 +52,8 @@ const partners = [
   { category: "Catering", name: "EMBER & OAK KITCHEN" },
   { category: "Decor", name: "PETAL THEORY" },
   { category: "DJ / Music", name: "DJ NOVA" },
-  { category: "Equipment", name: "SMOKESTACK YARD" },
+  { category: "Equipment", name: "AURA SOUND" },
+  { category: "Venues", name: "SMOKESTACK YARD" },
 ];
 
 function ReviewMarquee() {
@@ -86,7 +87,7 @@ function LandingPage() {
           <div className="mt-16 flex flex-col items-start sm:mt-20">
             <div className="relative isolate pt-3">
               <span aria-hidden="true" className="bondz-mascot-peek pointer-events-none absolute left-[69%] z-10 w-16 -translate-x-1/2 sm:w-20"><img src={mascot} alt="" className="block h-auto w-full" /></span>
-              <Button variant="primary" size="lg" onClick={launchBooking} onMouseEnter={playPeekabooSound} onFocus={playPeekabooSound} disabled={launching} className="bondz-hero-cta group relative z-20 min-h-14 max-w-full gap-3 rounded-full bg-primary py-2 pl-5 pr-2 font-sans text-xs font-extrabold uppercase tracking-wider text-white shadow-cta hover:bg-primary-hover sm:gap-4 sm:pl-8 sm:text-sm">Get started your booking <span aria-hidden="true" className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white text-lg font-bold text-primary transition-transform group-hover:rotate-45 sm:size-10">↗</span></Button>
+              <Button variant="primary" size="lg" onClick={launchBooking} onMouseEnter={playPeekabooSound} onFocus={playPeekabooSound} disabled={launching} className="bondz-hero-cta group relative z-20 min-h-14 max-w-full gap-2 rounded-full bg-primary py-2 pl-4 pr-2 font-sans text-[0.65rem] font-extrabold uppercase tracking-wider text-white shadow-cta hover:bg-primary-hover sm:gap-4 sm:pl-8 sm:text-sm">Get started your booking <span aria-hidden="true" className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white text-lg font-bold text-primary transition-transform group-hover:rotate-45 sm:size-10">↗</span></Button>
             </div>
             <p className="mt-3 max-w-sm font-sans text-sm font-black uppercase tracking-wider text-ink sm:text-base">Tell us what you're celebrating!</p>
           </div>

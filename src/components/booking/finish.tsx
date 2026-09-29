@@ -106,7 +106,7 @@ function SignaturePad({ onChange }: { onChange: (d: string | null) => void }) {
 /* ───────────────── STEP 5 ───────────────── */
 export function Step5() {
   const s = useSummary();
-  const { sel, setGuests, day, slot, details, setDetails, signature, setSignature, setStep, setRef, est, parties, demo } = s;
+  const { sel, day, slot, details, setDetails, signature, setSignature, setStep, setRef, est, parties, demo } = s;
   const [agree, setAgree] = useState(false);
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState(0);

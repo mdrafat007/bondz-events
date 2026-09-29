@@ -84,7 +84,7 @@ function ServicesPage() {
             {CATEGORY_NOTE[service.no] && <p className="mt-2 text-xs leading-relaxed text-subtle/80">{CATEGORY_NOTE[service.no]}</p>}
             <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-hairline pt-4">
               <span className="font-sans text-[0.68rem] font-extrabold uppercase tracking-widest text-ink">{PRICE_BY_SERVICE[service.no] ?? "Included with Mr. Bondz"}</span>
-              <Button variant="outline" size="sm" className="rounded-full" onClick={launchBooking} disabled={launching}>Book this →</Button>
+              <Button variant="outline" size="sm" onClick={launchBooking} disabled={launching}>Book this →</Button>
             </div>
           </article>;
         })}

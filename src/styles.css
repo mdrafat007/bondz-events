@@ -1,7 +1,8 @@
 @import "tailwindcss";
 @import "./design-system/bondz-events---design-system-9e1fdf/design-system/styles/theme.css";
+@source "./design-system/bondz-events---design-system-9e1fdf";
 
-html, body, #app { height: 100%; }
+html, body, #app { height: 100%; font-family: var(--font-sans); }
 html, body { overflow: hidden; }
 body { margin: 0; }
 button, input { font: inherit; }

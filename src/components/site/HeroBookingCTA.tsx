@@ -17,7 +17,9 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
   const mascotImg = theme === "dark" ? mascotWhite : mascotRed;
   const [isHovered, setIsHovered] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
-  const [isMobile, setIsMobile] = useState(() => (typeof window !== "undefined" ? window.innerWidth < 640 : false));
+  // Measured after hydration so server and client render the same first frame.
+  const [isMobile, setIsMobile] = useState(false);
+
   const loopTimerRef = useRef<number | null>(null);
 
   const buttonRef = useRef<HTMLDivElement>(null);

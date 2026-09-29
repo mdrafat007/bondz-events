@@ -109,6 +109,16 @@ function PreviewDocument({ previewPath }: { previewPath: string }): ReactElement
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       if (event.source !== parent) return;
+      let trusted = false;
+      try {
+        const host = new URL(event.origin).hostname;
+        trusted =
+          event.origin === window.location.origin ||
+          host === "lovable.dev" || host.endsWith(".lovable.dev") ||
+          host === "lovable.app" || host.endsWith(".lovable.app") ||
+          host === "localhost";
+      } catch { trusted = false; }
+      if (!trusted) return;
       const schemaProps = (entryRef.current as { schemaProps?: SchemaProp[] } | null)?.schemaProps ?? [];
       const props = specimenPropsFromMessage(event.data, schemaProps);
       if (!props) return;

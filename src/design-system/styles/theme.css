@@ -2,6 +2,8 @@
 
 :root {
   --bondz-night: #130f16;
+  --bondz-review: #161217;
+  --bondz-status: #45b87d;
   --bondz-paper: #f6f1e7;
   --bondz-canvas: oklch(0.965 0.012 85);
   --bondz-surface: oklch(0.985 0.008 85);
@@ -15,6 +17,7 @@
   --bondz-shadow-popover: 0 20px 40px -10px oklch(0.16 0.015 300 / 0.2);
 }
 .dark {
+  --bondz-review: #09070a;
   --bondz-canvas: oklch(0.14 0.015 300);
   --bondz-surface: oklch(0.18 0.015 300);
   --bondz-surface-light: oklch(0.22 0.015 300);
@@ -28,6 +31,8 @@
 }
 @theme inline {
   --color-night: var(--bondz-night);
+  --color-review: var(--bondz-review);
+  --color-status: var(--bondz-status);
   --color-paper: var(--bondz-paper);
   --color-canvas: var(--bondz-canvas);
   --color-surface: var(--bondz-surface);

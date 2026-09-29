@@ -173,7 +173,7 @@ function LandingPage() {
                       <span className="shrink-0 font-serif text-base sm:text-lg italic font-bold text-primary">
                         {pillar.number}
                       </span>
-                      <h2 className="min-w-0 font-sans text-[0.72rem] sm:text-xs font-black uppercase leading-tight tracking-tight text-ink truncate [font-variation-settings:'wdth'_85]">
+                      <h2 className="min-w-0 font-sans text-xs font-black uppercase leading-tight text-ink [font-variation-settings:'wdth'_85]">
                         {pillar.title}
                       </h2>
                     </div>

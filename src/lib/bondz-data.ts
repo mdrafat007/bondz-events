@@ -282,13 +282,6 @@ export function dayToDate(anchor: Date, d: number): Date {
 export const usd = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 export const money = usd;
 
-export const CONTACT = {
-  email: "hello@bondzevents.com",
-  phone: "+1 (555) 012-3456",
-  hours: "Mon-Sat, 9am-7pm",
-  studio: "By appointment only",
-};
-
 export const TERMS: { t: string; b: string }[] = [
   { t: "Deposit", b: "A 25% demo deposit illustrates how your date, venue and partners would be reserved in one sitting." },
   { t: "Balance", b: "The remaining balance is due 7 days before your celebration." },

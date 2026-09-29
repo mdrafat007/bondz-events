@@ -63,10 +63,10 @@ export function PolicyDialog({ children }: { children: React.ReactNode }) {
 export function SiteFooter() {
   return (
     <footer className="flex min-h-8 shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-1 text-ink/55 md:px-8 border-t border-hairline/60 bg-canvas transition-colors duration-300">
-      <span className="eyebrow">© 2026 Bondz Events - by Mr. Bondz</span>
+      <span className="eyebrow">© 2026 Bondz Events<span className="hidden sm:inline"> - by Mr. Bondz</span></span>
       <PolicyDialog>
         <button type="button" className="eyebrow underline-offset-4 hover:text-ink hover:underline cursor-pointer">
-          Cancellation & Rescheduling Policy
+          Cancellation & Rescheduling<span className="hidden sm:inline"> Policy</span>
         </button>
       </PolicyDialog>
     </footer>

@@ -77,22 +77,22 @@ function PartnerMarquee() {
 function LandingPage() {
   const { launchBooking, launching, curtain } = useBookingLaunch();
 
-  return <AppShell header={<MarketingNav />} footer={<SiteFooter className="lg:hidden" />} canvasClassName="lg:overflow-hidden">
+  return <AppShell header={<MarketingNav />} footer={<SiteFooter />} canvasClassName="lg:overflow-hidden">
     <div className="flex min-h-full w-full max-w-full flex-col lg:h-full">
       <div className="w-full max-w-full px-4 sm:px-6 md:px-8 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
-        <section aria-labelledby="hero-title" className="grid min-w-0 grid-cols-1 items-stretch gap-6 pb-6 pt-6 sm:pt-8 lg:min-h-0 lg:flex-[1.65] lg:grid-cols-2 lg:gap-8 lg:py-3 xl:py-4">
+        <section aria-labelledby="hero-title" className="grid min-w-0 grid-cols-1 items-stretch gap-6 pb-4 pt-4 sm:pt-6 lg:min-h-0 lg:flex-[1.65] lg:grid-cols-2 lg:gap-8 lg:py-2.5 xl:py-3.5">
           <div className="flex min-w-0 flex-col justify-between lg:h-full">
             <div className="min-w-0">
-              <div className="mb-4 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 font-sans text-[0.62rem] font-extrabold uppercase leading-snug tracking-tight text-ink sm:mb-5 sm:text-xs"><span className="hidden sm:inline">Solo Event Organizer · 16 Years · 700+ Celebrations</span><span className="sm:hidden">Solo Organizer · 16 Yrs · 700+ Events</span></div>
+              <div className="mb-3 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 font-sans text-[0.62rem] font-extrabold uppercase leading-snug tracking-tight text-ink sm:mb-4 sm:text-xs"><span className="hidden sm:inline">Solo Event Organizer · 16 Years · 700+ Celebrations</span><span className="sm:hidden">Solo Organizer · 16 Yrs · 700+ Events</span></div>
               <h1 id="hero-title" className="bondz-hero-title font-sans font-black tracking-tight text-ink [font-variation-settings:'wdth'_85]"><span className="block">Get <span className="font-serif font-normal italic tracking-normal text-primary">“yourself booked”</span></span><span className="block">and Leave the <span className="font-serif font-normal italic tracking-normal text-primary">“rest on us”!</span></span></h1>
             </div>
-            <div className="mt-6 flex flex-col items-start sm:mt-8">
+            <div className="mt-5 flex flex-col items-start sm:mt-6">
               <HeroBookingCTA onClick={launchBooking} disabled={launching} />
-              <p className="mt-3 max-w-full font-sans text-sm font-black uppercase tracking-tight text-ink [font-variation-settings:'wdth'_85] sm:text-base">Tell us what you're celebrating!</p>
+              <p className="mt-2.5 max-w-full font-sans text-sm font-black uppercase tracking-tight text-ink [font-variation-settings:'wdth'_85] sm:text-base">Tell us what you're celebrating!</p>
             </div>
           </div>
           <div className="min-w-0 lg:flex lg:min-h-0 lg:items-center">
-            <div className="relative ml-auto aspect-video max-h-[36vh] w-full overflow-hidden rounded-2xl border border-hairline bg-night shadow-raised lg:max-h-full" aria-label="Dinner celebration at Bondz Events">
+            <div className="relative ml-auto aspect-video max-h-[34vh] w-full overflow-hidden rounded-2xl border border-hairline bg-night shadow-raised lg:max-h-full" aria-label="Dinner celebration at Bondz Events">
               <img src={dinner} alt="Guests raising a toast around a candlelit celebration dinner" width={1536} height={1024} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-night via-night/25 to-transparent" aria-hidden="true" />
               <div className="absolute inset-x-0 bottom-0 p-4 pb-5 text-white sm:p-5 sm:pb-6"><span className="font-sans text-[0.6rem] font-extrabold uppercase tracking-wider text-primary sm:text-xs">Live sync network</span><p className="mt-1 max-w-[25ch] font-sans text-[clamp(1rem,2vw,1.5rem)] font-black uppercase leading-tight tracking-tight">How to get booked without a single call</p></div>
@@ -100,11 +100,11 @@ function LandingPage() {
             </div>
           </div>
         </section>
-        <section aria-label="Why book with Bondz Events" className="grid shrink-0 grid-cols-1 gap-4 border-t border-hairline px-1 py-4 sm:grid-cols-2 md:px-4 lg:grid-cols-4 lg:gap-6 lg:px-0 lg:py-2.5">
+        <section aria-label="Why book with Bondz Events" className="grid shrink-0 grid-cols-1 gap-4 border-t border-hairline px-1 py-3 sm:grid-cols-2 md:px-4 lg:grid-cols-4 lg:gap-6 lg:px-0 lg:py-2">
           {pillars.map((pillar) => <div key={pillar.number} className="flex min-w-0 items-start gap-3"><span className="shrink-0 font-serif text-xl italic text-primary sm:text-2xl">{pillar.number}</span><h2 className="min-w-0 pt-0.5 font-sans text-xs font-black uppercase leading-tight tracking-tight text-ink sm:text-sm">{pillar.title}</h2></div>)}
         </section>
       </div>
-      <section aria-label="Client reviews and event partners" className="mt-4 shrink-0 border-t border-hairline bg-surface sm:mt-6 lg:mt-0"><ReviewMarquee /><PartnerMarquee /></section>
+      <section aria-label="Client reviews and event partners" className="mt-2 shrink-0 border-t border-hairline bg-surface sm:mt-4 lg:mt-0"><ReviewMarquee /><PartnerMarquee /></section>
       <div className="mx-auto max-w-7xl px-4 py-8 text-center font-serif text-2xl italic text-ink sm:py-12 sm:text-4xl lg:hidden">Good times, beautifully made<span className="text-primary">.</span></div>
     </div>
     {curtain}

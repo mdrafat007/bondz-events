@@ -7,8 +7,9 @@ body { margin: 0; }
 button, input { font: inherit; }
 ::selection { background: var(--bondz-primary); color: var(--bondz-surface-light); }
 
-.bondz-hero-title { font-size: clamp(2.1rem, 6.8vw, 5.2rem); line-height: 0.90; letter-spacing: -0.04em; }
-@media (min-width: 1024px) and (max-width: 1800px) { .bondz-hero-title { font-size: clamp(2.1rem, 4.1vw, 5.2rem); } }
+.bondz-hero-title { font-size: clamp(2.35rem, 7vw, 5.6rem); line-height: 0.92; letter-spacing: -0.04em; }
+@media (min-width: 1024px) { .bondz-hero-title { font-size: clamp(2.75rem, 4.8vw, 5.8rem); line-height: 0.92; } }
+@media (min-width: 1440px) { .bondz-hero-title { font-size: clamp(3.2rem, 5.4vw, 6.4rem); line-height: 0.90; } }
 .bondz-hero-cta { background: linear-gradient(to bottom, var(--bondz-cta-top), var(--bondz-cta-mid), var(--bondz-cta-bottom)); box-shadow: var(--bondz-cta-shadow); }
 .bondz-hero-cta:hover { background: linear-gradient(to bottom, var(--bondz-cta-top), var(--bondz-cta-mid), var(--bondz-cta-bottom)); }
 .rise { animation: rise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }

@@ -207,6 +207,17 @@ export function CustomIcon({ className }: EditorialSvgProps) {
   );
 }
 
+export const EVENT_SVGS: Record<EventTypeId, (props: EditorialSvgProps) => React.ReactElement> = {
+  wedding: WeddingIcon,
+  anniversary: AnniversaryIcon,
+  birthday: BirthdayIcon,
+  bbq: BbqIcon,
+  family: FamilyIcon,
+  corporate: CorporateIcon,
+  hybrid: HybridIcon,
+  custom: CustomIcon,
+};
+
 export function HomeEditorialSvg({ className }: EditorialSvgProps) {
   return (
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">

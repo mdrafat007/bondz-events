@@ -286,6 +286,7 @@ export const CONTACT = {
   email: "hello@bondzevents.com",
   phone: "+1 (555) 012-3456",
   hours: "Mon-Sat, 9am-7pm",
+  studio: "By appointment only",
 };
 
 export const TERMS: { t: string; b: string }[] = [

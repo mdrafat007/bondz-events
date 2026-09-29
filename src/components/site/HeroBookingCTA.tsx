@@ -201,6 +201,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
     <div
       className={cn(
         "relative inline-flex flex-col items-center justify-end overflow-visible select-none cursor-pointer group",
+        disabled && "pointer-events-none opacity-70",
         className,
       )}
       onMouseEnter={handleMouseEnter}
@@ -210,6 +211,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
       onTouchStart={handleTap}
       onClick={handleTap}
       role="button"
+      aria-disabled={disabled || undefined}
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {

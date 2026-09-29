@@ -82,18 +82,15 @@ function LandingPage() {
   return <AppShell header={<MarketingNav />} footer={<SiteFooter />} canvasClassName="lg:overflow-hidden">
     <div className="flex min-h-full w-full max-w-full flex-col lg:h-full">
       <div className="w-full max-w-full px-4 sm:px-6 md:px-8 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
-        <section aria-labelledby="hero-title" className="grid min-w-0 grid-cols-1 items-stretch gap-6 pb-4 pt-4 sm:pt-6 lg:min-h-0 lg:flex-[1.65] lg:grid-cols-2 lg:gap-8 lg:py-2.5 xl:py-3.5">
-          <div className="flex min-w-0 flex-col justify-between lg:h-full">
+        <section aria-labelledby="hero-title" className="grid min-w-0 grid-cols-1 items-stretch gap-5 pb-3 pt-4 sm:gap-6 sm:pt-5 lg:min-h-0 lg:flex-[1.65] lg:grid-cols-2 lg:gap-8 lg:py-2 xl:py-3">
+          <div className="flex min-w-0 flex-col justify-center gap-6 sm:gap-8 lg:h-full lg:justify-center">
             <div className="min-w-0">
               <div className="mb-3 flex w-fit max-w-full items-center gap-2 border-l-2 border-primary pl-3 font-sans text-[0.62rem] font-extrabold uppercase leading-snug tracking-tight text-ink sm:mb-4 sm:text-xs"><span className="hidden sm:inline">Solo Event Organizer · 16 Years · 700+ Celebrations</span><span className="sm:hidden">Solo Organizer · 16 Yrs · 700+ Events</span></div>
               <h1 id="hero-title" className="bondz-hero-title font-sans font-black tracking-tight text-ink [font-variation-settings:'wdth'_85]"><span className="block">Get <span className="font-serif font-normal italic tracking-normal text-primary">“yourself booked”</span></span><span className="block">and{"\n"}Leave the <span className="font-serif font-normal italic tracking-normal text-primary">“rest on us”!</span></span></h1>
             </div>
-            <div className="mt-8 flex w-full max-w-full flex-col items-start gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4 lg:flex-nowrap">
+            <div className="flex w-full max-w-full flex-col items-start gap-3">
               <HeroBookingCTA onClick={launchBooking} disabled={launching} />
             </div>
-            <p className="mt-3 max-w-full font-sans text-sm font-black uppercase tracking-tight text-ink [font-variation-settings:'wdth'_85] sm:text-base">
-              Tell us what you're celebrating!
-            </p>
           </div>
           <div className="min-w-0 lg:flex lg:min-h-0 lg:items-center">
             <HeroBookingDemo onLaunchBooking={launchBooking} className="w-full" />

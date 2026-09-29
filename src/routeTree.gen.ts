@@ -16,6 +16,7 @@ import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ConnectAiRouteImport } from './routes/connect-ai'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
@@ -57,6 +58,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConnectAiRoute = ConnectAiRouteImport.update({
+  id: '/connect-ai',
+  path: '/connect-ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BookRoute = BookRouteImport.update({
   id: '/book',
   path: '/book',
@@ -89,6 +95,7 @@ const Char91__componentChar93PreviewSplatRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/book': typeof BookRoute
+  '/connect-ai': typeof ConnectAiRoute
   '/contact': typeof ContactRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/book': typeof BookRoute
+  '/connect-ai': typeof ConnectAiRoute
   '/contact': typeof ContactRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/book': typeof BookRoute
+  '/connect-ai': typeof ConnectAiRoute
   '/contact': typeof ContactRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
@@ -134,6 +143,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/book'
+    | '/connect-ai'
     | '/contact'
     | '/how-it-works'
     | '/mcp'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/book'
+    | '/connect-ai'
     | '/contact'
     | '/how-it-works'
     | '/mcp'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/book'
+    | '/connect-ai'
     | '/contact'
     | '/how-it-works'
     | '/mcp'
@@ -177,6 +189,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BookRoute: typeof BookRoute
+  ConnectAiRoute: typeof ConnectAiRoute
   ContactRoute: typeof ContactRoute
   HowItWorksRoute: typeof HowItWorksRoute
   McpRoute: typeof McpRoute
@@ -240,6 +253,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/connect-ai': {
+      id: '/connect-ai'
+      path: '/connect-ai'
+      fullPath: '/connect-ai'
+      preLoaderRoute: typeof ConnectAiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/book': {
       id: '/book'
       path: '/book'
@@ -281,6 +301,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BookRoute: BookRoute,
+  ConnectAiRoute: ConnectAiRoute,
   ContactRoute: ContactRoute,
   HowItWorksRoute: HowItWorksRoute,
   McpRoute: McpRoute,

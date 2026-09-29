@@ -16,4 +16,4 @@
 - [x] Wire the six-link navigation, booking curtain, and five secondary holding pages.
 - [x] Refine the headline, mascot clearance, and responsive feature pillars.
 - [x] Replace proof text with approved testimonials, portraits, and partner badges.
-- [ ] Verify mobile, tablet, desktop, dark mode, and booking navigation.
+- [x] Verify mobile, tablet, desktop, dark mode, and booking navigation.

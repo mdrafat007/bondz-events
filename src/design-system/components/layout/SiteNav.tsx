@@ -52,10 +52,10 @@ export const SiteNav = forwardRef<HTMLElement, SiteNavProps>(function SiteNav({ 
     ) : null;
 
   return (
-    <header ref={ref} className={cn("relative z-30 h-16 shrink-0 border-b border-hairline bg-canvas sm:h-20 lg:h-22", className)} {...props}>
-      <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 md:px-8">
-        <a href={brandHref} aria-label="Bondz Events home" onClick={triggerTap} className="shrink-0 rounded-control transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
-          <BrandLockup className="h-8 sm:h-9 md:h-11 w-auto" />
+    <header ref={ref} className={cn("relative z-40 shrink-0 bg-canvas transition-colors duration-300", className)} {...props}>
+      <div className="flex h-16 sm:h-20 md:h-22 items-center justify-between gap-2.5 sm:gap-4 px-3.5 sm:px-6 md:px-8">
+        <a href={brandHref} aria-label="Bondz Events home" onClick={triggerTap} className="shrink-0 transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+          <BrandLockup className="h-7.5 sm:h-9 md:h-11 w-auto" />
         </a>
 
         <nav aria-label="Main navigation" className="hidden min-w-0 items-center gap-2 xl:gap-4 lg:flex">

@@ -1,9 +1,9 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import "tailwindcss";
+@import "./design-system/styles/theme.css";
 
-body {
-  font-family: system-ui, -apple-system, sans-serif;
-}
+html, body, #app { height: 100%; }
+html, body { overflow: hidden; }
+body { margin: 0; background: var(--bondz-canvas); color: var(--bondz-ink); font-family: var(--font-sans); }
+button, input { font: inherit; }
+::selection { background: var(--bondz-primary); color: var(--bondz-surface-light); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }

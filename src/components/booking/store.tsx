@@ -1,9 +1,11 @@
 ﻿import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import {
   CATEGORIES,
+  SLOTS,
   VENUES,
   availableDays,
   eligiblePartners,
+  slotOpen,
   type CategoryId,
   type EventTypeId,
   type Sel,
@@ -20,7 +22,7 @@ function stamp() {
   return d.toTimeString().slice(0, 8);
 }
 
-export function useBookingState(init: { event?: EventTypeId | undefined; where?: "home" | "venue" | undefined; step?: Step | undefined; reveal?: boolean | undefined }) {
+export function useBookingState(init: { event?: EventTypeId | undefined; where?: "home" | "venue" | undefined; step?: Step | undefined; reveal?: boolean | undefined }, demo = false) {
   const [anchor] = useState(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -35,21 +37,26 @@ export function useBookingState(init: { event?: EventTypeId | undefined; where?:
     services: init.step && init.step >= 3 ? ["catering", "dj"] : [],
   });
   const [vibes, setVibes] = useState<string[]>(["Black Tie Glamour"]);
-  const [day, setDay] = useState<number | null>(init.step && init.step >= 4 ? 12 : null);
+  const [day, setDay] = useState<number | null>(init.step && init.step >= 4 ? availableDays({ event: init.event ?? "wedding", guests: 60, where: init.where ?? "venue", venue: "smokestack", services: ["catering", "dj"] })[0] ?? null : null);
   const [slot, setSlot] = useState<Slot | null>(init.step && init.step >= 5 ? "Evening" : null);
   const [log, setLog] = useState<LogLine[]>([]);
   const [reveal, setReveal] = useState(init.reveal ?? false);
   const [details, setDetails] = useState<Details>({
-    name: "Alex Morgan",
-    phone: "+1 555 234 5678",
-    email: "alex.morgan@example.com",
+    name: demo ? "Amira & Jonah" : "",
+    phone: demo ? "+1 555 234 5678" : "",
+    email: demo ? "amira@example.com" : "",
     honor: "",
     notes: "",
   });
   const [signature, setSignature] = useState<string | null>(null);
-  const [ref, setRef] = useState<string>("BZ-7749-2026");
+  const [ref, setRef] = useState<string>(demo ? "BZ-7492-OCT26" : "");
+  const [moves, setMoves] = useState(0);
+  const [cancelled, setCancelled] = useState<{ refund: number; tier: string; note: string } | null>(null);
 
   const days = useMemo(() => availableDays(sel), [sel]);
+  // A previous choice cannot remain locked when the intersection changes.
+  const validDay = day !== null && days.includes(day) ? day : null;
+  const validSlot = validDay !== null && slot !== null && slotOpen(validDay, SLOTS.indexOf(slot)) ? slot : null;
 
   const push = useCallback((text: string, before: number, after: number) => {
     setLog((l) => [...l, { id: Date.now() + Math.random(), text, before, after, at: stamp() }]);
@@ -78,14 +85,21 @@ export function useBookingState(init: { event?: EventTypeId | undefined; where?:
   };
 
   const setGuests = (g: number, commit = false) => {
+    if (g === sel.guests) return;
     const next = pruneFor({ ...sel, guests: g });
+    const nextDays = availableDays(next);
     if (commit) {
       const before = availableDays(sel).length;
-      const after = availableDays(next).length;
+      const after = nextDays.length;
       if (before !== after || next.services.length !== sel.services.length)
         push(`Guests set to ${g} - partner eligibility re-checked`, before, after);
     }
     setSel(next);
+    // Keep an already-picked date whenever it survives the new intersection.
+    if (day === null || !nextDays.includes(day)) {
+      setDay(null);
+      setSlot(null);
+    }
   };
 
   const chooseVenue = (id: string | null) => {
@@ -99,20 +113,38 @@ export function useBookingState(init: { event?: EventTypeId | undefined; where?:
     setSlot(null);
   };
 
+  /** Move a confirmed booking to another date that still works for the same partners. */
+  const reschedule = (nextDay: number, nextSlot: Slot) => {
+    const before = day ?? 0;
+    setDay(nextDay);
+    setSlot(nextSlot);
+    setMoves((m) => m + 1);
+    push(`Booking moved to day ${nextDay} (${nextSlot}) - same partners re-confirmed`, before, nextDay);
+  };
+
+  const cancel = (outcome: { refund: number; tier: string; note: string }) => {
+    setCancelled(outcome);
+    signalBot({ mood: "think" });
+  };
+
   const reset = () => {
     setStep(1);
     setSel({ event: null, guests: 60, where: null, venue: null, services: [] });
+    setVibes([]);
     setDay(null);
     setSlot(null);
     setLog([]);
     setDetails({ name: "", phone: "", email: "", honor: "", notes: "" });
     setSignature(null);
     setRef("");
+    setMoves(0);
+    setCancelled(null);
   };
 
   return {
-    anchor, step, setStep, sel, setSel, vibes, setVibes, days, day, setDay, slot, setSlot, log, push, reveal, setReveal,
+    anchor, step, setStep, sel, setSel, vibes, setVibes, days, day: validDay, setDay, slot: validSlot, setSlot, log, push, reveal, setReveal, demo,
     details, setDetails, signature, setSignature, ref, setRef, toggleService, setGuests, chooseVenue, reset,
+    moves, cancelled, reschedule, cancel,
   };
 }
 

@@ -1,6 +1,6 @@
 export type EventTypeId = "wedding" | "anniversary" | "birthday" | "bbq" | "family" | "corporate" | "hybrid" | "custom";
 export type CategoryId = "catering" | "decor" | "dj" | "equipment" | "staff" | "cleaning" | "photo" | "lighting" | "hybrid";
-export type Slot = "Morning" | "Evening" | "Night";
+export type Slot = "Morning" | "Afternoon" | "Evening";
 
 export interface Partner {
   id: string;
@@ -31,7 +31,7 @@ export interface Venue {
 }
 
 export const HORIZON = 75;
-export const SLOTS: readonly Slot[] = ["Morning", "Evening", "Night"] as const;
+export const SLOTS: readonly Slot[] = ["Morning", "Afternoon", "Evening"] as const;
 export const BONDZ_FEE = { home: 450, venue: 650 };
 
 export const EVENT_TYPES = [
@@ -191,8 +191,8 @@ export const VIBES_BY_EVENT: Record<EventTypeId, string[]> = {
 
 export const SLOT_TIMES: Record<Slot, string> = {
   Morning: "10:00 AM - 2:00 PM",
+  Afternoon: "2:00 PM - 6:00 PM",
   Evening: "5:00 PM - 10:00 PM",
-  Night: "9:00 PM - 2:00 AM",
 };
 
 function fitsEvent(list: EventTypeId[] | "all", e: EventTypeId | null): boolean {
@@ -309,12 +309,45 @@ export const TESTIMONIALS_B = [
   { q: "Genuinely the calmest event planning of my life.", n: "Omar F.", e: "Custom · 30" },
 ];
 
+/** Cancellation refund per the agreement tiers, based on days left until the event. */
+export function refundFor(daysUntil: number, deposit: number): { tier: string; refund: number; note: string } {
+  if (daysUntil > 60) return { tier: "More than 60 days out", refund: Math.round(deposit * 0.95), note: "Deposit refunded minus a 5% processing fee." };
+  if (daysUntil >= 30) return { tier: "30 to 60 days out", refund: Math.round(deposit * 0.5), note: "50% of the deposit is refunded." };
+  return { tier: "Under 30 days", refund: 0, note: "The deposit is non-refundable at this stage." };
+}
+
+/** Reschedule terms: one free move until 30 days out, later moves are handled personally with a 5% fee. */
+export function rescheduleFeeFor(daysUntil: number, total: number, movesUsed: number): { free: boolean; fee: number; note: string } {
+  if (daysUntil > 30 && movesUsed === 0) return { free: true, fee: 0, note: "Your one free reschedule, more than 30 days out." };
+  return { free: false, fee: Math.round(total * RESCHEDULE_FEE_RATE), note: "Handled personally by Mr. Bondz with a 5% rescheduling fee." };
+}
+
+/** Google Calendar template link, shared by the confirmation and the guest invitation. */
+export function googleCalendarUrl(input: { title: string; start: Date; end: Date; details: string; location: string }): string {
+  const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const q = new URLSearchParams({ action: "TEMPLATE", text: input.title, dates: `${fmt(input.start)}/${fmt(input.end)}`, details: input.details, location: input.location });
+  return `https://calendar.google.com/calendar/render?${q.toString()}`;
+}
+
+export const SLOT_START_HOUR: Record<Slot, number> = { Morning: 10, Afternoon: 14, Evening: 17 };
+
+export const CANCELLATION_POLICY: { t: string; b: string }[] = [
+  { t: "Booking & Deposit", b: "Your booking is confirmed once the 25% deposit is paid and these terms are signed. The balance is due 7 days before the event." },
+  { t: "Availability Guarantee", b: "Every date shown was free across Mr. Bondz, your venue (if any) and every assigned partner at the moment of booking. Those calendars are locked for you." },
+  { t: "Rescheduling", b: "One free reschedule up to 30 days before the event, subject to live availability across the same partners. Later changes are handled personally by Mr. Bondz." },
+  { t: "Cancellation Tiers", b: "More than 60 days out: deposit refunded minus a 5% processing fee. 30 to 60 days: 50% of deposit refunded. Under 30 days: deposit is non-refundable." },
+  { t: "Guest Count Flexibility", b: "Final numbers may move up to 10% up to 14 days before the event at the same per-guest rates. Larger changes re-run calendar availability." },
+  { t: "Force Majeure", b: "If an event cannot take place due to causes beyond anyone's control, we move it to the next mutually available date at no additional cost." },
+];
 
 export const PARTNER_GROUPS: { g: string; names: string[] }[] = [
   { g: "Venues", names: VENUES.map((v) => v.name) },
   { g: "Catering", names: ["Halal Feast Co.", "Smoke & Cedar Catering", "Ember & Oak Kitchen"] },
   { g: "Decor", names: ["Petal Theory", "Linen & Light Studio"] },
-  { g: "DJ / Music", names: ["DJ Nova", "Static Bloom Sound"] },
+  { g: "Music & DJ", names: ["DJ Nova", "Static Bloom Sound"] },
+  { g: "Photo & Film", names: ["Lens & Frame Studio", "Lumina Cinematics"] },
+  { g: "Lights & Sound", names: ["Aura Sound & Lighting", "Prism Stagecraft"] },
+  { g: "Hybrid", names: ["StreamSync Studio"] },
   { g: "Equipment", names: ["RentIt Pro", "Canopy Works"] },
   { g: "Staffing", names: ["Hostline Staffing"] },
   { g: "Cleaning", names: ["Tidy Morning Co.", "Afterglow Cleaners"] },
@@ -326,4 +359,3 @@ export const CONTACT = {
   studio: "Studio 4, Old Mill Row",
   hours: "Replies within one business day",
 };
-

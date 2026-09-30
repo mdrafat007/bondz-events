@@ -77,7 +77,7 @@ const SCENARIOS: Scenario[] = [
     services: ["dj", "photo", "bar"],
     vibes: ["High Energy Rave", "Sunset Rooftop"],
     day: 18,
-    slot: "Night",
+    slot: "Evening",
     details: {
       name: "Jonah R.",
       phone: "+1 (555) 987-6543",

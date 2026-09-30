@@ -8,7 +8,6 @@ const items = [
   { label: "Event Services", href: "/services" },
   { label: "Partners", href: "/partners" },
   { label: "Contact", href: "/contact" },
-  { label: "Connect AI Agent", href: "/connect-ai" },
 ];
 
 export function MarketingNav({ active }: { active?: string }) {

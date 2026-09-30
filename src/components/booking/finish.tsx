@@ -19,8 +19,8 @@ import { StepHead } from "./panels";
 import { Ghost, Primary } from "./steps";
 import { useBooking } from "./store";
 import { triggerHaptic, playTapSound, isSoundEnabled, playCelebrationSequence } from "@/lib/haptics";
-import lightIcon from "@/assets/icons/BONDZ_LOGO_ICON_-_LIGHT.png";
-import darkIcon from "@/assets/icons/BONDZ_LOGO_ICON_DARK.png";
+import lightIcon from "@/assets/icons/bondz-icon-red.png";
+import darkIcon from "@/assets/icons/bondz-icon-white.png";
 import lightTemplate from "@/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_LIGHT.png";
 import darkTemplate from "@/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_DARK.png";
 

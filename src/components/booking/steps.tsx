@@ -64,8 +64,8 @@ export function Ghost({ children, onClick }: { children: React.ReactNode; onClic
 
 /* ───────────────── STEP 1 ───────────────── */
 const SPANS: Record<string, string> = {
-  wedding: "md:col-span-2 md:row-span-2",
-  custom: "md:col-span-2",
+  wedding: "col-span-2 row-span-2",
+  custom: "col-span-2",
 };
 
 const EVENT_NARRATIVES: Record<EventTypeId, { kicker: string; highlight: string; desc: string }> = {
@@ -112,11 +112,11 @@ const EVENT_NARRATIVES: Record<EventTypeId, { kicker: string; highlight: string;
 };
 
 export function Step1() {
-  const { sel, setSel, setStep, vibes, setVibes } = useBooking();
+  const { sel, setSel, setStep, vibes, setVibes, setDay, setSlot } = useBooking();
   const narrative = sel.event ? EVENT_NARRATIVES[sel.event] : null;
 
   return (
-    <div className="flex w-full max-w-full min-w-0 h-full min-h-0 flex-col gap-3 sm:gap-4">
+    <div className="flex w-full max-w-full min-w-0 flex-col gap-3 sm:gap-4">
       <StepHead no="01" title={<>What are we <span className="font-serif-i text-primary">celebrating?</span></>} sub="Pick the shape of the event. Let us make your moment real." />
       <div className="scroll-quiet grid w-full max-w-full min-h-0 flex-1 auto-rows-[minmax(5.25rem,1fr)] sm:auto-rows-[minmax(6.5rem,1fr)] grid-cols-2 gap-2 sm:gap-2.5 overflow-x-hidden overflow-y-auto md:grid-cols-4 md:grid-rows-3 md:overflow-visible">
         {EVENT_TYPES.map((e) => {
@@ -127,11 +127,14 @@ export function Step1() {
               onClick={() => {
                 playTapSound();
                 setSel((s) => ({ ...s, event: e.id }));
+                setDay(null);
+                setSlot(null);
+                setVibes([]);
                 signalBot({ mood: "happy", tip: `${e.title}. Great choice - next, where?` });
               }}
               aria-pressed={on}
               className={cn(
-                "group relative flex min-w-0 w-full flex-col justify-between overflow-hidden rounded-2xl border p-2.5 sm:p-4 text-left transition-all",
+                "group relative flex min-w-0 w-full flex-col justify-between overflow-hidden rounded-2xl border p-2.5 sm:p-4 text-left transition-all cursor-pointer",
                 on ? "border-primary bg-surface-light ring-2 ring-primary shadow-sm" : "hairline bg-surface-light/60 hover:border-ink/40 hover:bg-surface-light",
                 SPANS[e.id],
               )}
@@ -141,6 +144,7 @@ export function Step1() {
                 <Check on={on} />
               </span>
               <div
+                aria-hidden
                 className={cn(
                   "pointer-events-none absolute transition-all duration-500",
                   e.id === "wedding"
@@ -187,7 +191,7 @@ export function Step1() {
             </span>
           </div>
           <div className="mt-4 flex flex-wrap gap-2 sm:gap-2.5">
-            {((VIBES_BY_EVENT as any)[sel.event] ?? []).map((v: string) => {
+            {(sel.event ? VIBES_BY_EVENT[sel.event] : []).map((v) => {
               const on = vibes.includes(v);
               return (
                 <button
@@ -210,7 +214,7 @@ export function Step1() {
             })}
           </div>
           <p className="mt-4 text-xs text-ink/50">
-            Your vibe steers the styling brief every partner receives - it does not change your price.
+            Your vibe steers the sample styling brief for your partners - it does not change your price.
           </p>
         </div>
       )}
@@ -303,11 +307,10 @@ export function Step2() {
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-4">
-      <div className="grid shrink-0 gap-4 md:grid-cols-[1fr_22rem] md:items-end">
-        <StepHead no="02" title="Where’s the party?" sub="Two routes. Both end at “You’re Booked” - one just has more calendars to reconcile." />
-        <GuestSlider />
+      <div className="shrink-0">
+        <StepHead no="02" title="Where’s the party?" sub="Two routes. Both end at “You’re Booked” - one just has more calendars to reconcile. You set the headcount on the next step." />
       </div>
-      <div className="scroll-quiet grid min-h-0 flex-1 gap-3 overflow-y-auto md:grid-cols-2">
+      <div className="scroll-quiet grid min-h-0 flex-1 gap-3 overflow-y-auto sm:gap-4 md:grid-cols-2">
         {branches.map((b) => (
           <button
             key={b.id}
@@ -519,8 +522,8 @@ export function Step3B() {
 /* ───────────────── STEP 4 ───────────────── */
 export const SHIFT_DETAILS: Record<Slot, { label: string; time: string; shortTime: string }> = {
   Morning: { label: "Morning", time: "9:00 AM - 2:00 PM", shortTime: "9 AM - 2 PM" },
-  Evening: { label: "Evening", time: "3:00 PM - 8:00 PM", shortTime: "3 PM - 8 PM" },
-  Night: { label: "Night", time: "7:00 PM - 1:00 AM", shortTime: "7 PM - 1 AM" },
+  Afternoon: { label: "Afternoon", time: "2:00 PM - 6:00 PM", shortTime: "2 PM - 6 PM" },
+  Evening: { label: "Evening", time: "5:00 PM - 10:00 PM", shortTime: "5 PM - 10 PM" },
 };
 
 export function Step4() {
@@ -649,9 +652,9 @@ export function SlotPicker() {
         <span className="eyebrow text-ink/75 font-bold uppercase tracking-wider text-[0.65rem] sm:text-xs">
           Available Shifts · {dateStr}
         </span>
-        <span className="text-[0.62rem] sm:text-xs text-primary font-semibold">Select shift to lock</span>
+        <span className="text-[0.62rem] sm:text-xs text-primary font-semibold">Select a sample time</span>
       </div>
-      <div className="scroll-quiet flex items-center gap-2 pt-1 overflow-x-auto max-w-full pb-0.5">
+      <div className="scroll-quiet flex max-w-full flex-wrap items-center gap-2 pt-1 pb-0.5 sm:flex-nowrap sm:overflow-x-auto">
         {SLOTS.map((s, i) =>
           slotOpen(day, i) ? (
             <button
@@ -668,7 +671,7 @@ export function SlotPicker() {
                   : "bg-[#151118] text-[#fbf8f2] border-white/10 dark:bg-[#f6f1e7] dark:text-[#151118] dark:border-[#151118]/15 hover:border-primary/60 hover:shadow"
               )}
             >
-              <span className={cn("inline-block size-1.5 rounded-full", slot === s ? "bg-white" : "bg-emerald-500")} />
+              <span className={cn("inline-block size-1.5 rounded-full", slot === s ? "bg-white" : "bg-status")} />
               <span>{s}</span>
               <span className={cn("text-[0.62rem] font-medium opacity-85", slot === s ? "text-white/90" : "text-white/70 dark:text-[#151118]/70")}>
                 ({SHIFT_DETAILS[s].shortTime})

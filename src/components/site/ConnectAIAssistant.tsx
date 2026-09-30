@@ -28,7 +28,7 @@ Do this:
 
 Ask me what I am celebrating, for how many guests, and roughly when.`;
 
-export function ConnectAIAssistant() {
+export function ConnectAIAssistant({ variant = "outline", className }: { variant?: "outline" | "hero"; className?: string }) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("quick");
 
@@ -47,13 +47,35 @@ export function ConnectAIAssistant() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="bondz-ai-link inline-flex max-w-full shrink-0 origin-left cursor-pointer items-center gap-1.5 text-left font-sans text-xs font-black uppercase tracking-tight text-ink underline-offset-4 hover:text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:origin-center sm:whitespace-nowrap xl:text-sm"
-      >
-        ✦ Connect your AI agent →
-      </button>
+      {variant === "hero" ? (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className={
+            "bondz-ai-link bondz-hero-cta group inline-flex max-w-full cursor-pointer items-center justify-between gap-3 rounded-full px-5 py-3 text-left ring-1 ring-inset ring-paper/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:gap-5 sm:px-8 sm:py-4 " +
+            (className ?? "")
+          }
+        >
+          <span className="font-sans text-[0.78rem] font-black uppercase tracking-wide text-paper sm:text-base">
+            ✦ Connect your AI agent
+          </span>
+          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-paper text-primary shadow-soft sm:size-11">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" className="size-5 transition-transform group-hover:translate-x-0.5 sm:size-6" aria-hidden>
+              <line x1="3.5" y1="12" x2="20.5" y2="12" />
+              <polyline points="13.5 5 20.5 12 13.5 19" />
+            </svg>
+          </span>
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="bondz-ai-link inline-flex max-w-full shrink-0 cursor-pointer items-center gap-2 rounded-full border border-ink/25 bg-surface-light px-5 py-3 text-left font-sans text-xs font-black uppercase tracking-tight text-ink shadow-soft hover:border-ink hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:whitespace-nowrap sm:text-sm"
+        >
+          ✦ Connect your AI agent →
+        </button>
+      )}
+
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-night/60 p-0 backdrop-blur-xs sm:items-center sm:p-4" onClick={() => setOpen(false)}>

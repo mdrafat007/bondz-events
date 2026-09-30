@@ -12,10 +12,12 @@ export const Route = createFileRoute("/services")({
       {
         name: "description",
         content:
-          "Eleven services, one coordinator: production, catering, decor, photo & video, lights & sound, DJ, hybrid events, PR and cleaning.",
+          "Eleven services, one Solo Event Organizer: production, catering, decor, photo & video, lights & sound, DJ, hybrid events, PR and cleaning.",
       },
       { property: "og:title", content: "Event Services - Bondz Events" },
       { property: "og:description", content: "Everything an event needs, coordinated by Mr. Bondz." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Services,
@@ -199,16 +201,25 @@ function Services() {
       {/* Grid of 11 Services */}
       <div
         key={tab}
-        className="scroll-quiet grid min-h-0 flex-1 auto-rows-fr grid-cols-1 gap-px overflow-y-auto bg-[var(--rule)] sm:grid-cols-2 lg:grid-cols-4 pt-px"
+        className="scroll-quiet grid min-h-0 flex-1 auto-rows-min grid-cols-1 gap-px overflow-y-auto bg-bondz-hairline pt-px sm:grid-cols-2 lg:auto-rows-fr lg:grid-cols-4"
       >
         {list.map((s, i) => (
           <article
             key={s.t}
-            className="rise group relative flex flex-col justify-between bg-canvas p-5 sm:p-6 transition-all duration-300 hover:bg-surface-light hover:shadow-inner"
+            className="rise group relative flex flex-col justify-between overflow-hidden bg-canvas p-5 sm:p-6 transition-all duration-300 hover:bg-surface-light"
             style={{ animationDelay: `${i * 35}ms` }}
           >
+            {/* Creative editorial visual: oversized animated hairline illustration */}
+            <div
+              aria-hidden
+              className="bondz-service-art pointer-events-none absolute -bottom-4 -right-4 size-28 text-ink/10 transition-all duration-500 group-hover:text-primary/35 sm:-bottom-6 sm:-right-6 sm:size-44"
+              style={{ animationDelay: `${i * 240}ms` }}
+            >
+              <ServiceIcon id={s.no} className="size-full" />
+            </div>
+
             {/* Top row: Numeral + Bespoke Hairline SVG Icon + Category Badge */}
-            <div className="flex items-start justify-between gap-3">
+            <div className="relative z-10 flex items-start justify-between gap-3">
               <span className="display text-4xl sm:text-5xl font-black text-ink/20 transition-colors duration-300 group-hover:text-primary">
                 {s.no}
               </span>
@@ -223,7 +234,7 @@ function Services() {
             </div>
 
             {/* Bottom block: Service Title & Scaled Human Description */}
-            <div className="mt-6 flex flex-col justify-end">
+            <div className="relative z-10 mt-6 flex flex-col justify-end">
               <span className="text-[0.72rem] font-mono uppercase tracking-widest text-primary font-bold">
                 {SERVICE_TAGS[s.no] || "Included in coordination"}
               </span>
@@ -236,6 +247,7 @@ function Services() {
             </div>
           </article>
         ))}
+
 
         {/* Dynamic Build Yours Card */}
         {tab === "All" && (

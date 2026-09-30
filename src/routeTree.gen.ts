@@ -16,9 +16,9 @@ import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as ConnectAiRouteImport } from './routes/connect-ai'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InviteRefRouteImport } from './routes/invite.$ref'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91__mockupChar93PreviewSplatRouteImport } from './routes/[__mockup].preview.$'
 import { Route as Char91__componentChar93PreviewSplatRouteImport } from './routes/[__component].preview.$'
@@ -58,11 +58,6 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConnectAiRoute = ConnectAiRouteImport.update({
-  id: '/connect-ai',
-  path: '/connect-ai',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BookRoute = BookRouteImport.update({
   id: '/book',
   path: '/book',
@@ -71,6 +66,11 @@ const BookRoute = BookRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InviteRefRoute = InviteRefRouteImport.update({
+  id: '/invite/$ref',
+  path: '/invite/$ref',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
@@ -95,7 +95,6 @@ const Char91__componentChar93PreviewSplatRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/book': typeof BookRoute
-  '/connect-ai': typeof ConnectAiRoute
   '/contact': typeof ContactRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
@@ -104,13 +103,13 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRoute
   '/system': typeof SystemRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/invite/$ref': typeof InviteRefRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/book': typeof BookRoute
-  '/connect-ai': typeof ConnectAiRoute
   '/contact': typeof ContactRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
@@ -119,6 +118,7 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRoute
   '/system': typeof SystemRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/invite/$ref': typeof InviteRefRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -126,7 +126,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/book': typeof BookRoute
-  '/connect-ai': typeof ConnectAiRoute
   '/contact': typeof ContactRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
@@ -135,6 +134,7 @@ export interface FileRoutesById {
   '/services': typeof ServicesRoute
   '/system': typeof SystemRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/invite/$ref': typeof InviteRefRoute
   '/__component/preview/$': typeof Char91__componentChar93PreviewSplatRoute
   '/__mockup/preview/$': typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -143,7 +143,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/book'
-    | '/connect-ai'
     | '/contact'
     | '/how-it-works'
     | '/mcp'
@@ -152,13 +151,13 @@ export interface FileRouteTypes {
     | '/services'
     | '/system'
     | '/.well-known/oauth-protected-resource'
+    | '/invite/$ref'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/book'
-    | '/connect-ai'
     | '/contact'
     | '/how-it-works'
     | '/mcp'
@@ -167,13 +166,13 @@ export interface FileRouteTypes {
     | '/services'
     | '/system'
     | '/.well-known/oauth-protected-resource'
+    | '/invite/$ref'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   id:
     | '__root__'
     | '/'
     | '/book'
-    | '/connect-ai'
     | '/contact'
     | '/how-it-works'
     | '/mcp'
@@ -182,6 +181,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/system'
     | '/.well-known/oauth-protected-resource'
+    | '/invite/$ref'
     | '/__component/preview/$'
     | '/__mockup/preview/$'
   fileRoutesById: FileRoutesById
@@ -189,7 +189,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BookRoute: typeof BookRoute
-  ConnectAiRoute: typeof ConnectAiRoute
   ContactRoute: typeof ContactRoute
   HowItWorksRoute: typeof HowItWorksRoute
   McpRoute: typeof McpRoute
@@ -198,6 +197,7 @@ export interface RootRouteChildren {
   ServicesRoute: typeof ServicesRoute
   SystemRoute: typeof SystemRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  InviteRefRoute: typeof InviteRefRoute
   Char91__componentChar93PreviewSplatRoute: typeof Char91__componentChar93PreviewSplatRoute
   Char91__mockupChar93PreviewSplatRoute: typeof Char91__mockupChar93PreviewSplatRoute
 }
@@ -253,13 +253,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/connect-ai': {
-      id: '/connect-ai'
-      path: '/connect-ai'
-      fullPath: '/connect-ai'
-      preLoaderRoute: typeof ConnectAiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/book': {
       id: '/book'
       path: '/book'
@@ -272,6 +265,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invite/$ref': {
+      id: '/invite/$ref'
+      path: '/invite/$ref'
+      fullPath: '/invite/$ref'
+      preLoaderRoute: typeof InviteRefRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.well-known/oauth-protected-resource': {
@@ -301,7 +301,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BookRoute: BookRoute,
-  ConnectAiRoute: ConnectAiRoute,
   ContactRoute: ContactRoute,
   HowItWorksRoute: HowItWorksRoute,
   McpRoute: McpRoute,
@@ -311,6 +310,7 @@ const rootRouteChildren: RootRouteChildren = {
   SystemRoute: SystemRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  InviteRefRoute: InviteRefRoute,
   Char91__componentChar93PreviewSplatRoute:
     Char91__componentChar93PreviewSplatRoute,
   Char91__mockupChar93PreviewSplatRoute: Char91__mockupChar93PreviewSplatRoute,

@@ -28,17 +28,25 @@ button, input { font: inherit; }
   --invite-tie-hi: oklch(0.64 0.21 28);
 }
 
-.bondz-hero-title { font-size: clamp(2.2875rem, 6.9vw, 5.5375rem); line-height: 0.94; letter-spacing: -0.04em; }
-@media (min-width: 1024px) { .bondz-hero-title { font-size: clamp(2.6875rem, 4.72vw, 5.7375rem); line-height: 0.94; } }
-@media (min-width: 1440px) { .bondz-hero-title { font-size: clamp(3.1375rem, 5.32vw, 6.3375rem); line-height: 0.92; } }
+/* Hero headline: strictly two lines at every width, as large as the line allows. */
+.bondz-hero-title { font-size: clamp(1.26rem, 4.7vw, 3.4rem); line-height: 1.04; letter-spacing: -0.042em; }
+@media (min-width: 1024px) { .bondz-hero-title { font-size: clamp(2.05rem, 3.35vw, 4.5rem); } }
 
-/* Marketing header: push the primary links to the right, beside the toggles. */
-.bondz-nav-right nav[aria-label="Main navigation"] { margin-left: auto; }
-/* Sound / theme toggles read as icons only - labels are redundant next to them. */
-.bondz-nav-right .border-l > button > span { display: none; }
+/* Borderless tactile controls: real press depth, no button chrome. */
+.bondz-tactile {
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), filter 0.18s ease, background-color 0.18s ease;
+  filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.55)) drop-shadow(0 2px 3px rgb(0 0 0 / 0.22));
+}
+.dark .bondz-tactile { filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.12)) drop-shadow(0 3px 5px rgb(0 0 0 / 0.75)); }
+.bondz-tactile:hover { transform: translateY(-1px) scale(1.06); }
+.bondz-tactile:active { transform: translateY(1px) scale(0.92); filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.3)); }
+.bondz-tactile:focus-visible { outline: 2px solid var(--bondz-primary); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .bondz-tactile:hover, .bondz-tactile:active { transform: none; } }
 
-/* Preview-only AI agent link: scale in / scale out, no ghost surface. */
-.bondz-ai-link { transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease; }
+/* AI agent call to action: scale in on hover, press in on tap. */
+.bondz-ai-link { transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease, background-color 0.2s ease; }
 .bondz-ai-link:hover, .bondz-ai-link:focus-visible { transform: scale(1.1); }
 .bondz-ai-link:active { transform: scale(0.9); }
 @media (prefers-reduced-motion: reduce) { .bondz-ai-link { transition: color 0.2s ease; } .bondz-ai-link:hover, .bondz-ai-link:active, .bondz-ai-link:focus-visible { transform: none; } }
@@ -46,6 +54,19 @@ button, input { font: inherit; }
 .bondz-hero-cta:hover { background: linear-gradient(to bottom, var(--bondz-cta-top), var(--bondz-cta-mid), var(--bondz-cta-bottom)); }
 .rise { animation: rise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Services: oversized editorial illustration drifts gently, lifts on hover. */
+.bondz-service-art { animation: bondz-art-drift 7s ease-in-out infinite; transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), color 0.4s ease; }
+.group:hover .bondz-service-art { transform: translate3d(-10px, -10px, 0) rotate(-3deg) scale(1.08); }
+@keyframes bondz-art-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(-4px, -8px, 0) rotate(-2deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bondz-service-art { animation: none; }
+  .group:hover .bondz-service-art { transform: none; }
+}
+
 @keyframes marqueeLeftTrack {
   0% { transform: translate3d(0, 0, 0); }
   100% { transform: translate3d(-50%, 0, 0); }
@@ -145,4 +166,9 @@ button, input { font: inherit; }
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
+}
+
+/* Partners: oversized editorial marquee names. */
+.partner-name {
+  font-size: clamp(2.4rem, 6vw, 5.5rem);
 }

@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import type { EventTypeId } from "@/lib/bondz-data";
 
 interface EditorialSvgProps {

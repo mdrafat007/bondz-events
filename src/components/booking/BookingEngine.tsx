@@ -1,7 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { EVENT_TYPES, VENUES, VIBES_BY_EVENT, availableDays, slotOpen, SLOTS } from "@/lib/bondz-data";
 import { Lockup, StatusLine } from "@/components/site/Brand";
-import type { EventTypeId } from "@/lib/bondz-data";
+import type { CategoryId, EventTypeId, Slot } from "@/lib/bondz-data";
+
 import { cn } from "@/lib/utils";
 import { EstimatePanel, EstimateSheet, RealityPanel } from "./panels";
 import { Ghost, Primary, SlotPicker, Step1, Step2, Step3A, Step3B, Step4 } from "./steps";
@@ -15,6 +17,10 @@ const STEPS = ["Event", "Where", "Services-Addons", "Date", "Details", "Booked"]
 export function BookingEngine({
   init,
   intro,
+  demo = false,
+  paused = false,
+  onDemoProgress,
+  onDemoRoundEnd,
 }: {
   init: {
     event?: EventTypeId | undefined;
@@ -23,16 +29,150 @@ export function BookingEngine({
     reveal?: boolean | undefined;
   };
   intro: boolean;
+  demo?: boolean;
+  paused?: boolean;
+  onDemoProgress?: (progress: number) => void;
+  onDemoRoundEnd?: () => void;
 }) {
-  const state = useBookingState(init);
+  const state = useBookingState(init, demo);
   return (
     <BookingProvider value={state}>
-      <Frame intro={intro} />
+      <Frame intro={intro} demo={demo} paused={paused} onDemoProgress={onDemoProgress} onDemoRoundEnd={onDemoRoundEnd} />
     </BookingProvider>
   );
 }
 
-function Frame({ intro }: { intro: boolean }) {
+
+const DEMO_NAMES = [
+  "Amira & Jonah", "The Okafor Family", "Lena Vasquez", "Marcus Bell",
+  "Priya & Sam", "Tolu Adeyemi", "Hannah Reid", "Northwind Studio",
+];
+const DEMO_SERVICES: CategoryId[] = ["catering", "decor", "dj", "photo", "lighting", "equipment", "staff", "cleaning"];
+
+function pick<T>(list: readonly T[]): T {
+  return list[Math.floor(Math.random() * list.length)] as T;
+}
+
+interface Scenario {
+  event: EventTypeId;
+  vibes: string[];
+  where: "home" | "venue";
+  venue: string | null;
+  guests: number;
+  services: CategoryId[];
+  name: string;
+  slot: Slot;
+  ref: string;
+
+}
+
+function makeScenario(): Scenario {
+  const event = pick(EVENT_TYPES).id as EventTypeId;
+  const vibeList = VIBES_BY_EVENT[event] ?? [];
+  const vibes = vibeList.filter(() => Math.random() < 0.45).slice(0, 3);
+  if (!vibes.length && vibeList[0]) vibes.push(pick(vibeList));
+
+  const options = VENUES.filter((v) => v.events === "all" || (v.events as readonly string[]).includes(event));
+  const useVenue = options.length > 0 && Math.random() < 0.7;
+  const venue = useVenue ? pick(options) : null;
+
+  let guests = 20 + Math.floor(Math.random() * 25) * 5;
+  if (venue) guests = Math.min(Math.max(guests, venue.min), venue.max);
+
+  const services = DEMO_SERVICES.filter(() => Math.random() < 0.45);
+  if (!services.length) services.push("catering");
+
+  return {
+    event,
+    vibes,
+    where: venue ? "venue" : "home",
+    venue: venue?.id ?? null,
+    guests,
+    services,
+    name: pick(DEMO_NAMES),
+    slot: pick(SLOTS),
+    ref: "BZ-" + event.slice(0, 2).toUpperCase() + "-" + String(1000 + Math.floor(Math.random() * 8999)),
+
+  };
+}
+
+function DemoDirector({
+  paused,
+  canvas,
+  onProgress,
+  onRoundEnd,
+}: {
+  paused: boolean;
+  canvas: React.RefObject<HTMLDivElement | null>;
+  onProgress?: (progress: number) => void;
+  onRoundEnd?: () => void;
+}) {
+  const b = useBooking();
+  const current = useRef(b);
+  current.current = b;
+  const progress = useRef(onProgress);
+  progress.current = onProgress;
+  const roundEnd = useRef(onRoundEnd);
+  roundEnd.current = onRoundEnd;
+  const elapsed = useRef(0);
+  const lastAction = useRef(-1);
+  const scenario = useRef<Scenario>(makeScenario());
+
+  useEffect(() => {
+    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setInterval(() => {
+      const next = elapsed.current + 100;
+      if (next >= 19200) {
+        // Round complete: fresh randomised celebration for the next run.
+        elapsed.current = 0;
+        lastAction.current = -1;
+        scenario.current = makeScenario();
+        current.current.reset?.();
+        roundEnd.current?.();
+      } else {
+        elapsed.current = next;
+      }
+      const sc = scenario.current;
+      const step = (Math.floor(elapsed.current / 3200) + 1) as Step;
+      const micro = Math.floor((elapsed.current % 3200) / 1000);
+      progress.current?.((elapsed.current / 19200) * 100);
+      const state = current.current;
+      if (state.step !== step) {
+        state.setStep(step);
+        canvas.current?.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      const action = step * 10 + micro;
+      if (action === lastAction.current) return;
+      lastAction.current = action;
+      if (step === 1) {
+        state.setSel((s) => ({ ...s, event: sc.event }));
+        state.setVibes(sc.vibes);
+      } else if (step === 2) {
+        state.setSel((s) => ({ ...s, where: sc.where, venue: sc.venue, guests: sc.guests }));
+      } else if (step === 3) {
+        state.setSel((s) => ({ ...s, services: micro === 0 ? sc.services.slice(0, 1) : sc.services.slice(0, micro + 1) }));
+      } else if (step === 4) {
+        const slotIndex = SLOTS.indexOf(sc.slot);
+        const open = availableDays(state.sel).filter((day) => slotOpen(day, slotIndex));
+        state.setDay(open[micro % Math.max(open.length, 1)] ?? null);
+        state.setSlot(sc.slot);
+      } else if (step === 5) {
+        state.setDetails((d) => ({ ...d, name: sc.name, honor: sc.name }));
+        state.setSignature("demo-signature");
+      } else {
+        state.setRef(sc.ref);
+      }
+      if (step === 1 || step === 3 || step === 5 || step === 6) {
+        canvas.current?.scrollTo({ top: micro === 0 ? 0 : micro === 1 ? canvas.current.scrollHeight * 0.45 : canvas.current.scrollHeight, behavior: "smooth" });
+      }
+    }, 100);
+    return () => window.clearInterval(timer);
+  }, [paused, canvas]);
+  return null;
+}
+
+
+function Frame({ intro, demo, paused, onDemoProgress, onDemoRoundEnd }: { intro: boolean; demo: boolean; paused: boolean; onDemoProgress?: (progress: number) => void; onDemoRoundEnd?: () => void }) {
   const b = useBooking();
   const { step, setStep, reveal, setReveal, sel, day, slot } = b;
   const [split, setSplit] = useState(intro);
@@ -79,7 +219,8 @@ function Frame({ intro }: { intro: boolean }) {
 
   return (
     <div className="flex h-full flex-col max-w-full overflow-x-hidden">
-      <header className="shrink-0 border-b hairline bg-canvas transition-colors duration-300">
+      {demo && <DemoDirector paused={paused} canvas={scroller} onProgress={onDemoProgress} onRoundEnd={onDemoRoundEnd} />}
+      {!demo && <header className="shrink-0 border-b hairline bg-canvas transition-colors duration-300">
         <div className="flex h-14 sm:h-16 items-center justify-between gap-1.5 sm:gap-4 px-2.5 sm:px-6">
           {/* Brand Logo */}
           <Link
@@ -267,8 +408,8 @@ function Frame({ intro }: { intro: boolean }) {
           {canReveal && (
             <label className="flex cursor-pointer items-center gap-1 sm:gap-2 shrink-0">
               <span className="eyebrow text-ink text-[0.58rem] sm:text-[0.66rem] font-bold">
-                <span className="hidden sm:inline">Who gets notified instantly</span>
-                <span className="sm:hidden">Instant Sync</span>
+                <span className="hidden sm:inline">Preview sample dispatch</span>
+                <span className="sm:hidden">Dispatch preview</span>
               </span>
               <button
                 role="switch"
@@ -284,7 +425,7 @@ function Frame({ intro }: { intro: boolean }) {
             </label>
           )}
         </div>
-      </header>
+      </header>}
 
       <div
         className={cn(
@@ -295,7 +436,7 @@ function Frame({ intro }: { intro: boolean }) {
         )}
       >
         <div className="flex w-full max-w-full min-w-0 min-h-0 flex-col">
-          <div ref={scroller} className={cn("scroll-quiet w-full max-w-full min-w-0 min-h-0 flex-1", step <= 2 ? "overflow-y-auto md:overflow-hidden" : "overflow-y-auto pr-1")}>
+          <div ref={scroller} data-booking-canvas className={cn("scroll-quiet w-full max-w-full min-w-0 min-h-0 flex-1", demo ? "overflow-y-auto" : step <= 2 ? "overflow-y-auto md:overflow-hidden" : "overflow-y-auto pr-1")}>
             {step === 1 && <Step1 />}
             {step === 2 && <Step2 />}
             {step === 3 && (sel.where === "venue" ? <Step3B /> : <Step3A />)}
@@ -345,7 +486,7 @@ function Frame({ intro }: { intro: boolean }) {
         )}
       </div>
 
-      {split && (
+      {split && !demo && (
         <div aria-hidden className="pointer-events-none fixed inset-0 z-[70] flex overflow-hidden">
           <div className="split-left relative h-full w-1/2 bg-ink" />
           <div className="split-right relative h-full w-1/2 bg-ink" />

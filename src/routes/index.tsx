@@ -240,19 +240,19 @@ function LandingPage() {
                 </h1>
               </div>
 
-              <div className="mt-auto pt-7 sm:pt-9 md:pt-11 flex w-full max-w-full flex-col items-start gap-6 sm:gap-7 lg:mt-0">
+              <div className="mt-auto pt-7 sm:pt-9 md:pt-11 flex w-full max-w-full flex-col items-start gap-6 sm:gap-7 lg:mt-0 lg:pt-8">
                 <div className="flex w-full max-w-full flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
                   <HeroBookingCTA onClick={launchBooking} disabled={launching} />
                 </div>
 
                 {/* Features placed directly under the Booking CTA */}
-                <div className="grid w-full grid-cols-2 gap-x-6 gap-y-4 border-t border-hairline pt-5 sm:gap-y-5 sm:pt-7">
+                <div className="grid w-full grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-4 border-t border-hairline pt-4 sm:gap-y-5 sm:pt-5 lg:gap-x-3 xl:gap-x-5">
                   {pillars.map((pillar) => (
                     <div key={pillar.number} className="flex min-w-0 items-baseline gap-2.5">
                       <span className="shrink-0 font-serif text-lg font-bold italic text-primary sm:text-2xl">
                         {pillar.number}
                       </span>
-                      <h2 className="min-w-0 font-sans text-sm font-black uppercase leading-tight text-ink [font-variation-settings:'wdth'_85] sm:text-base lg:text-[0.95rem] xl:text-lg">
+                      <h2 className="min-w-0 font-sans text-sm font-black uppercase leading-tight text-ink [font-variation-settings:'wdth'_85] sm:text-base lg:text-[0.76rem] xl:text-[0.88rem] lg:whitespace-nowrap">
                         {pillar.title}
                       </h2>
                     </div>

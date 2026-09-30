@@ -74,7 +74,8 @@ function SignaturePad({ onChange }: { onChange: (d: string | null) => void }) {
     ctx.lineWidth = 2.2;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
-    ctx.strokeStyle = getComputedStyle(c).color;
+    const isDark = document.documentElement.classList.contains("dark");
+    ctx.strokeStyle = isDark ? "#f6f1e7" : "#130f16";
   }, []);
 
   const pos = (e: React.PointerEvent) => {
@@ -91,12 +92,14 @@ function SignaturePad({ onChange }: { onChange: (d: string | null) => void }) {
             drawing.current = true;
             ref.current!.setPointerCapture(e.pointerId);
             const ctx = ref.current!.getContext("2d")!;
+            ctx.strokeStyle = document.documentElement.classList.contains("dark") ? "#f6f1e7" : "#130f16";
             ctx.beginPath();
             ctx.moveTo(...pos(e));
           }}
           onPointerMove={(e) => {
             if (!drawing.current) return;
             const ctx = ref.current!.getContext("2d")!;
+            ctx.strokeStyle = document.documentElement.classList.contains("dark") ? "#f6f1e7" : "#130f16";
             ctx.lineTo(...pos(e));
             ctx.stroke();
             if (empty) setEmpty(false);
@@ -248,14 +251,16 @@ export function Step5() {
                 </li>
               ))}
             </ol>
-            <label className="mt-2 flex items-start gap-2 text-xs">
+            <label className="mt-2.5 flex items-start gap-2.5 text-xs font-medium cursor-pointer p-2 rounded-lg bg-primary/5 border border-primary/20 hover:bg-primary/10 transition">
               <input
                 type="checkbox"
                 checked={agree}
                 onChange={(e) => setAgree(e.target.checked)}
-                className="mt-0.5 size-4 accent-primary"
+                className="mt-0.5 size-4 accent-primary cursor-pointer"
               />
-              <span>I've read and agree to the service agreement, including the cancellation tiers.</span>
+              <span className="text-ink">
+                I've read and agree to the service agreement, including the cancellation tiers.
+              </span>
             </label>
           </div>
           <div>
@@ -268,23 +273,25 @@ export function Step5() {
         </div>
       </div>
 
-      <aside className="dark flex flex-col rounded-2xl bg-background p-5 text-foreground lg:sticky lg:top-0 lg:self-start">
+      <aside className="flex flex-col rounded-2xl border border-hairline bg-surface-light dark:bg-[#161217] p-5 text-ink dark:text-white lg:sticky lg:top-0 lg:self-start shadow-raised">
         <p className="eyebrow text-primary">Secure deposit</p>
         <p className="display mt-3 text-6xl tabular-nums">{money(est.deposit)}</p>
-        <p className="mt-1 text-xs text-foreground/60">due today · balance {money(est.balance)} due 7 days before</p>
+        <p className="mt-1 text-xs text-ink/60 dark:text-white/60">
+          due today · balance {money(est.balance)} due 7 days before
+        </p>
 
         {/* What is paid, and when */}
-        <dl className="mt-4 space-y-1.5 rounded-xl border border-white/10 bg-white/5 p-3 text-xs">
+        <dl className="mt-4 space-y-1.5 rounded-xl border border-hairline bg-canvas/60 dark:bg-white/5 p-3 text-xs">
           {est.lines.map((l) => (
             <div key={l.label} className="flex items-baseline justify-between gap-3">
-              <dt className="min-w-0 truncate text-foreground/65">
+              <dt className="min-w-0 truncate text-ink/65 dark:text-white/65">
                 {l.label}
-                {l.note ? <span className="text-foreground/35"> · {l.note}</span> : null}
+                {l.note ? <span className="text-ink/35 dark:text-white/35"> · {l.note}</span> : null}
               </dt>
-              <dd className="shrink-0 tabular-nums text-foreground/85">{money(l.amount)}</dd>
+              <dd className="shrink-0 tabular-nums text-ink/85 dark:text-white/85">{money(l.amount)}</dd>
             </div>
           ))}
-          <div className="flex items-baseline justify-between gap-3 border-t border-white/10 pt-2 font-semibold">
+          <div className="flex items-baseline justify-between gap-3 border-t border-hairline pt-2 font-semibold text-ink dark:text-white">
             <dt>Full celebration total</dt>
             <dd className="tabular-nums">{money(est.total)}</dd>
           </div>
@@ -292,7 +299,7 @@ export function Step5() {
             <dt>Paid today · 25% deposit</dt>
             <dd className="tabular-nums">{money(est.deposit)}</dd>
           </div>
-          <div className="flex items-baseline justify-between gap-3 text-foreground/65">
+          <div className="flex items-baseline justify-between gap-3 text-ink/65 dark:text-white/65">
             <dt>Remaining balance · 75%</dt>
             <dd className="tabular-nums">{money(est.balance)}</dd>
           </div>
@@ -300,42 +307,51 @@ export function Step5() {
 
         <div className="mt-5 space-y-3">
           <label className="block">
-            <span className="eyebrow text-foreground/60">Card number</span>
+            <span className="eyebrow text-ink/60 dark:text-white/60">Card number</span>
             <input
               inputMode="numeric"
               placeholder="4242 4242 4242 4242"
               value={card.n}
               onChange={(e) => setCard({ ...card, n: e.target.value.replace(/[^\d •]/g, "").slice(0, 19) })}
-              className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm tabular-nums outline-none focus:ring-2 focus:ring-primary"
+              className="mt-1 w-full rounded-xl border border-hairline bg-canvas dark:bg-black/40 text-ink dark:text-white px-3 py-2.5 text-sm tabular-nums outline-none focus:ring-2 focus:ring-primary"
             />
           </label>
           <div className="grid grid-cols-2 gap-2">
             <label className="block">
-              <span className="eyebrow text-foreground/60">Expiry</span>
+              <span className="eyebrow text-ink/60 dark:text-white/60">Expiry</span>
               <input
                 placeholder="12/28"
                 value={card.exp}
                 onChange={(e) => setCard({ ...card, exp: e.target.value.slice(0, 5) })}
-                className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
+                className="mt-1 w-full rounded-xl border border-hairline bg-canvas dark:bg-black/40 text-ink dark:text-white px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
               />
             </label>
             <label className="block">
-              <span className="eyebrow text-foreground/60">CVC</span>
+              <span className="eyebrow text-ink/60 dark:text-white/60">CVC</span>
               <input
                 placeholder="123"
                 inputMode="numeric"
                 value={card.cvc}
                 onChange={(e) => setCard({ ...card, cvc: e.target.value.replace(/\D/g, "").slice(0, 4) })}
-                className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
+                className="mt-1 w-full rounded-xl border border-hairline bg-canvas dark:bg-black/40 text-ink dark:text-white px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
               />
             </label>
           </div>
-          <p className="eyebrow text-foreground/45">Demo sandbox · prefilled verified card</p>
+          <p className="eyebrow text-ink/45 dark:text-white/45">Demo sandbox · prefilled verified card</p>
         </div>
-        <Primary disabled={!ready} onClick={pay} className="mt-5 w-full py-4">
+        <Primary
+          disabled={!ready}
+          onClick={pay}
+          className={cn(
+            "mt-5 w-full py-4 text-base font-black transition-all",
+            !ready && "opacity-50 cursor-not-allowed bg-ink/20 dark:bg-white/10 text-ink/60 dark:text-white/40",
+          )}
+        >
           Pay {money(est.deposit)} & book
         </Primary>
-        {!ready && <p className="mt-2 text-center text-[0.7rem] text-foreground/50">Still need {missing}.</p>}
+        {!ready && (
+          <p className="mt-2.5 text-center text-xs font-bold text-primary animate-pulse">Still need {missing}.</p>
+        )}
       </aside>
 
       {loading && (

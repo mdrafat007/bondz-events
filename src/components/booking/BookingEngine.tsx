@@ -340,69 +340,54 @@ function Frame({ intro, demo, paused, onDemoProgress, onDemoRoundEnd, onDemoScen
 
           {/* Right Controls: SFX + Theme + Exit */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-            {/* SFX Button */}
-            <button
-              type="button"
+            {/* Sound - identical control to the home header */}
+            <TactileIcon
+              label={soundEnabled ? "Mute sound effects" : "Enable sound effects"}
               onClick={toggleSound}
-              aria-label={soundEnabled ? "Mute realistic sound effects" : "Enable realistic sound effects"}
-              title={soundEnabled ? "Sound ON" : "Sound MUTED"}
-              className={cn(
-                "flex size-7.5 sm:size-auto sm:h-8.5 items-center justify-center sm:justify-start gap-1.5 rounded-full border hairline px-0 sm:px-2.5 text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-xs",
-                soundEnabled
-                  ? "bg-surface-light text-ink border-ink/25 hover:border-ink"
-                  : "bg-surface-light/50 text-ink/50 border-ink/15 hover:text-ink",
-              )}
+              muted={!soundEnabled}
             >
               {soundEnabled ? (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-3.5 text-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="size-5">
                   <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                   <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
                   <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
                 </svg>
               ) : (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-3.5 text-ink/50">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="size-5">
                   <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                   <line x1="23" y1="9" x2="17" y2="15" />
                   <line x1="17" y1="9" x2="23" y2="15" />
                 </svg>
               )}
-              <span className="hidden sm:inline font-mono text-[0.65rem] uppercase tracking-wider">
-                {soundEnabled ? "SFX" : "MUTE"}
-              </span>
-            </button>
+            </TactileIcon>
 
-            {/* Theme Mood Toggle */}
-            <button
-              type="button"
+            {/* Theme - identical control to the home header */}
+            <TactileIcon
+              label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               onClick={() => {
                 playTapSound();
                 toggleTheme();
               }}
-              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-              title={theme === "dark" ? "Dark Mood active" : "Light Mood active"}
-              className="flex size-7.5 sm:size-auto sm:h-8.5 items-center justify-center sm:justify-start gap-1.5 rounded-full border hairline bg-surface-light px-0 sm:px-2.5 text-xs font-bold text-ink transition-all hover:border-ink hover:bg-canvas active:scale-95 cursor-pointer shadow-xs border-ink/25"
             >
               {theme === "dark" ? (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-3.5 text-amber-400">
-                  <circle cx="12" cy="12" r="5" />
-                  <line x1="12" y1="1" x2="12" y2="3" />
-                  <line x1="12" y1="21" x2="12" y2="23" />
-                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                  <line x1="1" y1="12" x2="3" y2="12" />
-                  <line x1="21" y1="12" x2="23" y2="12" />
-                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="size-5">
+                  <circle cx="12" cy="12" r="4.4" />
+                  <line x1="12" y1="1.5" x2="12" y2="3.6" />
+                  <line x1="12" y1="20.4" x2="12" y2="22.5" />
+                  <line x1="4.2" y1="4.2" x2="5.7" y2="5.7" />
+                  <line x1="18.3" y1="18.3" x2="19.8" y2="19.8" />
+                  <line x1="1.5" y1="12" x2="3.6" y2="12" />
+                  <line x1="20.4" y1="12" x2="22.5" y2="12" />
+                  <line x1="4.2" y1="19.8" x2="5.7" y2="18.3" />
+                  <line x1="18.3" y1="5.7" x2="19.8" y2="4.2" />
                 </svg>
               ) : (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-3.5 text-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="size-5">
                   <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                 </svg>
               )}
-              <span className="hidden sm:inline font-mono text-[0.65rem] uppercase tracking-wider">
-                {theme === "dark" ? "DARK" : "LIGHT"}
-              </span>
-            </button>
+            </TactileIcon>
+
 
             {/* Exit Link */}
             <Link

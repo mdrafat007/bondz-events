@@ -56,7 +56,7 @@ function pick<T>(list: readonly T[]): T {
   return list[Math.floor(Math.random() * list.length)] as T;
 }
 
-interface Scenario {
+export interface DemoScenario {
   event: EventTypeId;
   vibes: string[];
   where: "home" | "venue";
@@ -66,8 +66,8 @@ interface Scenario {
   name: string;
   slot: Slot;
   ref: string;
-
 }
+type Scenario = DemoScenario;
 
 function makeScenario(): Scenario {
   const event = pick(EVENT_TYPES).id as EventTypeId;

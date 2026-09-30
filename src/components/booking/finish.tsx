@@ -140,7 +140,7 @@ export function Step5() {
     if (!details.name.trim()) seed["name"] = "Amira Kensington";
     if (!details.phone.trim()) seed["phone"] = "+1 555 234 5678";
     if (!details.email.trim()) seed["email"] = "amira.k@example.com";
-    if (!details.honor.trim()) seed["honor"] = s.ev?.name ? `${s.ev.name} guest of honour` : "Guest of honour";
+    if (!details.honor.trim()) seed["honor"] = s.ev?.title ? `${s.ev.title} guest of honour` : "Guest of honour";
     if (!details.notes.trim()) seed["notes"] = "Two vegetarian tables, easy step-free access, surprise toast at 9.";
     if (Object.keys(seed).length) setDetails({ ...details, ...seed });
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -17,7 +17,10 @@ export const Route = createFileRoute("/partners")({
           "Explore sample venues, caterers, decorators, DJs, equipment, staffing and cleaning partners in the Bondz Events planning preview.",
       },
       { property: "og:title", content: "Partners - Bondz Events" },
-      { property: "og:description", content: "Explore the venues and service partners in the Bondz Events planning preview." },
+      {
+        property: "og:description",
+        content: "Explore the venues and service partners in the Bondz Events planning preview.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -327,7 +330,8 @@ function Partners() {
             Hover or tap to inspect specs
           </span>
           <p className="max-w-xs text-xs text-ink/85 dark:text-ink/65 leading-relaxed font-medium">
-            Sample availability is calculated together for Mr. Bondz, the venue and each selected partner. No real calendars are connected yet.
+            Sample availability is calculated together for Mr. Bondz, the venue and each selected partner. No real
+            calendars are connected yet.
           </p>
         </div>
       </div>
@@ -341,9 +345,7 @@ function Partners() {
           >
             {/* Category Label */}
             <p className="flex items-baseline gap-2 pl-1">
-              <span className="text-[0.72rem] font-bold text-primary font-mono">
-                {String(i + 1).padStart(2, "0")}
-              </span>
+              <span className="text-[0.72rem] font-bold text-primary font-mono">{String(i + 1).padStart(2, "0")}</span>
               <span className="font-display text-sm font-extrabold uppercase tracking-tight text-ink [font-variation-settings:'wdth'_85] md:text-base">
                 {g.g}
               </span>
@@ -375,16 +377,16 @@ function Partners() {
                     onMouseLeave={() => setHoveredPartner(null)}
                     className={cn(
                       "font-display partner-name group/item inline-flex items-baseline whitespace-nowrap px-5 leading-none tracking-tight transition-all duration-200 cursor-pointer text-left outline-none text-[clamp(1.5rem,3.4vw,2.85rem)] font-extrabold [font-variation-settings:'wdth'_85]",
-                      isHovered
-                        ? "text-primary scale-[1.02]"
-                        : "text-ink dark:text-[#fbf8f2] hover:text-primary",
+                      isHovered ? "text-primary scale-[1.02]" : "text-ink dark:text-[#fbf8f2] hover:text-primary",
                     )}
                   >
                     <span>{n}</span>
                     <span className="ml-3 text-sm font-mono font-bold text-primary/85 group-hover/item:text-primary">
                       ★ {meta?.rating || "4.9"}
                     </span>
-                    <span className="ml-5 text-[clamp(1.5rem,3.4vw,2.85rem)] font-serif text-primary/50 font-light select-none">/</span>
+                    <span className="ml-5 text-[clamp(1.5rem,3.4vw,2.85rem)] font-serif text-primary/50 font-light select-none">
+                      /
+                    </span>
                   </button>
                 );
               })}
@@ -408,16 +410,12 @@ function Partners() {
               pointerEvents: "none",
               zIndex: 60,
             }}
-            className="w-80 overflow-hidden rounded-2xl border hairline bg-surface-dark text-white shadow-2xl backdrop-blur-xl"
+            className="w-80 overflow-hidden rounded-2xl border border-hairline bg-[#faf7f2] dark:bg-[#161217] text-ink dark:text-white shadow-2xl backdrop-blur-xl"
           >
             {/* Image Thumbnail */}
             <div className="relative h-28 w-full overflow-hidden bg-muted">
-              <img
-                src={hoveredPartner.image}
-                alt={hoveredPartner.name}
-                className="h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-surface-dark via-transparent to-black/20" />
+              <img src={hoveredPartner.image} alt={hoveredPartner.name} className="h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#faf7f2] dark:from-[#161217] via-transparent to-black/20" />
               <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-0.5 text-[0.68rem] font-bold uppercase tracking-wider backdrop-blur-md">
                 <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 {hoveredPartner.category}
@@ -429,14 +427,12 @@ function Partners() {
 
             {/* Preview Content */}
             <div className="p-3.5">
-              <h4 className="font-display text-base font-black tracking-tight text-white [font-variation-settings:'wdth'_85]">
+              <h4 className="font-display text-base font-black tracking-tight text-ink dark:text-white [font-variation-settings:'wdth'_85]">
                 {hoveredPartner.name}
               </h4>
-              <p className="mt-1 text-xs text-white/80 leading-snug">
-                {hoveredPartner.headline}
-              </p>
+              <p className="mt-1 text-xs text-ink/80 dark:text-white/80 leading-snug">{hoveredPartner.headline}</p>
 
-              <div className="mt-2.5 flex items-center justify-between border-t border-white/10 pt-2 text-[0.70rem] font-mono text-white/60">
+              <div className="mt-2.5 flex items-center justify-between border-t border-hairline pt-2 text-[0.70rem] font-mono text-ink/60 dark:text-white/60">
                 <span>{hoveredPartner.pricing}</span>
                 <span className="text-primary font-bold">Click to inspect →</span>
               </div>
@@ -477,11 +473,7 @@ function Partners() {
 
               {/* Banner Image */}
               <div className="relative h-48 sm:h-56 w-full overflow-hidden bg-neutral-900">
-                <img
-                  src={selectedPartner.image}
-                  alt={selectedPartner.name}
-                  className="h-full w-full object-cover"
-                />
+                <img src={selectedPartner.image} alt={selectedPartner.name} className="h-full w-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-surface-dark via-surface-dark/40 to-transparent" />
                 <div className="absolute bottom-4 left-5 right-5 flex items-end justify-between">
                   <div>
@@ -489,14 +481,10 @@ function Partners() {
                       <span className="size-2 rounded-full bg-primary animate-pulse" />
                       {selectedPartner.group}
                     </span>
-                    <h3 className="display mt-2 text-2xl sm:text-3xl font-black text-white">
-                      {selectedPartner.name}
-                    </h3>
+                    <h3 className="display mt-2 text-2xl sm:text-3xl font-black text-white">{selectedPartner.name}</h3>
                   </div>
                   <div className="text-right">
-                    <span className="block text-2xl font-black text-primary">
-                      ★ {selectedPartner.rating}
-                    </span>
+                    <span className="block text-2xl font-black text-primary">★ {selectedPartner.rating}</span>
                     <span className="text-[0.70rem] font-mono text-white/60">
                       {selectedPartner.eventsCount} celebrations
                     </span>
@@ -506,9 +494,7 @@ function Partners() {
 
               {/* Modal Body */}
               <div className="p-6">
-                <p className="text-sm sm:text-base leading-relaxed text-white/85">
-                  {selectedPartner.details}
-                </p>
+                <p className="text-sm sm:text-base leading-relaxed text-white/85">{selectedPartner.details}</p>
 
                 {/* Key Spec Badges */}
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -528,14 +514,10 @@ function Partners() {
                     <span className="block text-white/50 uppercase tracking-widest text-[0.65rem]">
                       Base Investment
                     </span>
-                    <span className="mt-1 block font-bold text-white text-sm">
-                      {selectedPartner.pricing}
-                    </span>
+                    <span className="mt-1 block font-bold text-white text-sm">{selectedPartner.pricing}</span>
                   </div>
                   <div className="rounded-xl bg-white/5 p-3">
-                    <span className="block text-white/50 uppercase tracking-widest text-[0.65rem]">
-                      Capacity Range
-                    </span>
+                    <span className="block text-white/50 uppercase tracking-widest text-[0.65rem]">Capacity Range</span>
                     <span className="mt-1 block font-bold text-white text-sm">
                       {selectedPartner.capacity || "All sizes"}
                     </span>
@@ -577,4 +559,3 @@ function Partners() {
     </div>
   );
 }
-

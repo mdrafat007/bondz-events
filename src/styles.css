@@ -2,15 +2,39 @@
 @import "./design-system/bondz-events---design-system-9e1fdf/design-system/styles/theme.css";
 @source "./design-system/bondz-events---design-system-9e1fdf";
 
-html, body, #app { height: 100%; font-family: var(--font-sans); }
-html, body { overflow: hidden; }
-body { margin: 0; }
-button, input { font: inherit; }
-::selection { background: var(--bondz-primary); color: var(--bondz-surface-light); }
+html,
+body,
+#app {
+  height: 100%;
+  font-family: var(--font-sans);
+}
+html,
+body {
+  overflow: hidden;
+}
+body {
+  margin: 0;
+}
+button,
+input {
+  font: inherit;
+}
+::selection {
+  background: var(--bondz-primary);
+  color: var(--bondz-surface-light);
+}
 
-.bondz-orbit-a { animation: spin 1.2s linear infinite; }
-.bondz-orbit-b { animation: spin 2s linear infinite reverse; }
-@keyframes spin { to { transform: rotate(360deg); } }
+.bondz-orbit-a {
+  animation: spin 1.2s linear infinite;
+}
+.bondz-orbit-b {
+  animation: spin 2s linear infinite reverse;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 /* Project-layer tokens: invitation-card palettes (no design-system equivalent). */
 :root {
@@ -29,51 +53,136 @@ button, input { font: inherit; }
 }
 
 /* Hero headline: strictly two lines at every width, as large as the line allows. */
-.bondz-hero-title { font-size: clamp(1.26rem, 4.7vw, 3.4rem); line-height: 1.04; letter-spacing: -0.042em; }
-@media (min-width: 1024px) { .bondz-hero-title { font-size: clamp(2.05rem, 3.35vw, 4.5rem); } }
+.bondz-hero-title {
+  font-size: clamp(1.26rem, 4.7vw, 3.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.042em;
+}
+@media (min-width: 1024px) {
+  .bondz-hero-title {
+    font-size: clamp(2.45rem, 4.05vw, 5.5rem);
+  }
+}
 
 /* Borderless tactile controls: real press depth, no button chrome. */
 .bondz-tactile {
   background: transparent;
   cursor: pointer;
-  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), filter 0.18s ease, background-color 0.18s ease;
+  transition:
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.18s ease,
+    background-color 0.18s ease;
   filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.55)) drop-shadow(0 2px 3px rgb(0 0 0 / 0.22));
 }
-.dark .bondz-tactile { filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.12)) drop-shadow(0 3px 5px rgb(0 0 0 / 0.75)); }
-.bondz-tactile:hover { transform: translateY(-1px) scale(1.06); }
-.bondz-tactile:active { transform: translateY(1px) scale(0.92); filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.3)); }
-.bondz-tactile:focus-visible { outline: 2px solid var(--bondz-primary); outline-offset: 3px; }
-@media (prefers-reduced-motion: reduce) { .bondz-tactile:hover, .bondz-tactile:active { transform: none; } }
-
-/* AI agent call to action: scale in on hover, press in on tap. */
-.bondz-ai-link { transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease, background-color 0.2s ease; }
-.bondz-ai-link:hover, .bondz-ai-link:focus-visible { transform: scale(1.1); }
-.bondz-ai-link:active { transform: scale(0.9); }
-@media (prefers-reduced-motion: reduce) { .bondz-ai-link { transition: color 0.2s ease; } .bondz-ai-link:hover, .bondz-ai-link:active, .bondz-ai-link:focus-visible { transform: none; } }
-.bondz-hero-cta { background: linear-gradient(to bottom, var(--bondz-cta-top), var(--bondz-cta-mid), var(--bondz-cta-bottom)); box-shadow: var(--bondz-cta-shadow); }
-.bondz-hero-cta:hover { background: linear-gradient(to bottom, var(--bondz-cta-top), var(--bondz-cta-mid), var(--bondz-cta-bottom)); }
-.rise { animation: rise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
-@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-/* Services: oversized editorial illustration drifts gently, lifts on hover. */
-.bondz-service-art { animation: bondz-art-drift 7s ease-in-out infinite; transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), color 0.4s ease; }
-.group:hover .bondz-service-art { transform: translate3d(-10px, -10px, 0) rotate(-3deg) scale(1.08); }
-@keyframes bondz-art-drift {
-  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  50% { transform: translate3d(-4px, -8px, 0) rotate(-2deg); }
+.dark .bondz-tactile {
+  filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.12)) drop-shadow(0 3px 5px rgb(0 0 0 / 0.75));
+}
+.bondz-tactile:hover {
+  transform: translateY(-1px) scale(1.06);
+}
+.bondz-tactile:active {
+  transform: translateY(1px) scale(0.92);
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.3));
+}
+.bondz-tactile:focus-visible {
+  outline: 2px solid var(--bondz-primary);
+  outline-offset: 3px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .bondz-service-art { animation: none; }
-  .group:hover .bondz-service-art { transform: none; }
+  .bondz-tactile:hover,
+  .bondz-tactile:active {
+    transform: none;
+  }
+}
+
+/* AI agent call to action: scale in on hover, press in on tap. */
+.bondz-ai-link {
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+.bondz-ai-link:hover,
+.bondz-ai-link:focus-visible {
+  transform: scale(1.1);
+}
+.bondz-ai-link:active {
+  transform: scale(0.9);
+}
+@media (prefers-reduced-motion: reduce) {
+  .bondz-ai-link {
+    transition: color 0.2s ease;
+  }
+  .bondz-ai-link:hover,
+  .bondz-ai-link:active,
+  .bondz-ai-link:focus-visible {
+    transform: none;
+  }
+}
+.bondz-hero-cta {
+  background: linear-gradient(to bottom, var(--bondz-cta-top), var(--bondz-cta-mid), var(--bondz-cta-bottom));
+  box-shadow: var(--bondz-cta-shadow);
+}
+.bondz-hero-cta:hover {
+  background: linear-gradient(to bottom, var(--bondz-cta-top), var(--bondz-cta-mid), var(--bondz-cta-bottom));
+}
+.rise {
+  animation: rise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Services: oversized editorial illustration drifts gently, lifts on hover. */
+.bondz-service-art {
+  animation: bondz-art-drift 7s ease-in-out infinite;
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.4s ease;
+}
+.group:hover .bondz-service-art {
+  transform: translate3d(-10px, -10px, 0) rotate(-3deg) scale(1.08);
+}
+@keyframes bondz-art-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(-4px, -8px, 0) rotate(-2deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bondz-service-art {
+    animation: none;
+  }
+  .group:hover .bondz-service-art {
+    transform: none;
+  }
 }
 
 @keyframes marqueeLeftTrack {
-  0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-50%, 0, 0); }
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
 }
 @keyframes marqueeRightTrack {
-  0% { transform: translate3d(-50%, 0, 0); }
-  100% { transform: translate3d(0, 0, 0); }
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
 }
 .ticker-marquee-left {
   display: flex !important;
@@ -94,21 +203,49 @@ button, input { font: inherit; }
   backface-visibility: hidden;
 }
 .ticker-marquee-left > *,
-.ticker-marquee-right > * { flex: 0 0 auto; }
+.ticker-marquee-right > * {
+  flex: 0 0 auto;
+}
 .ticker-marquee-left:hover,
-.ticker-marquee-right:hover { animation-play-state: paused !important; }
-.bondz-curtain-left { transform: translateX(-100%); animation: bondz-curtain-left 450ms ease-in-out forwards; }
-.bondz-curtain-right { transform: translateX(100%); animation: bondz-curtain-right 450ms ease-in-out forwards; }
-@keyframes bondz-curtain-left { to { transform: translateX(0); } }
-@keyframes bondz-curtain-right { to { transform: translateX(0); } }
+.ticker-marquee-right:hover {
+  animation-play-state: paused !important;
+}
+.bondz-curtain-left {
+  transform: translateX(-100%);
+  animation: bondz-curtain-left 450ms ease-in-out forwards;
+}
+.bondz-curtain-right {
+  transform: translateX(100%);
+  animation: bondz-curtain-right 450ms ease-in-out forwards;
+}
+@keyframes bondz-curtain-left {
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes bondz-curtain-right {
+  to {
+    transform: translateX(0);
+  }
+}
 
 /* Peek-a-boo Mascot Micro-interaction */
 @keyframes mascot-peek-pop {
-  0% { transform: translateY(72%) rotate(0deg) scale(0.92); }
-  38% { transform: translateY(-16px) rotate(11deg) scale(1.05); }
-  65% { transform: translateY(-6px) rotate(-4deg) scale(1.02); }
-  85% { transform: translateY(-12px) rotate(2deg) scale(1.01); }
-  100% { transform: translateY(-10px) rotate(0deg) scale(1); }
+  0% {
+    transform: translateY(72%) rotate(0deg) scale(0.92);
+  }
+  38% {
+    transform: translateY(-16px) rotate(11deg) scale(1.05);
+  }
+  65% {
+    transform: translateY(-6px) rotate(-4deg) scale(1.02);
+  }
+  85% {
+    transform: translateY(-12px) rotate(2deg) scale(1.01);
+  }
+  100% {
+    transform: translateY(-10px) rotate(0deg) scale(1);
+  }
 }
 
 .mascot-peek {
@@ -156,10 +293,22 @@ button, input { font: inherit; }
   border-color: var(--bondz-hairline);
 }
 
-@keyframes split-top { to { transform: translateY(-101%); } }
-@keyframes split-bottom { to { transform: translateY(101%); } }
-@utility split-top { animation: split-top 0.85s cubic-bezier(0.77, 0, 0.18, 1) 0.15s forwards; }
-@utility split-bottom { animation: split-bottom 0.85s cubic-bezier(0.77, 0, 0.18, 1) 0.15s forwards; }
+@keyframes split-top {
+  to {
+    transform: translateY(-101%);
+  }
+}
+@keyframes split-bottom {
+  to {
+    transform: translateY(101%);
+  }
+}
+@utility split-top {
+  animation: split-top 0.85s cubic-bezier(0.77, 0, 0.18, 1) 0.15s forwards;
+}
+@utility split-bottom {
+  animation: split-bottom 0.85s cubic-bezier(0.77, 0, 0.18, 1) 0.15s forwards;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *:not(.ticker-marquee-left):not(.ticker-marquee-right):not(.ticker-marquee-left *):not(.ticker-marquee-right *) {
@@ -183,7 +332,9 @@ button, input { font: inherit; }
     inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
     0 0 35px -5px rgba(243, 79, 69, 0.12),
     0 20px 40px -15px rgba(0, 0, 0, 0.7);
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  transition:
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .dark .accent-shimmer-card:hover {
@@ -213,7 +364,9 @@ button, input { font: inherit; }
 }
 
 @keyframes coral-shimmer {
-  100% { transform: translateX(100%); }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

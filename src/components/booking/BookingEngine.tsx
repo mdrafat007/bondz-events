@@ -238,7 +238,9 @@ function Frame({ intro, demo, paused, onDemoProgress, onDemoRoundEnd, onDemoScen
     ) : null;
 
   return (
-    <div className="flex h-full flex-col max-w-full overflow-x-hidden">
+    // translate="no" keeps Chrome's page translator from rewriting live text nodes
+    // underneath React, which is the usual source of removeChild crashes here.
+    <div translate="no" className="notranslate flex h-full flex-col max-w-full overflow-x-hidden">
       {demo && <DemoDirector paused={paused} canvas={scroller} onProgress={onDemoProgress} onRoundEnd={onDemoRoundEnd} onScenario={onDemoScenario} />}
       {!demo && <header className="shrink-0 border-b hairline bg-canvas transition-colors duration-300">
         <div className="flex h-14 sm:h-16 items-center justify-between gap-1.5 sm:gap-4 px-2.5 sm:px-6">

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo, type ReactNode } from "react";
+import { useEffect, useRef, useState, useMemo, useCallback, type ReactNode } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import {
@@ -63,25 +63,69 @@ function SignaturePad({ onChange }: { onChange: (d: string | null) => void }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);
   const [empty, setEmpty] = useState(true);
+  const linesRef = useRef<Array<Array<[number, number]>>>([]);
+  const currentLineRef = useRef<Array<[number, number]>>([]);
 
+  const redraw = useCallback(() => {
+    const c = ref.current;
+    if (!c) return;
+    const ctx = c.getContext("2d");
+    if (!ctx) return;
+    const isDark = document.documentElement.classList.contains("dark");
+    const strokeColor = isDark ? "#f6f1e7" : "#130f16";
+
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.restore();
+
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = strokeColor;
+
+    for (const line of linesRef.current) {
+      if (line.length === 0) continue;
+      ctx.beginPath();
+      ctx.moveTo(line[0][0], line[0][1]);
+      for (let i = 1; i < line.length; i++) {
+        ctx.lineTo(line[i][0], line[i][1]);
+      }
+      ctx.stroke();
+    }
+  }, []);
+
+  // Initialize canvas with high-DPI scaling
   useEffect(() => {
-    const c = ref.current!;
+    const c = ref.current;
+    if (!c) return;
     const r = c.getBoundingClientRect();
     c.width = r.width * 2;
     c.height = r.height * 2;
-    const ctx = c.getContext("2d")!;
-    ctx.scale(2, 2);
-    ctx.lineWidth = 2.2;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    const isDark = document.documentElement.classList.contains("dark");
-    ctx.strokeStyle = isDark ? "#f6f1e7" : "#130f16";
-  }, []);
+    const ctx = c.getContext("2d");
+    if (ctx) {
+      ctx.scale(2, 2);
+    }
+    redraw();
+  }, [redraw]);
 
-  const pos = (e: React.PointerEvent) => {
+  // Observer to re-color existing strokes if dark/light mode toggles
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      redraw();
+      if (!empty && ref.current) {
+        onChange(ref.current.toDataURL());
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, [redraw, empty, onChange]);
+
+  const pos = (e: React.PointerEvent): [number, number] => {
     const r = ref.current!.getBoundingClientRect();
-    return [e.clientX - r.left, e.clientY - r.top] as const;
+    return [e.clientX - r.left, e.clientY - r.top];
   };
+
   return (
     <div>
       <div className="relative">
@@ -91,21 +135,32 @@ function SignaturePad({ onChange }: { onChange: (d: string | null) => void }) {
           onPointerDown={(e) => {
             drawing.current = true;
             ref.current!.setPointerCapture(e.pointerId);
+            const p = pos(e);
+            currentLineRef.current = [p];
             const ctx = ref.current!.getContext("2d")!;
-            ctx.strokeStyle = document.documentElement.classList.contains("dark") ? "#f6f1e7" : "#130f16";
+            const isDark = document.documentElement.classList.contains("dark");
+            ctx.strokeStyle = isDark ? "#f6f1e7" : "#130f16";
+            ctx.lineWidth = 2.4;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
             ctx.beginPath();
-            ctx.moveTo(...pos(e));
+            ctx.moveTo(p[0], p[1]);
           }}
           onPointerMove={(e) => {
             if (!drawing.current) return;
+            const p = pos(e);
+            currentLineRef.current.push(p);
             const ctx = ref.current!.getContext("2d")!;
-            ctx.strokeStyle = document.documentElement.classList.contains("dark") ? "#f6f1e7" : "#130f16";
-            ctx.lineTo(...pos(e));
+            ctx.lineTo(p[0], p[1]);
             ctx.stroke();
             if (empty) setEmpty(false);
           }}
           onPointerUp={() => {
             drawing.current = false;
+            if (currentLineRef.current.length > 0) {
+              linesRef.current.push(currentLineRef.current);
+              currentLineRef.current = [];
+            }
             if (!empty) onChange(ref.current!.toDataURL());
           }}
           aria-label="Signature pad"
@@ -120,11 +175,17 @@ function SignaturePad({ onChange }: { onChange: (d: string | null) => void }) {
         type="button"
         onClick={() => {
           const c = ref.current!;
-          c.getContext("2d")!.clearRect(0, 0, c.width, c.height);
+          const ctx = c.getContext("2d")!;
+          ctx.save();
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.clearRect(0, 0, c.width, c.height);
+          ctx.restore();
+          linesRef.current = [];
+          currentLineRef.current = [];
           setEmpty(true);
           onChange(null);
         }}
-        className="eyebrow mt-1.5 text-ink/55 hover:text-ink"
+        className="eyebrow mt-1.5 text-ink/55 hover:text-ink cursor-pointer"
       >
         Clear signature
       </button>

@@ -106,7 +106,7 @@ export async function renderInvitePng(theme: InviteTheme, content: InviteContent
   spaced("YOU’RE INVITED", PAD, PAD + 60, 7);
 
   ctx.fillStyle = ink;
-  ctx.font = 'italic 150px "Instrument Serif"';
+  ctx.font = 'italic 176px "Instrument Serif"';
   let y = PAD + 250;
   for (const line of wrap(ctx, content.head, S - PAD * 2, 3)) {
     ctx.fillText(line, PAD, y);

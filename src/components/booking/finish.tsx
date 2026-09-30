@@ -131,6 +131,21 @@ export function Step5() {
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState(0);
 
+  // Sample details are prefilled so the flow can be tested by signing and paying only.
+  const prefilled = useRef(false);
+  useEffect(() => {
+    if (prefilled.current) return;
+    prefilled.current = true;
+    const seed: Record<string, string> = {};
+    if (!details.name.trim()) seed["name"] = "Amira Kensington";
+    if (!details.phone.trim()) seed["phone"] = "+1 555 234 5678";
+    if (!details.email.trim()) seed["email"] = "amira.k@example.com";
+    if (!details.honor.trim()) seed["honor"] = s.ev?.name ? `${s.ev.name} guest of honour` : "Guest of honour";
+    if (!details.notes.trim()) seed["notes"] = "Two vegetarian tables, easy step-free access, surprise toast at 9.";
+    if (Object.keys(seed).length) setDetails({ ...details, ...seed });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const cardValid = (card.n.includes("4242") || card.n.replace(/\s/g, "").length >= 12) && card.exp.length >= 4 && card.cvc.length >= 3;
   const ready = details.name.trim() && /\S+@\S+\.\S+/.test(details.email) && details.phone.trim().length >= 6 && agree && signature && cardValid;
   const missing = !details.name.trim() ? "your name" : !/\S+@\S+\.\S+/.test(details.email) ? "a valid email" : details.phone.trim().length < 6 ? "a phone number" : !agree ? "agreement to the terms" : !signature ? "your signature" : "demo card details";
@@ -138,7 +153,13 @@ export function Step5() {
   const pay = () => {
     setLoading(true);
     signalBot({ mood: "think" });
-    [1, 2, 3, 4].forEach((i) => window.setTimeout(() => setPhase(i), i * 750));
+    playThump();
+    [1, 2, 3, 4].forEach((i) =>
+      window.setTimeout(() => {
+        setPhase(i);
+        playThump(0.85 + i * 0.05);
+      }, i * 750),
+    );
     window.setTimeout(() => {
       setRef("BZ-" + Math.random().toString(36).slice(2, 6).toUpperCase() + "-" + String(Date.now()).slice(-4));
       setStep(6);

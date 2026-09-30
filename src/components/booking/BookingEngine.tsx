@@ -22,6 +22,7 @@ export function BookingEngine({
   paused = false,
   onDemoProgress,
   onDemoRoundEnd,
+  onDemoScenario,
 }: {
   init: {
     event?: EventTypeId | undefined;
@@ -34,11 +35,12 @@ export function BookingEngine({
   paused?: boolean;
   onDemoProgress?: (progress: number) => void;
   onDemoRoundEnd?: () => void;
+  onDemoScenario?: (scenario: DemoScenario) => void;
 }) {
   const state = useBookingState(init, demo);
   return (
     <BookingProvider value={state}>
-      <Frame intro={intro} demo={demo} paused={paused} onDemoProgress={onDemoProgress} onDemoRoundEnd={onDemoRoundEnd} />
+      <Frame intro={intro} demo={demo} paused={paused} onDemoProgress={onDemoProgress} onDemoRoundEnd={onDemoRoundEnd} onDemoScenario={onDemoScenario} />
     </BookingProvider>
   );
 }

@@ -217,6 +217,29 @@ export function Step5() {
         <p className="eyebrow text-primary">Secure deposit</p>
         <p className="display mt-3 text-6xl tabular-nums">{money(est.deposit)}</p>
         <p className="mt-1 text-xs text-foreground/60">due today · balance {money(est.balance)} due 7 days before</p>
+
+        {/* What is paid, and when */}
+        <dl className="mt-4 space-y-1.5 rounded-xl border border-white/10 bg-white/5 p-3 text-xs">
+          {est.lines.map((l) => (
+            <div key={l.label} className="flex items-baseline justify-between gap-3">
+              <dt className="min-w-0 truncate text-foreground/65">{l.label}{l.note ? <span className="text-foreground/35"> · {l.note}</span> : null}</dt>
+              <dd className="shrink-0 tabular-nums text-foreground/85">{money(l.amount)}</dd>
+            </div>
+          ))}
+          <div className="flex items-baseline justify-between gap-3 border-t border-white/10 pt-2 font-semibold">
+            <dt>Full celebration total</dt>
+            <dd className="tabular-nums">{money(est.total)}</dd>
+          </div>
+          <div className="flex items-baseline justify-between gap-3 text-primary">
+            <dt>Paid today · 25% deposit</dt>
+            <dd className="tabular-nums">{money(est.deposit)}</dd>
+          </div>
+          <div className="flex items-baseline justify-between gap-3 text-foreground/65">
+            <dt>Remaining balance · 75%</dt>
+            <dd className="tabular-nums">{money(est.balance)}</dd>
+          </div>
+        </dl>
+
         <div className="mt-5 space-y-3">
           <label className="block">
             <span className="eyebrow text-foreground/60">Card number</span>

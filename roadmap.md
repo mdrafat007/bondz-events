@@ -1,4 +1,10 @@
-- [ ] Mount one real booking engine in the interactive home showcase and animate its six steps.
-- [ ] Synchronize booking availability, slots, policy, simulated confirmation, and invite/calendar actions.
-- [ ] Align hero, theme, chrome, metadata, and marketing copy with the approved specification.
-- [ ] Verify responsive routes, booking journey, and preview compatibility.
+- [ ] Home demo: robust autoplay (no reduced-motion bail, pause only on pointer hover), random scenario each round, event-matched celebration clip between rounds.
+- [ ] /book intro: centered "Let's get you booked." phrase with a real split-open animation.
+- [ ] Step 1: fluid event cards (no clipped titles, scalable illustrations) from 320px up.
+- [ ] Step 2: whole location card is the tap target; remove "Choose" button.
+- [ ] Step 4: calendar source chips wrap (no overlap when the dispatch preview opens); unselected date cards inverted per theme, selected stays primary red.
+- [ ] Dispatch preview: side sheet below 2xl instead of a covering overlay.
+- [ ] Step 5: prefilled demo card checkout, theme-aware logo icon loading screen, tactile then human cheers audio.
+- [ ] Step 6: template-based invite card (light/dark brand templates) with PNG download, share link, guest message, Add to calendar (Google), 2x2 receipt actions, reference-matched PDF, reschedule and cancel flows.
+- [ ] Assets: optimized logo icons, bundled cheers audio, remove unused 4 MB wav.
+- [ ] Verify 320 / 375 / 768 / 1024 / 1440 in both themes, no console errors, typecheck clean.

@@ -2,6 +2,7 @@ import { motion, useAnimationControls, type Variants } from "framer-motion";
 import { useEffect, useState, useRef, useCallback } from "react";
 import mascotWhite from "@/assets/mascot-white.png";
 import mascotRed from "@/assets/mascot-red.png";
+import peekabooUrl from "@/assets/audio/peekaboo-sound.mp3";
 import { useTheme } from "@/lib/theme";
 import { triggerTap, isSoundEnabled } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
@@ -160,18 +161,21 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
     };
   }, [isHovered, playPushJumpAnimation]);
 
+  const playPeekaboo = () => {
+    if (!isSoundEnabled()) return;
+    try {
+      const audio = new Audio(peekabooUrl);
+      audio.volume = 0.85;
+      audio.play().catch(() => {});
+    } catch {
+      /* audio optional */
+    }
+  };
+
   const handleMouseEnter = () => {
     setIsHovered(true);
     playPushJumpAnimation();
-    if (isSoundEnabled()) {
-      try {
-        const audio = new Audio("/peekaboo.mp3");
-        audio.volume = 0.85;
-        audio.play().catch(() => {});
-      } catch {
-        /* audio optional */
-      }
-    }
+    playPeekaboo();
   };
 
   const handleMouseLeave = () => {
@@ -181,15 +185,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
   const handleTap = () => {
     setIsHovered(true);
     triggerTap();
-    if (isSoundEnabled()) {
-      try {
-        const audio = new Audio("/peekaboo.mp3");
-        audio.volume = 0.85;
-        audio.play().catch(() => {});
-      } catch {
-        /* audio optional */
-      }
-    }
+    playPeekaboo();
     playPushJumpAnimation();
     // Allow snappy animation to play visibly before navigating
     window.setTimeout(() => {

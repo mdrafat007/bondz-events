@@ -50,6 +50,8 @@ export function useBookingState(init: { event?: EventTypeId | undefined; where?:
   });
   const [signature, setSignature] = useState<string | null>(null);
   const [ref, setRef] = useState<string>(demo ? "BZ-7492-OCT26" : "");
+  const [moves, setMoves] = useState(0);
+  const [cancelled, setCancelled] = useState<{ refund: number; tier: string; note: string } | null>(null);
 
   const days = useMemo(() => availableDays(sel), [sel]);
   // A previous choice cannot remain locked when the intersection changes.
@@ -111,6 +113,20 @@ export function useBookingState(init: { event?: EventTypeId | undefined; where?:
     setSlot(null);
   };
 
+  /** Move a confirmed booking to another date that still works for the same partners. */
+  const reschedule = (nextDay: number, nextSlot: Slot) => {
+    const before = day ?? 0;
+    setDay(nextDay);
+    setSlot(nextSlot);
+    setMoves((m) => m + 1);
+    push(`Booking moved to day ${nextDay} (${nextSlot}) - same partners re-confirmed`, before, nextDay);
+  };
+
+  const cancel = (outcome: { refund: number; tier: string; note: string }) => {
+    setCancelled(outcome);
+    signalBot({ mood: "think" });
+  };
+
   const reset = () => {
     setStep(1);
     setSel({ event: null, guests: 60, where: null, venue: null, services: [] });
@@ -121,11 +137,14 @@ export function useBookingState(init: { event?: EventTypeId | undefined; where?:
     setDetails({ name: "", phone: "", email: "", honor: "", notes: "" });
     setSignature(null);
     setRef("");
+    setMoves(0);
+    setCancelled(null);
   };
 
   return {
     anchor, step, setStep, sel, setSel, vibes, setVibes, days, day: validDay, setDay, slot: validSlot, setSlot, log, push, reveal, setReveal, demo,
     details, setDetails, signature, setSignature, ref, setRef, toggleService, setGuests, chooseVenue, reset,
+    moves, cancelled, reschedule, cancel,
   };
 }
 

@@ -64,8 +64,8 @@ export function Ghost({ children, onClick }: { children: React.ReactNode; onClic
 
 /* ───────────────── STEP 1 ───────────────── */
 const SPANS: Record<string, string> = {
-  wedding: "md:col-span-2 md:row-span-2",
-  custom: "md:col-span-2",
+  wedding: "col-span-2 row-span-2",
+  custom: "col-span-2",
 };
 
 const EVENT_NARRATIVES: Record<EventTypeId, { kicker: string; highlight: string; desc: string }> = {
@@ -116,11 +116,12 @@ export function Step1() {
   const narrative = sel.event ? EVENT_NARRATIVES[sel.event] : null;
 
   return (
-    <div className="flex w-full max-w-full min-w-0 h-full min-h-0 flex-col gap-3 sm:gap-4">
+    <div className="flex w-full max-w-full min-w-0 flex-col gap-3 sm:gap-4">
       <StepHead no="01" title={<>What are we <span className="font-serif-i text-primary">celebrating?</span></>} sub="Pick the shape of the event. Let us make your moment real." />
-      <div className="scroll-quiet grid w-full max-w-full min-h-0 flex-1 auto-rows-[minmax(6.5rem,1fr)] grid-cols-2 gap-2 sm:gap-2.5 overflow-x-hidden overflow-y-auto md:grid-cols-4 md:grid-rows-3 md:overflow-visible">
+      <div className="grid w-full max-w-full auto-rows-[minmax(6.75rem,auto)] grid-cols-2 gap-2 sm:auto-rows-[minmax(8rem,auto)] sm:grid-cols-3 sm:gap-2.5 lg:grid-cols-4">
         {EVENT_TYPES.map((e) => {
           const on = sel.event === e.id;
+          const hero = e.id === "wedding";
           return (
             <button
               key={e.id}
@@ -134,31 +135,30 @@ export function Step1() {
               }}
               aria-pressed={on}
               className={cn(
-                "group relative flex min-w-0 w-full flex-col justify-between overflow-hidden rounded-2xl border p-3 sm:p-4 text-left transition-all",
+                "group relative flex min-h-0 w-full min-w-0 flex-col justify-between gap-3 overflow-hidden rounded-2xl border p-3 text-left transition-all cursor-pointer sm:p-4",
                 on ? "border-primary bg-surface-light ring-2 ring-primary shadow-sm" : "hairline bg-surface-light/60 hover:border-ink/40 hover:bg-surface-light",
                 SPANS[e.id],
               )}
             >
-              <span className="relative z-10 flex w-full items-start justify-between min-w-0">
+              <span className="relative z-10 flex w-full min-w-0 items-start justify-between">
                 <span className="text-xs font-bold text-ink/40">{e.no}</span>
                 <Check on={on} />
               </span>
               <div
+                aria-hidden
                 className={cn(
-                  "pointer-events-none absolute transition-all duration-500",
-                  e.id === "wedding"
-                    ? "right-2 sm:right-6 top-6 sm:top-8 size-24 sm:size-32 md:size-40 group-hover:scale-105"
-                    : "right-1.5 sm:right-3 top-1/2 -translate-y-1/2 size-12 sm:size-14 md:size-18 group-hover:scale-105",
-                  on
-                    ? "opacity-65 text-primary scale-105"
-                    : "opacity-25 text-ink/70 group-hover:opacity-45 group-hover:text-primary/70",
+                  "pointer-events-none absolute aspect-square transition-all duration-500",
+                  hero
+                    ? "bottom-[6%] right-[4%] w-[36%] max-w-56 group-hover:scale-105"
+                    : "right-[5%] top-1/2 w-[30%] max-w-24 -translate-y-1/2 group-hover:scale-105",
+                  on ? "scale-105 text-primary opacity-65" : "text-ink/70 opacity-25 group-hover:text-primary/70 group-hover:opacity-45",
                 )}
               >
                 <EventEditorialSvg id={e.id} className="size-full" />
               </div>
-              <span className="relative z-10 min-w-0 w-full">
-                <span className={cn("display block leading-tight", e.id === "wedding" ? "text-3xl sm:text-5xl md:text-6xl" : "text-base sm:text-xl md:text-2xl")}>{e.title}</span>
-                <span className="mt-1 block text-[0.70rem] sm:text-xs leading-snug text-ink/60 line-clamp-2">{e.line}</span>
+              <span className={cn("relative z-10 block w-full min-w-0", hero ? "pr-[34%]" : "pr-[30%]")}>
+                <span className={cn("display block break-words", hero ? "text-[clamp(1.9rem,7vw,4.25rem)]" : "text-[clamp(0.98rem,3.1vw,1.5rem)]")}>{e.title}</span>
+                <span className={cn("mt-1.5 block leading-snug text-ink/60", hero ? "text-xs sm:text-sm" : "hidden text-[0.7rem] sm:line-clamp-2 sm:text-xs")}>{e.line}</span>
               </span>
             </button>
           );

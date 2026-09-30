@@ -254,12 +254,6 @@ function InvitePage() {
                   >
                     <span>📅</span> Add to Google Cal
                   </button>
-                  <button
-                    onClick={downloadIcs}
-                    className="inline-flex items-center gap-2 rounded-full border hairline bg-surface px-4 py-2.5 text-xs font-bold text-ink transition hover:bg-canvas active:scale-95 cursor-pointer"
-                  >
-                    <span>🍏</span> Apple Cal (.ics)
-                  </button>
                 </div>
                 <div className="flex items-center gap-2 rounded-full bg-canvas px-3.5 py-2 border hairline text-xs text-ink/80">
                   <span className="live-dot size-2 rounded-full bg-emerald-500" />

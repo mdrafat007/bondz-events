@@ -220,7 +220,7 @@ function Frame({ intro, demo, paused, onDemoProgress, onDemoRoundEnd, onDemoScen
           playTapSound();
           setStep(4);
         }}
-        className="w-full"
+        className="w-full whitespace-nowrap px-4 text-[0.78rem] sm:text-sm"
       >
         {sel.where === "venue" ? "Find my dates →" : "See available dates →"}
       </Primary>
@@ -231,7 +231,7 @@ function Frame({ intro, demo, paused, onDemoProgress, onDemoRoundEnd, onDemoScen
           playTapSound();
           setStep(5);
         }}
-        className="w-full"
+        className="w-full whitespace-nowrap px-4 text-[0.78rem] sm:text-sm"
       >
         Continue to details →
       </Primary>

@@ -37,12 +37,29 @@ const EVENT_MEDIA: Record<EventTypeId, { title: string; video: string; poster: s
 
 const eventTitle = (id: EventTypeId) => EVENT_TYPES.find((e) => e.id === id)?.title ?? "Celebration";
 
+/** Width of the virtual desktop the engine renders into before being scaled to fit. */
+const STAGE_W = 1040;
+
 export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingDemoProps) {
   const [scenario, setScenario] = useState<DemoScenario | null>(null);
   const [progress, setProgress] = useState(0);
   const [hovering, setHovering] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
+  const [box, setBox] = useState({ w: 0, h: 0 });
+  const boxRef = useRef<HTMLDivElement | null>(null);
   const celebrationTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const r = entry!.contentRect;
+      setBox({ w: r.width, h: r.height });
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
 
   const handleRoundEnd = useCallback(() => {
     setCelebrating(true);

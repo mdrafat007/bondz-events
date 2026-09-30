@@ -83,17 +83,13 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
       onPointerEnter={() => setHovering(true)}
       onPointerLeave={() => setHovering(false)}
       className={cn(
-        "group relative flex aspect-[4/5] cursor-pointer select-none flex-col overflow-hidden rounded-3xl border border-hairline bg-paper shadow-raised transition-colors duration-300 sm:aspect-[3/4] md:aspect-[4/5]",
-        "dark:border-transparent dark:bg-canvas dark:shadow-[0_0_35px_rgba(241,69,59,0.14)]",
+        "accent-shimmer-card group relative flex aspect-[4/5] cursor-pointer select-none flex-col overflow-hidden rounded-3xl border border-hairline bg-paper shadow-raised transition-colors duration-300 sm:aspect-[3/4] md:aspect-[4/5]",
+        "dark:bg-canvas",
         className,
       )}
       aria-label="Self-playing booking engine showcase. Select to start your own booking."
     >
-      {/* Dark-mode shimmer edge blending crisp white with the prime accent */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-30 rounded-3xl opacity-0 transition-opacity dark:opacity-100 [background:linear-gradient(135deg,rgba(255,255,255,0.45)_0%,rgba(241,69,59,0.55)_35%,rgba(255,255,255,0.25)_70%,rgba(241,69,59,0.65)_100%)_border-box] [border:1.5px_solid_transparent] [mask-composite:exclude] [mask:linear-gradient(#fff_0_0)_padding-box,linear-gradient(#fff_0_0)]"
-      />
+
 
       {/* The real booking engine, running itself inside a scaled desktop viewport */}
       <div ref={boxRef} className="absolute inset-0 overflow-hidden">

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import {
   CATEGORIES,
+  categoryLabel,
   EVENT_TYPES,
   HORIZON,
   SLOTS,

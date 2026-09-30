@@ -1,7 +1,7 @@
 ﻿import { useState } from "react";
 import { Badge, Card, cn, triggerTap } from "@/index";
 import {
-  CATEGORIES, VENUES, availableDays, cheapest, estimate, priceOf, usd, venueReason,
+  CATEGORIES, categoryLabel, VENUES, availableDays, cheapest, estimate, priceOf, usd, venueReason,
   type CategoryId, type LogLine,
 } from "@/lib/bondz-data";
 import { GuestSlider, StepHead, type BookingCtx } from "./shared";

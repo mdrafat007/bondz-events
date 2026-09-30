@@ -1,7 +1,7 @@
 ﻿import { useEffect, useState } from "react";
 import { Card, cn } from "@/index";
 import {
-  CATEGORIES, DEPOSIT_RATE, SLOT_TIMES, VENUES, assignPartner, cheapest, dayToDate, estimate, usd,
+  CATEGORIES, categoryLabel, DEPOSIT_RATE, SLOT_TIMES, VENUES, assignPartner, cheapest, dayToDate, estimate, usd,
 } from "@/lib/bondz-data";
 import { Field, Portal, SignaturePad, StepHead, type BookingCtx } from "./shared";
 

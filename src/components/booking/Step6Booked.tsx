@@ -2,7 +2,7 @@
 import { Link } from "@tanstack/react-router";
 import { Button, Card, cn, triggerTap } from "@/index";
 import {
-  CATEGORIES, DEPOSIT_RATE, HORIZON, RESCHEDULE_FEE_RATE, SLOT_TIMES, VENUES,
+  CATEGORIES, categoryLabel, DEPOSIT_RATE, HORIZON, RESCHEDULE_FEE_RATE, SLOT_TIMES, VENUES,
   assignPartner, availableDays, dayToDate, estimate, usd,
   type Sel,
 } from "@/lib/bondz-data";

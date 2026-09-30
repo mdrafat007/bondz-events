@@ -104,11 +104,13 @@ function DemoDirector({
   canvas,
   onProgress,
   onRoundEnd,
+  onScenario,
 }: {
   paused: boolean;
   canvas: React.RefObject<HTMLDivElement | null>;
   onProgress?: (progress: number) => void;
   onRoundEnd?: () => void;
+  onScenario?: (scenario: DemoScenario) => void;
 }) {
   const b = useBooking();
   const current = useRef(b);
@@ -117,24 +119,38 @@ function DemoDirector({
   progress.current = onProgress;
   const roundEnd = useRef(onRoundEnd);
   roundEnd.current = onRoundEnd;
+  const scenarioCb = useRef(onScenario);
+  scenarioCb.current = onScenario;
   const elapsed = useRef(0);
   const lastAction = useRef(-1);
   const scenario = useRef<Scenario>(makeScenario());
+  const pending = useRef<Scenario | null>(null);
+  const announced = useRef(false);
 
   useEffect(() => {
     if (paused) return;
+    if (!announced.current) {
+      announced.current = true;
+      scenarioCb.current?.(scenario.current);
+    }
+    if (pending.current) {
+      scenario.current = pending.current;
+      pending.current = null;
+      scenarioCb.current?.(scenario.current);
+    }
     const timer = window.setInterval(() => {
       const next = elapsed.current + 100;
       if (next >= 19200) {
-        // Round complete: fresh randomised celebration for the next run.
+        // Round complete: the finished scenario plays its celebration clip, then a fresh one runs.
         elapsed.current = 0;
         lastAction.current = -1;
-        scenario.current = makeScenario();
+        pending.current = makeScenario();
         current.current.reset?.();
+        progress.current?.(100);
         roundEnd.current?.();
-      } else {
-        elapsed.current = next;
+        return;
       }
+      elapsed.current = next;
       const sc = scenario.current;
       const step = (Math.floor(elapsed.current / 3200) + 1) as Step;
       const micro = Math.floor((elapsed.current % 3200) / 1000);

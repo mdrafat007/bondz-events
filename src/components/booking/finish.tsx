@@ -153,11 +153,12 @@ export function Step5() {
   const pay = () => {
     setLoading(true);
     signalBot({ mood: "think" });
-    playThump();
+    // The self-playing showcase stays completely silent; only real bookings make sound.
+    if (!s.demo) playThump();
     [1, 2, 3, 4].forEach((i) =>
       window.setTimeout(() => {
         setPhase(i);
-        playThump(0.85 + i * 0.05);
+        if (!s.demo) playThump(0.85 + i * 0.05);
       }, i * 750),
     );
     window.setTimeout(() => {
@@ -614,8 +615,12 @@ export function Step6() {
   const shownDateText = activeDate?.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) ?? dateStr;
 
   useEffect(() => {
-    playCelebrationSequence();
-    signalBot({ mood: "happy", tip: "You're booked! Everyone's been told. Go celebrate." });
+    // The showcase simulation never plays the fanfare; only a real confirmation does.
+    if (!s.demo) {
+      playCelebrationSequence();
+      signalBot({ mood: "happy", tip: "You're booked! Everyone's been told. Go celebrate." });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const recipients = [
@@ -965,12 +970,20 @@ ol.terms li b { color: #151118; }
             <button
               onClick={() => {
                 navigator.clipboard.writeText(link);
-                toast.success("Read-only booking link copied");
+                toast.success("Read-only invitation link copied");
               }}
-              className="col-span-2 rounded-full border hairline bg-surface-light py-2.5 text-xs font-bold text-ink hover:bg-canvas active:scale-95 transition-all cursor-pointer"
+              className="rounded-full border hairline bg-surface-light py-2.5 px-3 text-xs font-bold text-ink hover:bg-canvas active:scale-95 transition-all cursor-pointer"
             >
-              Copy booking link <span className="font-normal text-ink/50">· read-only, for guests</span>
+              Copy Invitation Link
             </button>
+            <a
+              href={link}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-center rounded-full border hairline bg-surface-light py-2.5 px-3 text-xs font-bold text-ink hover:bg-canvas active:scale-95 transition-all cursor-pointer"
+            >
+              Open Invitation Link
+            </a>
           </div>
         </section>
 

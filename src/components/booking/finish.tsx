@@ -27,7 +27,6 @@ import darkIcon from "@/assets/icons/bondz-icon-white.png";
 import lightTemplate from "@/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_LIGHT.png";
 import darkTemplate from "@/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_DARK.png";
 
-
 /* ───────────────── helpers ───────────────── */
 function useSummary() {
   const b = useBooking();
@@ -35,7 +34,8 @@ function useSummary() {
   const venue = VENUES.find((v) => v.id === sel.venue) ?? null;
   const ev = EVENT_TYPES.find((e) => e.id === sel.event);
   const date = day ? dayToDate(anchor, day) : null;
-  const dateStr = date?.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) ?? "";
+  const dateStr =
+    date?.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) ?? "";
   const assigned = day
     ? sel.services.map((c) => ({ cat: categoryLabel(c), p: assignPartner(c, sel, day) })).filter((x) => x.p)
     : [];
@@ -50,7 +50,10 @@ function Field(props: React.InputHTMLAttributes<HTMLInputElement> & { label: str
   return (
     <label className={cn("block", className)}>
       <span className="eyebrow text-ink/60">{label}</span>
-      <input {...rest} className="mt-1 w-full rounded-xl border hairline bg-surface-light px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25" />
+      <input
+        {...rest}
+        className="mt-1 w-full rounded-xl border hairline bg-surface-light px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/25"
+      />
     </label>
   );
 }
@@ -104,7 +107,11 @@ function SignaturePad({ onChange }: { onChange: (d: string | null) => void }) {
           }}
           aria-label="Signature pad"
         />
-        {empty && <span className="pointer-events-none absolute inset-0 grid place-items-center text-xs text-ink/40">Sign here with mouse or finger</span>}
+        {empty && (
+          <span className="pointer-events-none absolute inset-0 grid place-items-center text-xs text-ink/40">
+            Sign here with mouse or finger
+          </span>
+        )}
       </div>
       <button
         type="button"
@@ -146,9 +153,26 @@ export function Step5() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const cardValid = (card.n.includes("4242") || card.n.replace(/\s/g, "").length >= 12) && card.exp.length >= 4 && card.cvc.length >= 3;
-  const ready = details.name.trim() && /\S+@\S+\.\S+/.test(details.email) && details.phone.trim().length >= 6 && agree && signature && cardValid;
-  const missing = !details.name.trim() ? "your name" : !/\S+@\S+\.\S+/.test(details.email) ? "a valid email" : details.phone.trim().length < 6 ? "a phone number" : !agree ? "agreement to the terms" : !signature ? "your signature" : "demo card details";
+  const cardValid =
+    (card.n.includes("4242") || card.n.replace(/\s/g, "").length >= 12) && card.exp.length >= 4 && card.cvc.length >= 3;
+  const ready =
+    details.name.trim() &&
+    /\S+@\S+\.\S+/.test(details.email) &&
+    details.phone.trim().length >= 6 &&
+    agree &&
+    signature &&
+    cardValid;
+  const missing = !details.name.trim()
+    ? "your name"
+    : !/\S+@\S+\.\S+/.test(details.email)
+      ? "a valid email"
+      : details.phone.trim().length < 6
+        ? "a phone number"
+        : !agree
+          ? "agreement to the terms"
+          : !signature
+            ? "your signature"
+            : "demo card details";
 
   const pay = () => {
     setLoading(true);
@@ -167,7 +191,8 @@ export function Step5() {
     }, 3700);
   };
 
-  const set = (k: keyof typeof details) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setDetails({ ...details, [k]: e.target.value });
+  const set = (k: keyof typeof details) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setDetails({ ...details, [k]: e.target.value });
 
   const checklist = [
     `Authorizing deposit of ${money(est.deposit)}`,
@@ -183,12 +208,31 @@ export function Step5() {
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Full name" value={details.name} onChange={set("name")} autoComplete="name" required />
           <Field label="Phone" value={details.phone} onChange={set("phone")} type="tel" autoComplete="tel" required />
-          <Field label="Email" value={details.email} onChange={set("email")} type="email" autoComplete="email" required />
+          <Field
+            label="Email"
+            value={details.email}
+            onChange={set("email")}
+            type="email"
+            autoComplete="email"
+            required
+          />
           <Field label="Guest of honor (optional)" value={details.honor} onChange={set("honor")} />
-          <Field label="Guest count" type="number" min={10} max={300} value={sel.guests} onChange={(e) => setSel({ ...sel, guests: Math.min(300, Math.max(10, +e.target.value || 10)) })} />
+          <Field
+            label="Guest count"
+            type="number"
+            min={10}
+            max={300}
+            value={sel.guests}
+            onChange={(e) => setSel({ ...sel, guests: Math.min(300, Math.max(10, +e.target.value || 10)) })}
+          />
           <label className="block sm:row-span-1">
             <span className="eyebrow text-ink/60">Anything we should know?</span>
-            <textarea value={details.notes} onChange={set("notes")} rows={1} className="mt-1 w-full resize-none rounded-xl border hairline bg-surface-light px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/25" />
+            <textarea
+              value={details.notes}
+              onChange={set("notes")}
+              rows={1}
+              className="mt-1 w-full resize-none rounded-xl border hairline bg-surface-light px-3 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/25"
+            />
           </label>
         </div>
         <div className="grid gap-3 md:grid-cols-2">
@@ -197,12 +241,20 @@ export function Step5() {
             <ol className="scroll-quiet h-40 overflow-y-auto rounded-xl border hairline bg-surface-light p-3 text-[0.72rem] leading-relaxed">
               {TERMS.map((t, i) => (
                 <li key={t.t} className="mb-2">
-                  <b>{i + 1}. {t.t}.</b> <span className="text-ink/70">{t.b}</span>
+                  <b>
+                    {i + 1}. {t.t}.
+                  </b>{" "}
+                  <span className="text-ink/70">{t.b}</span>
                 </li>
               ))}
             </ol>
             <label className="mt-2 flex items-start gap-2 text-xs">
-              <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 size-4 accent-primary" />
+              <input
+                type="checkbox"
+                checked={agree}
+                onChange={(e) => setAgree(e.target.checked)}
+                className="mt-0.5 size-4 accent-primary"
+              />
               <span>I've read and agree to the service agreement, including the cancellation tiers.</span>
             </label>
           </div>
@@ -211,7 +263,9 @@ export function Step5() {
             <SignaturePad onChange={setSignature} />
           </div>
         </div>
-        <div className="pl-20"><Ghost onClick={() => setStep(4)}>← Back</Ghost></div>
+        <div className="pl-20">
+          <Ghost onClick={() => setStep(4)}>← Back</Ghost>
+        </div>
       </div>
 
       <aside className="dark flex flex-col rounded-2xl bg-background p-5 text-foreground lg:sticky lg:top-0 lg:self-start">
@@ -223,7 +277,10 @@ export function Step5() {
         <dl className="mt-4 space-y-1.5 rounded-xl border border-white/10 bg-white/5 p-3 text-xs">
           {est.lines.map((l) => (
             <div key={l.label} className="flex items-baseline justify-between gap-3">
-              <dt className="min-w-0 truncate text-foreground/65">{l.label}{l.note ? <span className="text-foreground/35"> · {l.note}</span> : null}</dt>
+              <dt className="min-w-0 truncate text-foreground/65">
+                {l.label}
+                {l.note ? <span className="text-foreground/35"> · {l.note}</span> : null}
+              </dt>
               <dd className="shrink-0 tabular-nums text-foreground/85">{money(l.amount)}</dd>
             </div>
           ))}
@@ -244,16 +301,33 @@ export function Step5() {
         <div className="mt-5 space-y-3">
           <label className="block">
             <span className="eyebrow text-foreground/60">Card number</span>
-            <input inputMode="numeric" placeholder="4242 4242 4242 4242" value={card.n} onChange={(e) => setCard({ ...card, n: e.target.value.replace(/[^\d •]/g, "").slice(0, 19) })} className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm tabular-nums outline-none focus:ring-2 focus:ring-primary" />
+            <input
+              inputMode="numeric"
+              placeholder="4242 4242 4242 4242"
+              value={card.n}
+              onChange={(e) => setCard({ ...card, n: e.target.value.replace(/[^\d •]/g, "").slice(0, 19) })}
+              className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm tabular-nums outline-none focus:ring-2 focus:ring-primary"
+            />
           </label>
           <div className="grid grid-cols-2 gap-2">
             <label className="block">
               <span className="eyebrow text-foreground/60">Expiry</span>
-              <input placeholder="12/28" value={card.exp} onChange={(e) => setCard({ ...card, exp: e.target.value.slice(0, 5) })} className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary" />
+              <input
+                placeholder="12/28"
+                value={card.exp}
+                onChange={(e) => setCard({ ...card, exp: e.target.value.slice(0, 5) })}
+                className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
+              />
             </label>
             <label className="block">
               <span className="eyebrow text-foreground/60">CVC</span>
-              <input placeholder="123" inputMode="numeric" value={card.cvc} onChange={(e) => setCard({ ...card, cvc: e.target.value.replace(/\D/g, "").slice(0, 4) })} className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary" />
+              <input
+                placeholder="123"
+                inputMode="numeric"
+                value={card.cvc}
+                onChange={(e) => setCard({ ...card, cvc: e.target.value.replace(/\D/g, "").slice(0, 4) })}
+                className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
+              />
             </label>
           </div>
           <p className="eyebrow text-foreground/45">Demo sandbox · prefilled verified card</p>
@@ -284,7 +358,9 @@ export function Step5() {
             </div>
 
             <h2 className="display mt-6 text-3xl sm:text-4xl text-white tracking-tight">Completing your booking</h2>
-            <p className="mt-1 text-xs text-white/60">Dispatching instant 360° synchronization locks across all partner calendars...</p>
+            <p className="mt-1 text-xs text-white/60">
+              Dispatching instant 360° synchronization locks across all partner calendars...
+            </p>
 
             <ul className="mt-6 space-y-3">
               {checklist.map((c, i) => (
@@ -294,21 +370,21 @@ export function Step5() {
                     "flex items-center gap-3 rounded-xl border p-2.5 text-xs sm:text-sm font-medium transition-all duration-500",
                     phase > i
                       ? "border-success/30 bg-success/10 text-white translate-x-0"
-                      : "border-white/5 bg-white/2 text-white/40 -translate-x-1"
+                      : "border-white/5 bg-white/2 text-white/40 -translate-x-1",
                   )}
                 >
                   <span
                     className={cn(
                       "grid size-5 shrink-0 place-items-center rounded-full text-[0.65rem] font-black transition-all",
-                      phase > i ? "bg-success text-success-foreground shadow-xs" : "border border-white/20 text-white/30"
+                      phase > i
+                        ? "bg-success text-success-foreground shadow-xs"
+                        : "border border-white/20 text-white/30",
                     )}
                   >
                     {phase > i ? "✓" : i + 1}
                   </span>
                   <span>{c}</span>
-                  {phase === i && (
-                    <span className="ml-auto inline-block size-2 rounded-full bg-primary animate-ping" />
-                  )}
+                  {phase === i && <span className="ml-auto inline-block size-2 rounded-full bg-primary animate-ping" />}
                 </li>
               ))}
             </ul>
@@ -331,10 +407,11 @@ function Confetti() {
     const css = getComputedStyle(document.documentElement);
     // Read the real Bondz theme variables; the previous names did not exist, so
     // every particle was painted with an empty colour and nothing was visible.
-    const colors = ["--bondz-primary", "--bondz-status", "--bondz-paper", "--bondz-cta-top"]
+    const resolvedColors = ["--bondz-primary", "--bondz-status", "--bondz-paper", "--bondz-cta-top"]
       .map((v) => css.getPropertyValue(v).trim())
       .filter(Boolean);
-    if (!colors.length) colors.push("#f1453b", "#10b981", "#f6f1e7");
+    const colors =
+      resolvedColors.length >= 3 ? resolvedColors : ["#f1453b", "#10b981", "#faf7f2", "#ffd166", "#e7e2db"];
     const ps = Array.from({ length: 160 }, () => ({
       x: c.width / 2 + (Math.random() - 0.5) * 80,
       y: c.height * 0.6,
@@ -374,7 +451,8 @@ function Confetti() {
 function cheer() {
   try {
     triggerHaptic([35, 60, 45, 60, 80]);
-    const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const AC =
+      window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     const ac = new AC();
     [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
       const o = ac.createOscillator();
@@ -395,10 +473,38 @@ function cheer() {
 }
 
 const THEMES = [
-  { id: "coral", name: "Coral Night", bg: "oklch(0.24 0.05 290)", fg: "oklch(0.97 0.015 85)", hl: "oklch(0.68 0.2 32)", logo: "dark" as const },
-  { id: "golden", name: "Golden Hour", bg: "oklch(0.84 0.12 75)", fg: "oklch(0.2 0.03 290)", hl: "oklch(0.52 0.19 30)", logo: "light" as const },
-  { id: "garden", name: "Garden", bg: "oklch(0.88 0.06 150)", fg: "oklch(0.22 0.04 160)", hl: "oklch(0.5 0.12 155)", logo: "light" as const },
-  { id: "tie", name: "Black Tie", bg: "oklch(0.1 0 0)", fg: "oklch(0.97 0.015 85)", hl: "oklch(0.64 0.21 28)", logo: "dark" as const },
+  {
+    id: "coral",
+    name: "Coral Night",
+    bg: "oklch(0.24 0.05 290)",
+    fg: "oklch(0.97 0.015 85)",
+    hl: "oklch(0.68 0.2 32)",
+    logo: "dark" as const,
+  },
+  {
+    id: "golden",
+    name: "Golden Hour",
+    bg: "oklch(0.84 0.12 75)",
+    fg: "oklch(0.2 0.03 290)",
+    hl: "oklch(0.52 0.19 30)",
+    logo: "light" as const,
+  },
+  {
+    id: "garden",
+    name: "Garden",
+    bg: "oklch(0.88 0.06 150)",
+    fg: "oklch(0.22 0.04 160)",
+    hl: "oklch(0.5 0.12 155)",
+    logo: "light" as const,
+  },
+  {
+    id: "tie",
+    name: "Black Tie",
+    bg: "oklch(0.1 0 0)",
+    fg: "oklch(0.97 0.015 85)",
+    hl: "oklch(0.64 0.21 28)",
+    logo: "dark" as const,
+  },
 ];
 
 function loadImg(src: string) {
@@ -429,27 +535,44 @@ function RescheduleModal({
 }) {
   const [when, setWhen] = useState<"today" | "later">("today");
   const [pick, setPick] = useState<number | null>(null);
-  const days = availableDays(sel).filter((d) => d !== current).slice(0, 18);
+  const days = availableDays(sel)
+    .filter((d) => d !== current)
+    .slice(0, 18);
   const fee = when === "today" ? 0 : Math.round(total * 0.05);
   const fmt = (d: number | null) =>
-    d !== null ? dayToDate(anchor, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }) : "-";
+    d !== null
+      ? dayToDate(anchor, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })
+      : "-";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onClick={onClose}>
-      <div className="relative w-full max-w-lg rounded-2xl border hairline bg-surface-light p-6 text-ink shadow-2xl" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-lg rounded-2xl border hairline bg-surface-light p-6 text-ink shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-start justify-between">
           <div>
             <h3 className="text-2xl font-bold tracking-tight">Reschedule Celebration</h3>
-            <p className="mt-1 text-xs text-ink/60">Current date: <span className="font-semibold text-ink">{fmt(current)}</span></p>
+            <p className="mt-1 text-xs text-ink/60">
+              Current date: <span className="font-semibold text-ink">{fmt(current)}</span>
+            </p>
           </div>
-          <button onClick={onClose} className="rounded-full p-1.5 hover:bg-ink/10 transition-colors text-ink/70">✕</button>
+          <button onClick={onClose} className="rounded-full p-1.5 hover:bg-ink/10 transition-colors text-ink/70">
+            ✕
+          </button>
         </div>
 
         <div className="mt-4 grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() => setWhen("today")}
-            className={cn("rounded-xl border px-3 py-2 text-xs font-bold transition-all text-left", when === "today" ? "border-primary bg-primary text-white" : "hairline bg-surface hover:border-ink/40")}
+            className={cn(
+              "rounded-xl border px-3 py-2 text-xs font-bold transition-all text-left",
+              when === "today" ? "border-primary bg-primary text-white" : "hairline bg-surface hover:border-ink/40",
+            )}
           >
             <span className="block font-bold">Today (Booking Day)</span>
             <span className="text-[0.65rem] opacity-80">Free reschedule</span>
@@ -457,7 +580,10 @@ function RescheduleModal({
           <button
             type="button"
             onClick={() => setWhen("later")}
-            className={cn("rounded-xl border px-3 py-2 text-xs font-bold transition-all text-left", when === "later" ? "border-primary bg-primary text-white" : "hairline bg-surface hover:border-ink/40")}
+            className={cn(
+              "rounded-xl border px-3 py-2 text-xs font-bold transition-all text-left",
+              when === "later" ? "border-primary bg-primary text-white" : "hairline bg-surface hover:border-ink/40",
+            )}
           >
             <span className="block font-bold">Within 3 Days of Event</span>
             <span className="text-[0.65rem] opacity-80">5% transfer fee</span>
@@ -476,10 +602,14 @@ function RescheduleModal({
                 onClick={() => setPick(d)}
                 className={cn(
                   "flex flex-col items-center justify-center rounded-xl border p-2 text-xs transition-all",
-                  on ? "border-primary bg-primary text-white font-bold shadow-xs" : "hairline bg-surface hover:border-primary/50 text-ink"
+                  on
+                    ? "border-primary bg-primary text-white font-bold shadow-xs"
+                    : "hairline bg-surface hover:border-primary/50 text-ink",
                 )}
               >
-                <span className="text-[0.62rem] uppercase opacity-70">{dt.toLocaleDateString("en-US", { weekday: "short" })}</span>
+                <span className="text-[0.62rem] uppercase opacity-70">
+                  {dt.toLocaleDateString("en-US", { weekday: "short" })}
+                </span>
                 <span className="text-base font-bold">{dt.getDate()}</span>
                 <span className="text-[0.60rem] opacity-70">{dt.toLocaleDateString("en-US", { month: "short" })}</span>
               </button>
@@ -493,7 +623,10 @@ function RescheduleModal({
         </div>
 
         <div className="mt-4 flex gap-2">
-          <button onClick={onClose} className="flex-1 rounded-full border hairline py-2.5 text-xs font-bold hover:bg-ink/5">
+          <button
+            onClick={onClose}
+            className="flex-1 rounded-full border hairline py-2.5 text-xs font-bold hover:bg-ink/5"
+          >
             Keep Current Date
           </button>
           <Primary
@@ -514,36 +647,39 @@ function RescheduleModal({
   );
 }
 
-function CancelModal({
-  onClose,
-  deposit,
-  onConfirm,
-}: {
-  onClose: () => void;
-  deposit: number;
-  onConfirm: () => void;
-}) {
+function CancelModal({ onClose, deposit, onConfirm }: { onClose: () => void; deposit: number; onConfirm: () => void }) {
   const [when, setWhen] = useState<"today" | "later">("today");
   const [confirmed, setConfirmed] = useState(false);
   const refund = when === "today" ? deposit : 0;
   const retained = deposit - refund;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onClick={onClose}>
-      <div className="relative w-full max-w-lg rounded-2xl border hairline bg-surface-light p-6 text-ink shadow-2xl" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-lg rounded-2xl border hairline bg-surface-light p-6 text-ink shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-start justify-between">
           <div>
             <h3 className="text-2xl font-bold tracking-tight text-destructive">Cancel Booking</h3>
             <p className="mt-1 text-xs text-ink/60">Refund calculations follow the signed 8-clause terms.</p>
           </div>
-          <button onClick={onClose} className="rounded-full p-1.5 hover:bg-ink/10 transition-colors text-ink/70">✕</button>
+          <button onClick={onClose} className="rounded-full p-1.5 hover:bg-ink/10 transition-colors text-ink/70">
+            ✕
+          </button>
         </div>
 
         <div className="mt-4 grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() => setWhen("today")}
-            className={cn("rounded-xl border px-3 py-2 text-xs font-bold transition-all text-left", when === "today" ? "border-primary bg-primary text-white" : "hairline bg-surface hover:border-ink/40")}
+            className={cn(
+              "rounded-xl border px-3 py-2 text-xs font-bold transition-all text-left",
+              when === "today" ? "border-primary bg-primary text-white" : "hairline bg-surface hover:border-ink/40",
+            )}
           >
             <span className="block font-bold">Today (Booking Day)</span>
             <span className="text-[0.65rem] opacity-80">100% full deposit refund</span>
@@ -551,7 +687,10 @@ function CancelModal({
           <button
             type="button"
             onClick={() => setWhen("later")}
-            className={cn("rounded-xl border px-3 py-2 text-xs font-bold transition-all text-left", when === "later" ? "border-primary bg-primary text-white" : "hairline bg-surface hover:border-ink/40")}
+            className={cn(
+              "rounded-xl border px-3 py-2 text-xs font-bold transition-all text-left",
+              when === "later" ? "border-primary bg-primary text-white" : "hairline bg-surface hover:border-ink/40",
+            )}
           >
             <span className="block font-bold">After Booking Day</span>
             <span className="text-[0.65rem] opacity-80">Deposit retained</span>
@@ -584,14 +723,21 @@ function CancelModal({
         </label>
 
         <div className="mt-5 flex gap-2">
-          <button onClick={onClose} className="flex-1 rounded-full border hairline py-2.5 text-xs font-bold hover:bg-ink/5">
+          <button
+            onClick={onClose}
+            className="flex-1 rounded-full border hairline py-2.5 text-xs font-bold hover:bg-ink/5"
+          >
             Keep My Booking
           </button>
           <button
             disabled={!confirmed}
             onClick={() => {
               onConfirm();
-              toast.info(refund > 0 ? `Booking cancelled. ${money(refund)} refund processed.` : "Booking cancelled. Retained per policy.");
+              toast.info(
+                refund > 0
+                  ? `Booking cancelled. ${money(refund)} refund processed.`
+                  : "Booking cancelled. Retained per policy.",
+              );
             }}
             className="flex-1 rounded-full bg-destructive text-destructive-foreground py-2.5 text-xs font-bold transition hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed"
           >
@@ -606,9 +752,12 @@ function CancelModal({
 /* ───────────────── STEP 6 ───────────────── */
 export function Step6() {
   const s = useSummary();
-  const { ev, sel, dateStr, slot, place, ref, parties, assigned, venue, details, est, signature, reset, day, anchor } = s;
+  const { ev, sel, dateStr, slot, place, ref, parties, assigned, venue, details, est, signature, reset, day, anchor } =
+    s;
   const [tab, setTab] = useState(0);
-  const [head, setHead] = useState(`${details.honor || details.name.split(" ")[0] || "You"}’s ${ev?.title ?? "Celebration"}`);
+  const [head, setHead] = useState(
+    `${details.honor || details.name.split(" ")[0] || "You"}’s ${ev?.title ?? "Celebration"}`,
+  );
   const [tag, setTag] = useState("Come hungry. Leave with stories.");
   const [theme, setTheme] = useState(THEMES[0]!);
   const [modal, setModal] = useState<null | "reschedule" | "cancel">(null);
@@ -616,8 +765,10 @@ export function Step6() {
   const [movedDay, setMovedDay] = useState<number | null>(null);
 
   const activeDay = movedDay !== null ? movedDay : day;
-  const activeDate = activeDay ? dayToDate(anchor, activeDay) : (day ? dayToDate(anchor, day) : null);
-  const shownDateText = activeDate?.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) ?? dateStr;
+  const activeDate = activeDay ? dayToDate(anchor, activeDay) : day ? dayToDate(anchor, day) : null;
+  const shownDateText =
+    activeDate?.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) ??
+    dateStr;
 
   useEffect(() => {
     // The showcase simulation never plays the fanfare; only a real confirmation does.
@@ -629,22 +780,49 @@ export function Step6() {
   }, []);
 
   const recipients = [
-    { who: "Client", to: details.email || "you@example.com", subj: `You're booked - ${ev?.title} on ${shownDateText}`, body: `Hi ${details.name || "there"},\n\nIt's official. Your ${ev?.title?.toLowerCase()} for ${sel.guests} guests is locked for ${shownDateText} (${slot}) at ${place}.\n\nDeposit paid: ${money(est.deposit)}. Balance of ${money(est.balance)} is due 7 days before.\nReference: ${ref}\n\nYour signed agreement and receipt are attached. Nothing else to do - Mr. Bondz has it from here.` },
-    { who: "Mr. Bondz", to: "bondz@bondzevents.com", subj: `New booking ${ref} · ${ev?.title} · ${sel.guests} guests`, body: `Client: ${details.name} · ${details.phone} · ${details.email}\nWhen: ${shownDateText}, ${slot}\nWhere: ${place}\nPartners locked: ${assigned.map((a) => a.p!.name).join(", ") || "Solo event"}\nNotes: ${details.notes || "-"}\n\nCalendar blocked. Deposit cleared.` },
-    ...(venue ? [{ who: venue.name, to: `bookings@${venue.id}.venue`, subj: `Confirmed hold - ${shownDateText}`, body: `Hello ${venue.name} team,\n\nConfirmed: ${ev?.title} for ${sel.guests} guests on ${shownDateText} (${slot}). Organizer: Mr. Bondz. Venue fee ${money(venue.price)} is covered under ref ${ref}.\n\nYour calendar has been locked for this date.` }] : []),
-    ...assigned.map((a) => ({ who: a.p!.name, to: `jobs@${a.p!.id}.partner`, subj: `You're on: ${a.cat} · ${shownDateText}`, body: `Hi ${a.p!.name},\n\nYou're booked for ${a.cat.toLowerCase()} - ${ev?.title?.toLowerCase()}, ${sel.guests} guests, ${shownDateText} (${slot}) at ${place}.\nAgreed: ${money(priceOf(a.p!, sel.guests))}. Ref ${ref}.\n\nMr. Bondz will share the run-of-show 14 days out.` })),
+    {
+      who: "Client",
+      to: details.email || "you@example.com",
+      subj: `You're booked - ${ev?.title} on ${shownDateText}`,
+      body: `Hi ${details.name || "there"},\n\nIt's official. Your ${ev?.title?.toLowerCase()} for ${sel.guests} guests is locked for ${shownDateText} (${slot}) at ${place}.\n\nDeposit paid: ${money(est.deposit)}. Balance of ${money(est.balance)} is due 7 days before.\nReference: ${ref}\n\nYour signed agreement and receipt are attached. Nothing else to do - Mr. Bondz has it from here.`,
+    },
+    {
+      who: "Mr. Bondz",
+      to: "bondz@bondzevents.com",
+      subj: `New booking ${ref} · ${ev?.title} · ${sel.guests} guests`,
+      body: `Client: ${details.name} · ${details.phone} · ${details.email}\nWhen: ${shownDateText}, ${slot}\nWhere: ${place}\nPartners locked: ${assigned.map((a) => a.p!.name).join(", ") || "Solo event"}\nNotes: ${details.notes || "-"}\n\nCalendar blocked. Deposit cleared.`,
+    },
+    ...(venue
+      ? [
+          {
+            who: venue.name,
+            to: `bookings@${venue.id}.venue`,
+            subj: `Confirmed hold - ${shownDateText}`,
+            body: `Hello ${venue.name} team,\n\nConfirmed: ${ev?.title} for ${sel.guests} guests on ${shownDateText} (${slot}). Organizer: Mr. Bondz. Venue fee ${money(venue.price)} is covered under ref ${ref}.\n\nYour calendar has been locked for this date.`,
+          },
+        ]
+      : []),
+    ...assigned.map((a) => ({
+      who: a.p!.name,
+      to: `jobs@${a.p!.id}.partner`,
+      subj: `You're on: ${a.cat} · ${shownDateText}`,
+      body: `Hi ${a.p!.name},\n\nYou're booked for ${a.cat.toLowerCase()} - ${ev?.title?.toLowerCase()}, ${sel.guests} guests, ${shownDateText} (${slot}) at ${place}.\nAgreed: ${money(priceOf(a.p!, sel.guests))}. Ref ${ref}.\n\nMr. Bondz will share the run-of-show 14 days out.`,
+    })),
   ];
   const r = recipients[Math.min(tab, recipients.length - 1)]!;
-  const invitePayload = useMemo(() => ({
-    title: head,
-    host: details.name || "Mr. Bondz Client",
-    date: activeDate ? activeDate.toISOString() : new Date().toISOString(),
-    slot: (slot || "Evening") as Slot,
-    place: place || "Smokestack Yard",
-    tagline: tag || "Come hungry. Leave with stories.",
-    guests: sel.guests,
-    eventType: ev?.title ?? "Celebration",
-  }), [head, details.name, activeDate, slot, place, tag, sel.guests, ev?.title]);
+  const invitePayload = useMemo(
+    () => ({
+      title: head,
+      host: details.name || "Mr. Bondz Client",
+      date: activeDate ? activeDate.toISOString() : new Date().toISOString(),
+      slot: (slot || "Evening") as Slot,
+      place: place || "Smokestack Yard",
+      tagline: tag || "Come hungry. Leave with stories.",
+      guests: sel.guests,
+      eventType: ev?.title ?? "Celebration",
+    }),
+    [head, details.name, activeDate, slot, place, tag, sel.guests, ev?.title],
+  );
 
   useEffect(() => {
     try {
@@ -668,15 +846,17 @@ export function Step6() {
     }
   }, [invitePayload]);
 
-  const link = typeof window !== "undefined"
-    ? `${window.location.origin}/invite/${ref}${inviteToken ? `?invite=${encodeURIComponent(inviteToken)}` : ""}`
-    : `/invite/${ref}`;
+  const link =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/invite/${ref}${inviteToken ? `?invite=${encodeURIComponent(inviteToken)}` : ""}`
+      : `/invite/${ref}`;
   const guestMsg = `${head}\n${tag}\n${shownDateText} · ${slot}\n${place}\n\nDetails & RSVP: ${link}`;
 
   const calendarUrl = (() => {
     if (!activeDate) return "#";
     const d = `${activeDate.getFullYear()}${String(activeDate.getMonth() + 1).padStart(2, "0")}${String(activeDate.getDate()).padStart(2, "0")}`;
-    const next = new Date(activeDate); next.setDate(next.getDate() + 1);
+    const next = new Date(activeDate);
+    next.setDate(next.getDate() + 1);
     const d2 = `${next.getFullYear()}${String(next.getMonth() + 1).padStart(2, "0")}${String(next.getDate()).padStart(2, "0")}`;
     const q = new URLSearchParams({
       action: "TEMPLATE",
@@ -753,11 +933,20 @@ export function Step6() {
 
   const printPdf = (): void => {
     const w = window.open("", "_blank");
-    if (!w) { toast.error("Allow pop-ups to download your contract."); return; }
-    const rows = est.lines.map((l) => `<tr><td><b>${l.label}</b><small>${l.note ?? ""}</small></td><td style="text-align:right">${money(l.amount)}</td></tr>`).join("");
+    if (!w) {
+      toast.error("Allow pop-ups to download your contract.");
+      return;
+    }
+    const rows = est.lines
+      .map(
+        (l) =>
+          `<tr><td><b>${l.label}</b><small>${l.note ?? ""}</small></td><td style="text-align:right">${money(l.amount)}</td></tr>`,
+      )
+      .join("");
     const terms = TERMS.map((t, i) => `<li><b>${i + 1}. ${t.t}.</b> ${t.b}</li>`).join("");
     const logoUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/brand-lockup.png`;
-    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Bondz Events Agreement & Receipt - ${ref}</title>
+    w.document
+      .write(`<!doctype html><html><head><meta charset="utf-8"><title>Bondz Events Agreement & Receipt - ${ref}</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 @page { size: A4 portrait; margin: 12mm 15mm; }
@@ -836,8 +1025,15 @@ ol.terms li b { color: #151118; }
         <div className="relative grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
           <div>
             <p className="eyebrow flex flex-wrap items-center gap-3">
-              <span className={cn("font-mono", cancelled ? "line-through text-destructive" : "text-foreground/60")}>Ref {ref}</span>
-              <span className={cn("rounded-full px-2.5 py-1 font-bold", cancelled ? "bg-destructive text-destructive-foreground" : "bg-success text-success-foreground")}>
+              <span className={cn("font-mono", cancelled ? "line-through text-destructive" : "text-foreground/60")}>
+                Ref {ref}
+              </span>
+              <span
+                className={cn(
+                  "rounded-full px-2.5 py-1 font-bold",
+                  cancelled ? "bg-destructive text-destructive-foreground" : "bg-success text-success-foreground",
+                )}
+              >
                 {cancelled ? "Booking Cancelled" : "✓ Deposit paid"}
               </span>
             </p>
@@ -850,7 +1046,8 @@ ol.terms li b { color: #151118; }
             </p>
           </div>
           <p className="max-w-[16rem] text-sm text-foreground/70">
-            <b className="text-foreground">{parties} parties</b> were notified at the same second. Nobody picked up a phone.
+            <b className="text-foreground">{parties} parties</b> were notified at the same second. Nobody picked up a
+            phone.
           </p>
         </div>
       </section>
@@ -868,7 +1065,7 @@ ol.terms li b { color: #151118; }
                   onClick={() => setTab(i)}
                   className={cn(
                     "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all",
-                    tab === i ? "bg-ink text-canvas shadow-xs" : "bg-muted hover:bg-secondary text-ink/75"
+                    tab === i ? "bg-ink text-canvas shadow-xs" : "bg-muted hover:bg-secondary text-ink/75",
                   )}
                 >
                   {x.who}
@@ -917,12 +1114,15 @@ ol.terms li b { color: #151118; }
                       aria-pressed={theme.id === t.id}
                       className={cn(
                         "relative size-7 rounded-full border hairline transition-transform hover:scale-105",
-                        theme.id === t.id && "ring-2 ring-primary ring-offset-2 ring-offset-surface-light"
+                        theme.id === t.id && "ring-2 ring-primary ring-offset-2 ring-offset-surface-light",
                       )}
                       style={{ background: t.bg }}
                     >
                       {theme.id === t.id && (
-                        <span className="absolute inset-0 grid place-items-center text-[0.6rem] font-black" style={{ color: t.fg }}>
+                        <span
+                          className="absolute inset-0 grid place-items-center text-[0.6rem] font-black"
+                          style={{ color: t.fg }}
+                        >
                           ✓
                         </span>
                       )}
@@ -951,7 +1151,9 @@ ol.terms li b { color: #151118; }
                 </div>
                 <div className="text-[0.55rem] font-mono opacity-85 leading-tight">
                   <p className="font-bold truncate">{shownDateText}</p>
-                  <p className="truncate">{slot} · {place}</p>
+                  <p className="truncate">
+                    {slot} · {place}
+                  </p>
                 </div>
               </div>
             </div>
@@ -1082,4 +1284,3 @@ ol.terms li b { color: #151118; }
     </div>
   );
 }
-

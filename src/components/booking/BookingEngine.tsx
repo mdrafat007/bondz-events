@@ -191,7 +191,7 @@ function DemoDirector({
 }
 
 
-function Frame({ intro, demo, paused, onDemoProgress, onDemoRoundEnd }: { intro: boolean; demo: boolean; paused: boolean; onDemoProgress?: (progress: number) => void; onDemoRoundEnd?: () => void }) {
+function Frame({ intro, demo, paused, onDemoProgress, onDemoRoundEnd, onDemoScenario }: { intro: boolean; demo: boolean; paused: boolean; onDemoProgress?: (progress: number) => void; onDemoRoundEnd?: () => void; onDemoScenario?: (scenario: DemoScenario) => void }) {
   const b = useBooking();
   const { step, setStep, reveal, setReveal, sel, day, slot } = b;
   const [split, setSplit] = useState(intro);

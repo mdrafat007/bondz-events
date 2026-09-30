@@ -118,7 +118,7 @@ export function Step1() {
   return (
     <div className="flex w-full max-w-full min-w-0 flex-col gap-3 sm:gap-4">
       <StepHead no="01" title={<>What are we <span className="font-serif-i text-primary">celebrating?</span></>} sub="Pick the shape of the event. Let us make your moment real." />
-      <div className="scroll-quiet grid w-full max-w-full min-h-0 flex-1 auto-rows-[minmax(5.25rem,1fr)] sm:auto-rows-[minmax(6.5rem,1fr)] grid-cols-2 gap-2 sm:gap-2.5 overflow-x-hidden overflow-y-auto md:grid-cols-4 md:grid-rows-3 md:overflow-visible">
+      <div className="scroll-quiet grid w-full max-w-full min-h-0 flex-1 auto-rows-[minmax(5.75rem,auto)] sm:auto-rows-[minmax(6.8rem,1fr)] grid-cols-2 gap-2 sm:gap-2.5 overflow-x-hidden overflow-y-auto md:grid-cols-4 md:grid-rows-3 md:overflow-visible">
         {EVENT_TYPES.map((e) => {
           const on = sel.event === e.id;
           return (
@@ -148,8 +148,8 @@ export function Step1() {
                 className={cn(
                   "pointer-events-none absolute transition-all duration-500",
                   e.id === "wedding"
-                    ? "right-1.5 sm:right-6 top-5 sm:top-8 size-20 sm:size-32 md:size-40 group-hover:scale-105"
-                    : "right-1 sm:right-3 top-1/2 -translate-y-1/2 size-9 sm:size-14 md:size-18 group-hover:scale-105",
+                    ? "right-2 sm:right-6 top-5 sm:top-8 size-20 sm:size-32 md:size-40 group-hover:scale-105"
+                    : "right-1.5 sm:right-3 top-1/2 -translate-y-1/2 size-9 sm:size-13 md:size-16 group-hover:scale-105",
                   on
                     ? "opacity-65 text-primary scale-105"
                     : "opacity-25 text-ink/70 group-hover:opacity-45 group-hover:text-primary/70",
@@ -158,8 +158,8 @@ export function Step1() {
                 <EventEditorialSvg id={e.id} className="size-full" />
               </div>
               <span className="relative z-10 min-w-0 w-full">
-                <span className={cn("display block leading-tight", e.id === "wedding" ? "text-[clamp(1.5rem,5.5vw,3.75rem)]" : "text-[clamp(0.95rem,3.4vw,1.45rem)]")}>{e.title}</span>
-                <span className="mt-1 block text-[clamp(0.62rem,1.8vw,0.75rem)] leading-snug text-ink/60 line-clamp-2">{e.line}</span>
+                <span className={cn("display block leading-tight", e.id === "wedding" ? "text-[clamp(1.35rem,4.8vw,3.5rem)]" : "text-[clamp(0.85rem,2.8vw,1.35rem)]")}>{e.title}</span>
+                <span className="mt-1 block text-[clamp(0.60rem,1.6vw,0.74rem)] leading-snug text-ink/60 line-clamp-2">{e.line}</span>
               </span>
             </button>
           );
@@ -554,18 +554,18 @@ export function Step4() {
   return (
     <div className="flex flex-col gap-4">
       <StepHead no="04" title={<>Pick a date. <span className="font-serif-i text-primary">Every one works.</span></>} sub={`We intersected ${calCount} live calendars. Days where anyone is booked aren't shown at all.`} />
-      <div className="flex flex-wrap items-center gap-1.5 pb-1">
+      <div className="flex flex-wrap items-center gap-2 pb-1 max-w-full">
         {sources.map((s, i) => (
-          <div key={s.n} className="flex shrink-0 items-center gap-1.5">
-            <div className="rounded-xl border hairline bg-surface-light px-3 py-2">
-              <p className="eyebrow text-ink/50">{s.n}</p>
-              <p className="text-lg font-extrabold tabular-nums">{s.free}<span className="text-xs font-medium text-ink/40"> free</span></p>
+          <div key={s.n} className="flex items-center gap-1.5 min-w-0">
+            <div className="rounded-xl border hairline bg-surface-light px-2.5 py-1.5 sm:px-3 sm:py-2">
+              <p className="eyebrow text-ink/50 truncate max-w-[8rem] sm:max-w-none">{s.n}</p>
+              <p className="text-base sm:text-lg font-extrabold tabular-nums text-ink">{s.free}<span className="text-xs font-medium text-ink/50"> free</span></p>
             </div>
-            <span className="text-ink/40 font-bold px-0.5">{i < sources.length - 1 ? "∩" : "="}</span>
+            <span className="text-ink/40 font-bold px-0.5 select-none">{i < sources.length - 1 ? "∩" : "="}</span>
           </div>
         ))}
-        <div className="flex shrink-0 items-center rounded-xl bg-ink px-4 py-2 text-canvas">
-          <p className="text-lg font-extrabold tabular-nums">{days.length} <span className="text-xs font-medium opacity-70">dates that all work</span></p>
+        <div className="flex items-center rounded-xl bg-ink px-3 sm:px-4 py-1.5 sm:py-2 text-canvas shadow-xs">
+          <p className="text-base sm:text-lg font-extrabold tabular-nums">{days.length} <span className="text-xs font-medium opacity-80">dates all work</span></p>
         </div>
       </div>
 

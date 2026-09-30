@@ -41,10 +41,10 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
     };
   }, []);
 
-  // Screen-calibrated peek and resting positions matching user reference image:
-  // Rest y: completely concealed behind button (48 on mobile, 68 on desktop)
-  // Peek y: -15 (1px down from -16, preserves full mascot size while resting bottom glasses frame precisely on button rim)
-  const restY = isMobile ? 48 : 68;
+  // Screen-calibrated peek and resting positions matching user reference:
+  // Rest y: curly mascot hairs peek visibly above button rim (18 on mobile, 26 on desktop)
+  // Peek y: -15 (full mascot head pops up with glasses resting on rim)
+  const restY = isMobile ? 18 : 26;
   const peekY = -15;
 
   const mascotVariants: Variants = {
@@ -252,7 +252,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
       */}
       <motion.div
         ref={buttonRef}
-        className="relative z-10 flex max-w-full items-center justify-between gap-2 xs:gap-3 sm:gap-5 rounded-full bg-gradient-to-b from-[#f55248] via-[#ee4339] to-[#de3429] px-4 xs:px-5 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 shadow-[inset_0_1.5px_1px_rgba(255,255,255,0.45),inset_0_-2px_4px_rgba(0,0,0,0.18),0_12px_32px_rgba(241,69,59,0.36)] ring-1 ring-white/20 ring-inset overflow-hidden"
+        className="relative z-10 flex max-w-full items-center justify-between gap-2 xs:gap-3 sm:gap-5 rounded-full bg-gradient-to-b from-[#f55248] via-[#ee4339] to-[#de3429] px-3.5 xs:px-5 sm:px-8 md:px-10 py-2.5 xs:py-3 sm:py-4 md:py-5 shadow-[inset_0_1.5px_1px_rgba(255,255,255,0.45),inset_0_-2px_4px_rgba(0,0,0,0.18),0_12px_32px_rgba(241,69,59,0.36)] ring-1 ring-white/20 ring-inset overflow-hidden"
         animate={isHovered ? { scale: 1.02 } : isLooping ? { scale: 1.015 } : { scale: 1 }}
         whileTap={{ scale: 0.97 }}
         transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
@@ -261,7 +261,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
         <motion.span
           animate={textControls}
           initial={{ x: 0 }}
-          className="relative z-20 font-display text-[0.74rem] xs:text-[0.84rem] sm:text-[1.04rem] md:text-[1.20rem] font-black uppercase tracking-wide text-white whitespace-nowrap [font-variation-settings:'wdth'_85] drop-shadow-[0_1.5px_2px_rgba(0,0,0,0.45)] pointer-events-none"
+          className="relative z-20 font-display text-[clamp(0.68rem,2.8vw,1.20rem)] font-black uppercase tracking-wide text-white whitespace-nowrap [font-variation-settings:'wdth'_85] drop-shadow-[0_1.5px_2px_rgba(0,0,0,0.45)] pointer-events-none"
         >
           GET STARTED YOUR BOOKING
         </motion.span>
@@ -270,7 +270,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
         <motion.span
           animate={arrowControls}
           initial={{ x: 0, scale: 1 }}
-          className="relative z-10 flex size-9 xs:size-10 sm:size-11 md:size-12.5 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-white to-[#fbf8f5] text-[#f1453b] shadow-[0_3px_10px_rgba(0,0,0,0.22),inset_0_1.5px_1px_rgba(255,255,255,0.95)] ring-1 ring-black/10 pointer-events-none"
+          className="relative z-10 flex size-7.5 xs:size-9 sm:size-11 md:size-12.5 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-white to-[#fbf8f5] text-[#f1453b] shadow-[0_3px_10px_rgba(0,0,0,0.22),inset_0_1.5px_1px_rgba(255,255,255,0.95)] ring-1 ring-black/10 pointer-events-none"
         >
           <svg
             viewBox="0 0 24 24"
@@ -279,7 +279,7 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
             strokeWidth="3.6"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="size-5 xs:size-5.5 sm:size-6.5 md:size-7 text-[#f1453b] drop-shadow-xs transition-transform group-hover:translate-x-0.5"
+            className="size-4 xs:size-5 sm:size-6.5 md:size-7 text-[#f1453b] drop-shadow-xs transition-transform group-hover:translate-x-0.5"
             aria-hidden="true"
           >
             <line x1="3.5" y1="12" x2="20.5" y2="12" />

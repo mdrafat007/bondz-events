@@ -47,6 +47,7 @@ interface Scenario {
   };
   code: string;
   mediaImage: string;
+  videoUrl: string;
 }
 
 const SCENARIOS: Scenario[] = [
@@ -68,6 +69,7 @@ const SCENARIOS: Scenario[] = [
     },
     code: "BZ-7492-OCT26",
     mediaImage: weddingImg,
+    videoUrl: "/__l5e/assets-v1/c5b969d3-626e-4dc6-96ce-dd60f631062a/clip-wedding.mp4",
   },
   {
     event: "birthday",
@@ -87,6 +89,7 @@ const SCENARIOS: Scenario[] = [
     },
     code: "BZ-3184-NOV12",
     mediaImage: birthdayImg,
+    videoUrl: "/__l5e/assets-v1/3f0e5ead-8854-4eb1-bbf6-d07d5928ed03/clip-birthday.mp4",
   },
   {
     event: "bbq",
@@ -106,6 +109,7 @@ const SCENARIOS: Scenario[] = [
     },
     code: "BZ-5921-AUG04",
     mediaImage: bbqImg,
+    videoUrl: "/__l5e/assets-v1/f41b5715-5a15-441b-998c-f7560e30acf0/clip-bbq.mp4",
   },
   {
     event: "corporate",
@@ -125,6 +129,7 @@ const SCENARIOS: Scenario[] = [
     },
     code: "BZ-9042-DEC15",
     mediaImage: corporateImg,
+    videoUrl: "/__l5e/assets-v1/8a82de65-f593-456c-89c3-cf9d2f4c5f1a/clip-corporate.mp4",
   },
   {
     event: "anniversary",
@@ -144,6 +149,7 @@ const SCENARIOS: Scenario[] = [
     },
     code: "BZ-1839-SEP20",
     mediaImage: dinnerImg,
+    videoUrl: "/__l5e/assets-v1/f55462d2-5f26-4200-9849-c14f590420d0/clip-anniversary.mp4",
   },
 ];
 
@@ -331,10 +337,19 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
       {/* Event-Matched 6-Second Celebration Video / Visual Transition Stage */}
       {showingCelebrationVideo ? (
         <div className="relative flex-1 flex flex-col items-center justify-center p-6 text-center overflow-hidden animate-in fade-in duration-500">
+          <video
+            autoPlay
+            playsInline
+            muted
+            loop
+            poster={currentScenario.mediaImage}
+            src={currentScenario.videoUrl}
+            className="absolute inset-0 size-full object-cover brightness-60 scale-105 transition-transform duration-6000 ease-out"
+          />
           <img
             src={currentScenario.mediaImage}
             alt={currentScenario.details.honor}
-            className="absolute inset-0 size-full object-cover brightness-60 scale-105 transition-transform duration-6000 ease-out"
+            className="absolute inset-0 size-full object-cover brightness-60 scale-105 pointer-events-none -z-10"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/60" />
           <div className="relative z-10 flex flex-col items-center max-w-sm">

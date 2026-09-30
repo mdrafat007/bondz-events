@@ -240,9 +240,13 @@ export function playCelebrationSequence() {
 
   setTimeout(() => {
     try {
-      const audio = new Audio("/celebration.wav");
-      audio.volume = 0.85;
-      audio.play().catch(() => {});
+      const audio = new Audio("/BONDZ_EVENTS-CHEERS_AUDIO.mp3");
+      audio.volume = 0.88;
+      audio.play().catch(() => {
+        const fallback = new Audio("/celebration.wav");
+        fallback.volume = 0.88;
+        fallback.play().catch(() => {});
+      });
       setTimeout(() => {
         const fade = setInterval(() => {
           if (audio.volume > 0.08) {

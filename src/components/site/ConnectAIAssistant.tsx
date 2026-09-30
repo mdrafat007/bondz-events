@@ -1,6 +1,12 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { toast } from "sonner";
+import { motion, type Variants } from "framer-motion";
 import { Badge, Button, Card } from "@/design-system/bondz-events---design-system-9e1fdf";
+import mascotWhite from "@/assets/mascot-white.png";
+import mascotRed from "@/assets/mascot-red.png";
+import { useTheme } from "@/lib/theme";
+import { playTapSound, triggerTap } from "@/lib/haptics";
+import { cn } from "@/lib/utils";
 
 type Tab = "quick" | "apps" | "advanced";
 
@@ -31,6 +37,9 @@ Ask me what I am celebrating, for how many guests, and roughly when.`;
 export function ConnectAIAssistant({ variant = "outline", className }: { variant?: "outline" | "hero"; className?: string }) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("quick");
+  const [isHovered, setIsHovered] = useState(false);
+  const { theme } = useTheme();
+  const mascotImg = theme === "dark" ? mascotWhite : mascotRed;
 
   useEffect(() => {
     if (!open) return;
@@ -45,31 +54,102 @@ export function ConnectAIAssistant({ variant = "outline", className }: { variant
     catch { toast.error("Couldn't copy - select and copy it manually"); }
   };
 
+  const handleOpen = () => {
+    playTapSound();
+    triggerTap();
+    setOpen(true);
+  };
+
+  const mascotVariants: Variants = {
+    resting: {
+      y: 18,
+      rotate: 0,
+      transition: { y: { duration: 0.28, ease: [0.25, 1, 0.5, 1] } },
+    },
+    hover: {
+      y: -14,
+      rotate: [0, 8, 8, 0],
+      transition: {
+        y: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+        rotate: { times: [0, 0.45, 0.75, 1], duration: 0.48, ease: "easeInOut" },
+      },
+    },
+  };
+
   return (
     <>
       {variant === "hero" ? (
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className={
-            "bondz-ai-link bondz-hero-cta group inline-flex max-w-full cursor-pointer items-center justify-between gap-3 rounded-full px-5 py-3 text-left ring-1 ring-inset ring-paper/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:gap-5 sm:px-8 sm:py-4 " +
-            (className ?? "")
-          }
+        <div
+          className={cn(
+            "relative inline-flex flex-col items-center justify-end overflow-visible select-none cursor-pointer group w-full sm:w-auto",
+            className
+          )}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onClick={handleOpen}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handleOpen();
+            }
+          }}
+          aria-label="Connect your AI agent"
         >
-          <span className="font-sans text-[0.78rem] font-black uppercase tracking-wide text-paper sm:text-base">
-            ✦ Connect your AI agent
-          </span>
-          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-paper text-primary shadow-soft sm:size-11">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" className="size-5 transition-transform group-hover:translate-x-0.5 sm:size-6" aria-hidden>
-              <line x1="3.5" y1="12" x2="20.5" y2="12" />
-              <polyline points="13.5 5 20.5 12 13.5 19" />
-            </svg>
-          </span>
-        </button>
+          {/* Peeking Mascot Hair Behind Button */}
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-0 flex justify-center overflow-visible [clip-path:inset(-400px_-100px_0px_-100px)]"
+            aria-hidden="true"
+          >
+            <motion.div
+              initial="resting"
+              animate={isHovered ? "hover" : "resting"}
+              variants={mascotVariants}
+              className="flex items-center justify-center origin-bottom"
+            >
+              <img
+                src={mascotImg}
+                alt="Mr. Bondz mascot"
+                className="w-24 xs:w-28 sm:w-36 h-auto max-w-none select-none object-contain drop-shadow-md"
+                draggable={false}
+              />
+            </motion.div>
+          </div>
+
+          {/* Luxury Red Pill Button */}
+          <motion.div
+            className="relative z-10 flex w-full sm:w-auto items-center justify-between gap-3 sm:gap-5 rounded-full bg-gradient-to-b from-[#f55248] via-[#ee4339] to-[#de3429] px-4 xs:px-6 sm:px-8 py-3 sm:py-4 shadow-[inset_0_1.5px_1px_rgba(255,255,255,0.45),inset_0_-2px_4px_rgba(0,0,0,0.18),0_12px_32px_rgba(241,69,59,0.36)] ring-1 ring-white/20 ring-inset overflow-hidden"
+            animate={isHovered ? { scale: 1.02 } : { scale: 1 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <span className="relative z-20 font-display text-[clamp(0.74rem,2.8vw,1.10rem)] font-black uppercase tracking-wide text-white whitespace-nowrap [font-variation-settings:'wdth'_85] drop-shadow-[0_1.5px_2px_rgba(0,0,0,0.45)] pointer-events-none">
+              ✦ CONNECT YOUR AI AGENT
+            </span>
+
+            {/* Tactile Circular White Badge Pill */}
+            <span className="relative z-10 flex size-8 xs:size-9 sm:size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-white to-[#fbf8f5] text-[#f1453b] shadow-[0_3px_10px_rgba(0,0,0,0.22),inset_0_1.5px_1px_rgba(255,255,255,0.95)] ring-1 ring-black/10 pointer-events-none">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4 sm:size-5 text-[#f1453b] drop-shadow-xs transition-transform group-hover:translate-x-0.5"
+                aria-hidden="true"
+              >
+                <line x1="3.5" y1="12" x2="20.5" y2="12" />
+                <polyline points="13.5 5 20.5 12 13.5 19" />
+              </svg>
+            </span>
+          </motion.div>
+        </div>
       ) : (
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={handleOpen}
           className="bondz-ai-link inline-flex max-w-full shrink-0 cursor-pointer items-center gap-2 rounded-full border border-ink/25 bg-surface-light px-5 py-3 text-left font-sans text-xs font-black uppercase tracking-tight text-ink shadow-soft hover:border-ink hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:whitespace-nowrap sm:text-sm"
         >
           ✦ Connect your AI agent →

@@ -77,6 +77,22 @@ function BookingCurtain() {
         transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
         className="h-full w-1/2 bg-night border-l border-primary/40"
       />
+      {/* True center-aligned unified headline overlay */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[101]">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94 }}
+          animate={{ opacity: isClosed ? 1 : 0, scale: isClosed ? 1 : 1.05 }}
+          transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center px-6"
+        >
+          <p className="font-serif text-3xl sm:text-5xl md:text-6xl text-parchment tracking-tight">
+            Let’s get <span className="font-serif-i italic text-primary">you booked.</span>
+          </p>
+          <p className="eyebrow mt-2 text-parchment/60 tracking-widest text-[0.68rem] uppercase font-mono">
+            Bondz Events · Locking Calendars
+          </p>
+        </motion.div>
+      </div>
     </div>
   );
 }

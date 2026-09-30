@@ -119,7 +119,7 @@ function DemoDirector({
   const scenario = useRef<Scenario>(makeScenario());
 
   useEffect(() => {
-    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (paused) return;
     const timer = window.setInterval(() => {
       const next = elapsed.current + 100;
       if (next >= 19200) {
@@ -436,7 +436,7 @@ function Frame({ intro, demo, paused, onDemoProgress, onDemoRoundEnd }: { intro:
         )}
       >
         <div className="flex w-full max-w-full min-w-0 min-h-0 flex-col">
-          <div ref={scroller} data-booking-canvas className={cn("scroll-quiet w-full max-w-full min-w-0 min-h-0 flex-1", demo ? "overflow-y-auto" : step <= 2 ? "overflow-y-auto md:overflow-hidden" : "overflow-y-auto pr-1")}>
+          <div ref={scroller} data-booking-canvas className="scroll-quiet w-full max-w-full min-w-0 min-h-0 flex-1 overflow-y-auto pr-1 pb-16">
             {step === 1 && <Step1 />}
             {step === 2 && <Step2 />}
             {step === 3 && (sel.where === "venue" ? <Step3B /> : <Step3A />)}

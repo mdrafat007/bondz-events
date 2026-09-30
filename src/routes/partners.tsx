@@ -1,4 +1,4 @@
-﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Ticker } from "@/components/site/Brand";
@@ -374,15 +374,14 @@ function Partners() {
                     }}
                     onMouseLeave={() => setHoveredPartner(null)}
                     className={cn(
-                      "display partner-name group/item inline-flex items-baseline whitespace-nowrap px-4 leading-none tracking-tight transition-all duration-200 cursor-pointer text-left outline-none",
+                      "font-display partner-name group/item inline-flex items-baseline whitespace-nowrap px-4 leading-none tracking-tight transition-all duration-200 cursor-pointer text-left outline-none text-[clamp(1.15rem,2.2vw,1.75rem)] font-extrabold [font-variation-settings:'wdth'_85]",
                       isHovered
-                        ? "text-primary scale-[1.03]"
-                        : "text-ink/85 hover:text-primary",
+                        ? "text-primary scale-[1.02]"
+                        : "text-ink dark:text-[#fbf8f2] hover:text-primary",
                     )}
-
                   >
                     <span>{n}</span>
-                    <span className="ml-3 text-xs font-mono font-bold text-primary/60 group-hover/item:text-primary">
+                    <span className="ml-3 text-xs font-mono font-bold text-primary/75 group-hover/item:text-primary">
                       ★ {meta?.rating || "4.9"}
                     </span>
                     <span className="ml-4 text-primary font-normal select-none">/</span>

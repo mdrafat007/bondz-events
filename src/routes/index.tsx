@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { HeroBookingCTA } from "../components/site/HeroBookingCTA";
 import { ActualBookingDemo } from "../components/site/ActualBookingDemo";
-import { ConnectAIAssistant } from "../components/site/ConnectAIAssistant";
 import { useBookingLaunch } from "../lib/use-booking-launch";
 import amira from "../assets/photography/amira.asset.json";
 import jonah from "../assets/photography/jonah.asset.json";
@@ -167,7 +166,6 @@ function LandingPage() {
               <div className="mt-auto flex w-full max-w-full flex-col items-start gap-6 sm:gap-7 lg:mt-0">
                 <div className="flex w-full max-w-full flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
                   <HeroBookingCTA onClick={launchBooking} disabled={launching} />
-                  <ConnectAIAssistant />
                 </div>
 
                 {/* Features placed directly under the Booking CTA */}

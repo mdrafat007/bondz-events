@@ -83,8 +83,8 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
       onPointerEnter={() => setHovering(true)}
       onPointerLeave={() => setHovering(false)}
       className={cn(
-        "group relative flex aspect-[4/5] cursor-pointer select-none flex-col overflow-hidden rounded-3xl border border-hairline bg-[#faf7f2] shadow-raised transition-colors duration-300 sm:aspect-[3/4] md:aspect-[4/5]",
-        "dark:border-transparent dark:bg-[#110e14] dark:shadow-[0_0_35px_rgba(241,69,59,0.14)]",
+        "group relative flex aspect-[4/5] cursor-pointer select-none flex-col overflow-hidden rounded-3xl border border-hairline bg-paper shadow-raised transition-colors duration-300 sm:aspect-[3/4] md:aspect-[4/5]",
+        "dark:border-transparent dark:bg-canvas dark:shadow-[0_0_35px_rgba(241,69,59,0.14)]",
         className,
       )}
       aria-label="Self-playing booking engine showcase. Select to start your own booking."

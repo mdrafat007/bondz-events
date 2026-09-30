@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, useMemo, type ReactNode } from "react";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 import {
   CATEGORIES,
   EVENT_TYPES,
@@ -12,6 +13,7 @@ import {
   priceOf,
   availableDays,
   HORIZON,
+  type Slot,
 } from "@/lib/bondz-data";
 import { signalBot } from "@/lib/bot-bus";
 import { cn } from "@/lib/utils";
@@ -219,15 +221,20 @@ export function Step5() {
       {loading && (
         <div className="dark fixed inset-0 z-[100] grid place-items-center bg-[#0d0910]/95 backdrop-blur-xl text-foreground px-4">
           <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-[#16111a] p-7 sm:p-9 shadow-2xl">
-            {/* Luxury Dual-Ring Orbital Animation */}
-            <div className="relative flex items-center justify-center size-20">
-              <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl animate-pulse" />
-              <div className="absolute inset-0 rounded-full border-2 border-white/10 border-t-primary animate-spin [animation-duration:1.2s]" />
-              <div className="absolute inset-2 rounded-full border-2 border-white/10 border-b-primary/60 border-l-primary/40 animate-spin [animation-duration:2s] [animation-direction:reverse]" />
-              <div className="relative flex size-10 items-center justify-center rounded-full bg-primary/15 border border-primary/40 shadow-[0_0_15px_rgba(255,45,85,0.4)] overflow-hidden p-1.5">
-                <img src={lightIcon} alt="Mr. Bondz" className="size-full object-contain block dark:hidden" />
-                <img src={darkIcon} alt="Mr. Bondz" className="size-full object-contain hidden dark:block" />
-              </div>
+            {/* Animating Mr. Bondz Logo Icon: Wobbles head -15deg to +15deg, no ai slop circles */}
+            <div className="flex items-center justify-center py-3">
+              <motion.div
+                animate={{ rotate: [-15, 15, -15] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                style={{ transformOrigin: "50% 85%" }}
+                className="size-20 sm:size-24 flex items-center justify-center"
+              >
+                <img
+                  src={darkIcon}
+                  alt="Mr. Bondz"
+                  className="size-full object-contain select-none drop-shadow-[0_8px_24px_rgba(241,69,59,0.35)]"
+                />
+              </motion.div>
             </div>
 
             <h2 className="display mt-6 text-3xl sm:text-4xl text-white tracking-tight">Completing your booking</h2>
@@ -573,7 +580,42 @@ export function Step6() {
     ...assigned.map((a) => ({ who: a.p!.name, to: `jobs@${a.p!.id}.partner`, subj: `You're on: ${a.cat} · ${shownDateText}`, body: `Hi ${a.p!.name},\n\nYou're booked for ${a.cat.toLowerCase()} - ${ev?.title?.toLowerCase()}, ${sel.guests} guests, ${shownDateText} (${slot}) at ${place}.\nAgreed: ${money(priceOf(a.p!, sel.guests))}. Ref ${ref}.\n\nMr. Bondz will share the run-of-show 14 days out.` })),
   ];
   const r = recipients[Math.min(tab, recipients.length - 1)]!;
-  const link = typeof window !== "undefined" ? `${window.location.origin}/invite/${ref}` : `/invite/${ref}`;
+  const invitePayload = useMemo(() => ({
+    title: head,
+    host: details.name || "Mr. Bondz Client",
+    date: activeDate ? activeDate.toISOString() : new Date().toISOString(),
+    slot: (slot || "Evening") as Slot,
+    place: place || "Smokestack Yard",
+    tagline: tag || "Come hungry. Leave with stories.",
+    guests: sel.guests,
+    eventType: ev?.title ?? "Celebration",
+  }), [head, details.name, activeDate, slot, place, tag, sel.guests, ev?.title]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(`bondz_invite_${ref}`, JSON.stringify(invitePayload));
+    } catch {
+      /* optional */
+    }
+  }, [ref, invitePayload]);
+
+  const inviteToken = useMemo(() => {
+    try {
+      const json = JSON.stringify(invitePayload);
+      const bytes = new TextEncoder().encode(json);
+      let binary = "";
+      for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary);
+    } catch {
+      return "";
+    }
+  }, [invitePayload]);
+
+  const link = typeof window !== "undefined"
+    ? `${window.location.origin}/invite/${ref}${inviteToken ? `?invite=${encodeURIComponent(inviteToken)}` : ""}`
+    : `/invite/${ref}`;
   const guestMsg = `${head}\n${tag}\n${shownDateText} · ${slot}\n${place}\n\nDetails & RSVP: ${link}`;
 
   const calendarUrl = (() => {
@@ -603,41 +645,54 @@ export function Step6() {
       const ctx = c.getContext("2d")!;
       ctx.drawImage(templateImg, 0, 0, W, H);
 
-      await document.fonts.load('italic 95px "Instrument Serif"');
-      await document.fonts.load('700 32px "Bricolage Grotesque"');
+      await document.fonts.load('italic 105px "Instrument Serif"');
+      await document.fonts.load('800 36px "Bricolage Grotesque"');
 
+      // Top invitation kicker
+      ctx.font = '700 24px "Bricolage Grotesque"';
+      ctx.fillStyle = theme.hl;
+      ctx.fillText("YOU’RE INVITED TO CELEBRATE", 100, 310);
+
+      // Editorial headline
       ctx.fillStyle = theme.fg;
-      ctx.font = 'italic 95px "Instrument Serif"';
+      ctx.font = 'italic 105px "Instrument Serif"';
       const words = head.split(" ");
       let line = "";
-      let y = 390;
+      let y = 430;
       for (const w of words) {
         if (ctx.measureText(line + w).width > W - 220) {
           ctx.fillText(line.trim(), 100, y);
           line = "";
-          y += 105;
+          y += 115;
         }
         line += w + " ";
       }
       ctx.fillText(line.trim(), 100, y);
 
-      ctx.font = 'italic 44px "Instrument Serif"';
+      // Punchy tagline
+      ctx.font = 'italic 46px "Instrument Serif"';
       ctx.fillStyle = theme.hl;
       ctx.fillText(tag, 100, y + 75);
 
+      // Date, Shift, and Venue
       ctx.fillStyle = theme.fg;
-      ctx.font = '700 30px "Bricolage Grotesque"';
+      ctx.font = '800 36px "Bricolage Grotesque"';
       ctx.fillText(shownDateText.toUpperCase(), 100, y + 170);
-      ctx.font = '500 26px "Bricolage Grotesque"';
+      ctx.font = '600 30px "Bricolage Grotesque"';
       ctx.fillText(`${slot ? slot : "Evening"} · ${place}`, 100, y + 215);
 
+      // RSVP & Host details
+      ctx.font = '500 22px "Bricolage Grotesque"';
+      ctx.fillStyle = theme.hl;
+      ctx.fillText(`Hosted by ${details.name || "Mr. Bondz Client"} · Ref: ${ref}`, 100, y + 265);
+
       const a = document.createElement("a");
-      a.download = `bondz-vip-invite-${ref}.png`;
+      a.download = `bondz-invitation-${ref}.png`;
       a.href = c.toDataURL("image/png");
       a.click();
-      toast.success("VIP Invite PNG exported");
+      toast.success("Invitation Card downloaded");
     } catch {
-      toast.error("Could not export invite image");
+      toast.error("Could not export invitation card");
     }
   };
 
@@ -851,7 +906,7 @@ ol.terms li b { color: #151118; }
               onClick={download}
               className="rounded-full bg-ink py-2.5 px-3 text-xs font-bold text-canvas hover:brightness-110 active:scale-95 transition-all shadow-xs cursor-pointer"
             >
-              Download VIP card PNG
+              Download Invitation Card
             </button>
             <button
               onClick={() => {

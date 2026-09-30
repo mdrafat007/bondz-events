@@ -66,7 +66,10 @@ const partners = [
 
 function ReviewMarquee() {
   return (
-    <div className="overflow-x-hidden border-b border-hairline py-2 sm:py-2.5" aria-label="Client reviews">
+    <div className="relative overflow-x-hidden border-b border-hairline py-2 sm:py-2.5 [mask-image:linear-gradient(90deg,transparent,black_4%,black_96%,transparent)]" aria-label="Client reviews">
+      {/* Subtle white shadows from both sides on dark mode */}
+      <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-r from-white/20 via-white/5 to-transparent" />
+      <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-l from-white/20 via-white/5 to-transparent" />
       <div className="ticker-marquee-left">
         {[0, 1].map((copy) => (
           <div
@@ -109,7 +112,10 @@ function ReviewMarquee() {
 
 function PartnerMarquee() {
   return (
-    <div className="overflow-x-hidden border-b border-hairline py-1.5 sm:py-2" aria-label="Event partners">
+    <div className="relative overflow-x-hidden border-b border-hairline py-1.5 sm:py-2 [mask-image:linear-gradient(90deg,transparent,black_4%,black_96%,transparent)]" aria-label="Event partners">
+      {/* Subtle white shadows from both sides on dark mode */}
+      <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-r from-white/20 via-white/5 to-transparent" />
+      <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-l from-white/20 via-white/5 to-transparent" />
       <div className="ticker-marquee-right">
         {[0, 1].map((copy) => (
           <div
@@ -163,7 +169,7 @@ function LandingPage() {
                 </h1>
               </div>
 
-              <div className="mt-auto flex w-full max-w-full flex-col items-start gap-6 sm:gap-7 lg:mt-0">
+              <div className="mt-auto pt-7 sm:pt-9 md:pt-11 flex w-full max-w-full flex-col items-start gap-6 sm:gap-7 lg:mt-0">
                 <div className="flex w-full max-w-full flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
                   <HeroBookingCTA onClick={launchBooking} disabled={launching} />
                 </div>

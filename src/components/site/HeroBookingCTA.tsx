@@ -42,10 +42,10 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
   }, []);
 
   // Screen-calibrated peek and resting positions matching user reference:
-  // Rest y: curly mascot hairs peek visibly above button rim (18 on mobile, 26 on desktop)
-  // Peek y: -15 (full mascot head pops up with glasses resting on rim)
-  const restY = isMobile ? 18 : 26;
-  const peekY = -15;
+  // Rest y: ONLY curly mascot hair tufts peek visibly above button rim (38 on mobile, 52 on desktop), hiding forehead & glasses
+  // Peek y: full mascot head pops up with glasses resting on rim
+  const restY = isMobile ? 38 : 52;
+  const peekY = isMobile ? -6 : -14;
 
   const mascotVariants: Variants = {
     resting: {

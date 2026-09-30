@@ -1,4 +1,4 @@
-﻿import brandLockup from "@/assets/brand-lockup.png";
+import brandLockup from "@/assets/brand-lockup.png";
 import brandLockupDark from "@/assets/brand-lockup-dark.png";
 import { useTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
@@ -36,6 +36,9 @@ export function Ticker({
 }) {
   return (
     <div className={cn("group relative w-full overflow-hidden py-3 [mask-image:linear-gradient(90deg,transparent,black_5%,black_95%,transparent)]", className)}>
+      {/* Subtle white shadows from both sides on dark mode */}
+      <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-r from-white/20 via-white/5 to-transparent" />
+      <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-l from-white/20 via-white/5 to-transparent" />
       <div className={cn("flex w-max gap-3 py-1.5 items-center transition-all group-hover:[animation-play-state:paused]", dir === "left" ? "ticker-marquee-left" : "ticker-marquee-right")}>
         <div className="flex shrink-0 items-center gap-3">{children}</div>
         <div className="flex shrink-0 items-center gap-3" aria-hidden="true">

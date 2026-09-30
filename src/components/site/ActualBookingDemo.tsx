@@ -48,7 +48,10 @@ interface Scenario {
   code: string;
   mediaImage: string;
   videoUrl: string;
+  punchyTitle: string;
 }
+
+const cdnVideo = (path: string) => `https://id-preview--b05e6b12-3dde-49e9-ac29-9053c6b86cea.lovable.app${path}`;
 
 const SCENARIOS: Scenario[] = [
   {
@@ -69,7 +72,8 @@ const SCENARIOS: Scenario[] = [
     },
     code: "BZ-7492-OCT26",
     mediaImage: weddingImg,
-    videoUrl: "/__l5e/assets-v1/c5b969d3-626e-4dc6-96ce-dd60f631062a/clip-wedding.mp4",
+    videoUrl: cdnVideo("/__l5e/assets-v1/c5b969d3-626e-4dc6-96ce-dd60f631062a/clip-wedding.mp4"),
+    punchyTitle: "Your wedding day, locked without a single awkward phone call.",
   },
   {
     event: "birthday",
@@ -89,7 +93,8 @@ const SCENARIOS: Scenario[] = [
     },
     code: "BZ-3184-NOV12",
     mediaImage: birthdayImg,
-    videoUrl: "/__l5e/assets-v1/3f0e5ead-8854-4eb1-bbf6-d07d5928ed03/clip-birthday.mp4",
+    videoUrl: cdnVideo("/__l5e/assets-v1/3f0e5ead-8854-4eb1-bbf6-d07d5928ed03/clip-birthday.mp4"),
+    punchyTitle: "30th milestone locked in one sitting. Bass kicks at 8.",
   },
   {
     event: "bbq",
@@ -109,7 +114,8 @@ const SCENARIOS: Scenario[] = [
     },
     code: "BZ-5921-AUG04",
     mediaImage: bbqImg,
-    videoUrl: "/__l5e/assets-v1/f41b5715-5a15-441b-998c-f7560e30acf0/clip-bbq.mp4",
+    videoUrl: cdnVideo("/__l5e/assets-v1/f41b5715-5a15-441b-998c-f7560e30acf0/clip-bbq.mp4"),
+    punchyTitle: "Oak smoke, pitmaster feasts, and zero logistical stress.",
   },
   {
     event: "corporate",
@@ -129,7 +135,8 @@ const SCENARIOS: Scenario[] = [
     },
     code: "BZ-9042-DEC15",
     mediaImage: corporateImg,
-    videoUrl: "/__l5e/assets-v1/8a82de65-f593-456c-89c3-cf9d2f4c5f1a/clip-corporate.mp4",
+    videoUrl: cdnVideo("/__l5e/assets-v1/8a82de65-f593-456c-89c3-cf9d2f4c5f1a/clip-corporate.mp4"),
+    punchyTitle: "140-person keynote, high-speed stream & barista bar ready.",
   },
   {
     event: "anniversary",
@@ -149,7 +156,71 @@ const SCENARIOS: Scenario[] = [
     },
     code: "BZ-1839-SEP20",
     mediaImage: dinnerImg,
-    videoUrl: "/__l5e/assets-v1/f55462d2-5f26-4200-9849-c14f590420d0/clip-anniversary.mp4",
+    videoUrl: cdnVideo("/__l5e/assets-v1/f55462d2-5f26-4200-9849-c14f590420d0/clip-anniversary.mp4"),
+    punchyTitle: "Silver jubilee candlelit dinner, strings and fine dining set.",
+  },
+  {
+    event: "family",
+    guests: 50,
+    where: "home",
+    venue: null,
+    services: ["catering", "photo"],
+    vibes: ["Warm Generational", "Lawn Celebration"],
+    day: 16,
+    slot: "Afternoon",
+    details: {
+      name: "The Vance Family",
+      phone: "+1 (555) 678-9012",
+      email: "vance.family@example.com",
+      honor: "Generations Gathering",
+      notes: "Comfort-forward family dining, generational music curation.",
+    },
+    code: "BZ-4410-JUL18",
+    mediaImage: dinnerImg,
+    videoUrl: cdnVideo("/__l5e/assets-v1/1a71122a-6c80-4b17-a11b-c5e51f2ad5b5/clip-family.mp4"),
+    punchyTitle: "Four generations under one roof. Every table sorted.",
+  },
+  {
+    event: "hybrid",
+    guests: 110,
+    where: "venue",
+    venue: "smokestack",
+    services: ["hybrid", "production", "dj"],
+    vibes: ["Broadcast Polish", "Interactive Digital"],
+    day: 25,
+    slot: "Morning",
+    details: {
+      name: "Tolu A.",
+      phone: "+1 (555) 789-0123",
+      email: "tolu.events@example.com",
+      honor: "Global Product Summit",
+      notes: "Studio broadcast link, low-latency live audience feeds.",
+    },
+    code: "BZ-8219-NOV03",
+    mediaImage: corporateImg,
+    videoUrl: cdnVideo("/__l5e/assets-v1/a18f63f2-32b0-42cd-ab04-d04ae0bd8093/clip-hybrid.mp4"),
+    punchyTitle: "Zero lag, crystal sound: in-room & remote together.",
+  },
+  {
+    event: "custom",
+    guests: 75,
+    where: "venue",
+    venue: "smokestack",
+    services: ["production", "catering", "dj"],
+    vibes: ["Bespoke Gala", "Immersive Experience"],
+    day: 30,
+    slot: "Evening",
+    details: {
+      name: "Sara V.",
+      phone: "+1 (555) 890-1234",
+      email: "sara.v@example.com",
+      honor: "Midsummer Midnight Ball",
+      notes: "Custom floorplans, bespoke lighting, immersive soundscapes.",
+    },
+    code: "BZ-6194-OCT31",
+    mediaImage: weddingImg,
+    videoUrl: cdnVideo("/__l5e/assets-v1/70851ec0-c045-4a98-bd0c-051f5315f9c6/clip-custom.mp4"),
+    punchyTitle: "Your own wild celebration concept, flawlessly brought to life.",
   },
 ];
 
@@ -328,12 +399,18 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
       className={cn(
         "relative flex flex-col justify-between overflow-hidden rounded-2xl border border-hairline shadow-raised h-full min-h-[360px] max-h-[460px] lg:max-h-full select-none group cursor-pointer transition-colors duration-300",
         demoIsDark
-          ? "dark bg-[#110e14] text-[#f6f1e7] border-white/10"
+          ? "dark bg-[#110e14] text-[#f6f1e7] border-white/10 dark:border-transparent dark:shadow-[0_0_35px_rgba(241,69,59,0.14)]"
           : "light bg-[#faf7f2] text-[#161217] border-black/10",
         className
       )}
       aria-label="Booking Engine Demo Video Container"
     >
+      {/* Dark mode ultra-luxury border shimmer blending white & prime accent */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 dark:opacity-100 transition-opacity z-30 [border:1.5px_solid_transparent] [background:linear-gradient(135deg,rgba(255,255,255,0.45)_0%,rgba(241,69,59,0.55)_35%,rgba(255,255,255,0.25)_70%,rgba(241,69,59,0.65)_100%)_border-box] [mask:linear-gradient(#fff_0_0)_padding-box,linear-gradient(#fff_0_0)] [mask-composite:exclude]"
+      />
+
       {/* Event-Matched 6-Second Celebration Video / Visual Transition Stage */}
       {showingCelebrationVideo ? (
         <div className="relative flex-1 flex flex-col items-center justify-center p-6 text-center overflow-hidden animate-in fade-in duration-500">
@@ -434,7 +511,7 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
         </div>
       )}
 
-      {/* Video-player style bottom overlay: Kicker, Title, Progress bar (No tacky buttons) */}
+      {/* Video-player style bottom overlay: Title (in fixed prime accent color), Progress bar (No kicker) */}
       <figcaption
         className={cn(
           "absolute inset-x-0 bottom-0 z-20 flex flex-col justify-end p-4 sm:p-5 pt-8 bg-gradient-to-t transition-opacity duration-300",
@@ -444,11 +521,8 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
         )}
       >
         <div className="mb-2.5">
-          <p className="font-sans text-[0.68rem] font-bold uppercase tracking-widest text-primary">
-            Live Demo · Scenario 0{scenarioIdx + 1}
-          </p>
-          <p className="mt-0.5 font-sans text-xs sm:text-sm md:text-base font-black uppercase tracking-tight leading-snug [font-variation-settings:'wdth'_85]">
-            Few steps away to celebrate without a single call
+          <p className="font-sans text-xs sm:text-sm md:text-base font-black uppercase tracking-tight leading-snug text-primary [font-variation-settings:'wdth'_85]">
+            {currentScenario.punchyTitle}
           </p>
         </div>
 

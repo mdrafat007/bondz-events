@@ -193,13 +193,12 @@ export function SiteNav() {
                 </li>
               ))}
             </ul>
-            <div className="mt-6 shrink-0" onClick={() => setOpen(false)}>
+            <div className="mt-auto pt-8 pb-4 flex flex-col items-center justify-center text-center">
               <ConnectAIAssistant variant="hero" className="w-full sm:w-auto" />
+              <p className="mt-5 font-serif text-xl italic text-ink/55 sm:text-2xl text-center">
+                Good times, beautifully made<span className="text-primary">.</span>
+              </p>
             </div>
-            <p className="mt-8 shrink-0 font-serif text-xl italic text-ink/55 sm:text-2xl">
-              Good times, beautifully made<span className="text-primary">.</span>
-            </p>
-
           </nav>
         </div>
       )}

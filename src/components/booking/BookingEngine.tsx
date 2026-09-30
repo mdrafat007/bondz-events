@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { EVENT_TYPES, VENUES, VIBES_BY_EVENT, availableDays, slotOpen, SLOTS } from "@/lib/bondz-data";
 import { Lockup, StatusLine } from "@/components/site/Brand";
 import type { CategoryId, EventTypeId, Slot } from "@/lib/bondz-data";
@@ -486,17 +487,43 @@ function Frame({ intro, demo, paused, onDemoProgress, onDemoRoundEnd }: { intro:
         )}
       </div>
 
-      {split && !demo && (
-        <div aria-hidden className="pointer-events-none fixed inset-0 z-[70] flex overflow-hidden">
-          <div className="split-left relative h-full w-1/2 bg-ink" />
-          <div className="split-right relative h-full w-1/2 bg-ink" />
-          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-4">
-            <h2 className="text-center font-display text-[clamp(2.4rem,7.5vw,6.5rem)] font-black uppercase tracking-tight text-canvas drop-shadow-2xl [font-variation-settings:'wdth'_85]">
-              Let’s get <span className="font-serif-i font-normal italic text-primary">you booked.</span>
-            </h2>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {split && !demo && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, delay: 0.55 }}
+            aria-hidden
+            className="pointer-events-none fixed inset-0 z-[70] flex overflow-hidden"
+          >
+            {/* Left Curtain: slides to the left from center seam */}
+            <motion.div
+              initial={{ x: "0%" }}
+              animate={{ x: "-100%" }}
+              transition={{ duration: 0.65, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="relative h-full w-1/2 bg-night border-r border-primary/30"
+            />
+            {/* Right Curtain: slides to the right from center seam */}
+            <motion.div
+              initial={{ x: "0%" }}
+              animate={{ x: "100%" }}
+              transition={{ duration: 0.65, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="relative h-full w-1/2 bg-night border-l border-primary/30"
+            />
+            {/* True center-aligned unified headline overlay */}
+            <motion.div
+              initial={{ opacity: 1, scale: 1 }}
+              animate={{ opacity: 0, scale: 1.05 }}
+              transition={{ duration: 0.45, delay: 0.35, ease: "easeOut" }}
+              className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-4"
+            >
+              <h2 className="text-center font-display text-[clamp(2.4rem,7.5vw,6.5rem)] font-black uppercase tracking-tight text-parchment drop-shadow-2xl [font-variation-settings:'wdth'_85]">
+                Let’s get <span className="font-serif-i font-normal italic text-primary">you booked.</span>
+              </h2>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

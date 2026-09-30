@@ -153,37 +153,6 @@ function InvitePage() {
     toast.success("Opening Google Calendar...");
   };
 
-  const downloadIcs = () => {
-    triggerTap();
-    if (!invite) return;
-    const startDate = new Date(invite.date);
-    startDate.setHours(invite.slot === "Morning" ? 10 : invite.slot === "Afternoon" ? 14 : 17, 0, 0, 0);
-    const endDate = new Date(startDate.getTime() + 5 * 60 * 60 * 1000);
-    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-    const icsData = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//Bondz Events//Guest Portal//EN",
-      "BEGIN:VEVENT",
-      `SUMMARY:${eventTitle}`,
-      `DESCRIPTION:${attire}\\nHosted by ${hostName}\\nRef: ${ref}`,
-      `LOCATION:${locationName}`,
-      `DTSTART:${fmt(startDate)}`,
-      `DTEND:${fmt(endDate)}`,
-      "STATUS:CONFIRMED",
-      "END:VEVENT",
-      "END:VCALENDAR",
-    ].join("\r\n");
-
-    const blob = new Blob([icsData], { type: "text/calendar;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `celebration-${ref}.ics`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("Apple Calendar (.ics) downloaded");
-  };
 
   return (
     <div className="scroll-quiet h-full overflow-y-auto px-4 py-8 md:px-12 lg:px-20">

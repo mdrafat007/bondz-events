@@ -601,7 +601,7 @@ function RescheduleModal({
               when === "later" ? "border-primary bg-primary text-white" : "hairline bg-surface hover:border-ink/40",
             )}
           >
-            <span className="block font-bold">Within 3 Days of Event</span>
+            <span className="block font-bold">After 3 Days of Booking</span>
             <span className="text-[0.65rem] opacity-80">5% transfer fee</span>
           </button>
         </div>

@@ -283,15 +283,37 @@ export const usd = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 export const money = usd;
 
 export const TERMS: { t: string; b: string }[] = [
-  { t: "Deposit", b: "A 25% demo deposit illustrates how your date, venue and partners would be reserved in one sitting." },
-  { t: "Balance", b: "The remaining balance is due 7 days before your celebration." },
-  { t: "Rescheduling", b: "One free reschedule up to 30 days before the event, subject to availability. Later changes are handled personally by Mr. Bondz." },
-  { t: "Cancellation", b: "Over 60 days: deposit refunded minus a 5% processing fee. 30 to 60 days: 50% of deposit refunded. Under 30 days: deposit is non-refundable." },
-  { t: "Availability", b: "Only dates where Mr. Bondz, the venue and every partner are free are shown - what you see is what you get." },
-  { t: "Partners", b: "Every partner is vetted, insured and briefed by Mr. Bondz personally." },
-  { t: "Weather", b: "Outdoor plans always carry an indoor fallback at no extra cost." },
-  { t: "One point of contact", b: "You never chase a vendor. One call, one person, one plan." },
+  { t: "Booking & deposit", b: "Your booking is confirmed once the 25% deposit is paid and these terms are signed. The balance is due 7 days before the event." },
+  { t: "Availability guarantee", b: "Every date shown was free across Mr. Bondz, your venue (if any) and every assigned partner at the moment of booking. Those calendars are now locked for you." },
+  { t: "Rescheduling", b: "One free reschedule up to 30 days before the event, subject to live availability across the same partners. Later changes are handled personally by Mr. Bondz." },
+  { t: "Cancellation tiers", b: "More than 60 days out: deposit refunded minus a 5% processing fee. 30 to 60 days: 50% of deposit refunded. Under 30 days: deposit is non-refundable." },
+  { t: "Guest-count flexibility", b: "Final numbers may move up to 10% either way until 14 days before the event at the same per-guest rates. Larger changes re-run availability." },
+  { t: "Access & property", b: "At-home events require safe access for partners from 4 hours before start. Venue rules apply at venues." },
+  { t: "Liability & conduct", b: "Each partner carries their own insurance. The client is responsible for guest conduct and damage beyond normal wear." },
+  { t: "Force majeure", b: "If an event can't take place due to causes beyond anyone's control, we move it to the next mutually available date at no cost." },
 ];
+
+/** Cancellation refund per the agreement tiers, based on days left until the event. */
+export function refundFor(daysUntil: number, deposit: number): { tier: string; refund: number; note: string } {
+  if (daysUntil > 60) return { tier: "More than 60 days out", refund: Math.round(deposit * 0.95), note: "Deposit refunded minus a 5% processing fee." };
+  if (daysUntil >= 30) return { tier: "30 to 60 days out", refund: Math.round(deposit * 0.5), note: "50% of the deposit is refunded." };
+  return { tier: "Under 30 days", refund: 0, note: "The deposit is non-refundable at this stage." };
+}
+
+/** Reschedule terms: one free move until 30 days out, later moves are handled personally with a 5% fee. */
+export function rescheduleFeeFor(daysUntil: number, total: number, movesUsed: number): { free: boolean; fee: number; note: string } {
+  if (daysUntil > 30 && movesUsed === 0) return { free: true, fee: 0, note: "Your one free reschedule, more than 30 days out." };
+  return { free: false, fee: Math.round(total * RESCHEDULE_FEE_RATE), note: "Handled personally by Mr. Bondz with a 5% rescheduling fee." };
+}
+
+/** Google Calendar template link, shared by the confirmation and the guest invitation. */
+export function googleCalendarUrl(input: { title: string; start: Date; end: Date; details: string; location: string }): string {
+  const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const q = new URLSearchParams({ action: "TEMPLATE", text: input.title, dates: `${fmt(input.start)}/${fmt(input.end)}`, details: input.details, location: input.location });
+  return `https://calendar.google.com/calendar/render?${q.toString()}`;
+}
+
+export const SLOT_START_HOUR: Record<Slot, number> = { Morning: 10, Afternoon: 14, Evening: 17 };
 
 export const CANCELLATION_POLICY: { t: string; b: string }[] = [
   { t: "Booking & Deposit", b: "Your booking is confirmed once the 25% deposit is paid and these terms are signed. The balance is due 7 days before the event." },

@@ -442,12 +442,17 @@ function Frame({ intro, demo, paused, onDemoProgress, onDemoRoundEnd, onDemoScen
       >
         <div className="flex w-full max-w-full min-w-0 min-h-0 flex-col">
           <div ref={scroller} data-booking-canvas className="scroll-quiet w-full max-w-full min-w-0 min-h-0 flex-1 overflow-y-auto pr-1 pb-16">
-            {step === 1 && <Step1 />}
-            {step === 2 && <Step2 />}
-            {step === 3 && (sel.where === "venue" ? <Step3B /> : <Step3A />)}
-            {step === 4 && <Step4 />}
-            {step === 5 && <Step5 />}
-            {step === 6 && <Step6 />}
+            {/* One keyed wrapper per step: each change swaps a whole subtree instead of
+                re-matching sibling nodes, which is what browser translation or extension
+                DOM rewrites turn into a removeChild crash. */}
+            <div key={`step-${step}${step === 3 ? `-${sel.where ?? "none"}` : ""}`}>
+              {step === 1 && <Step1 />}
+              {step === 2 && <Step2 />}
+              {step === 3 && (sel.where === "venue" ? <Step3B /> : <Step3A />)}
+              {step === 4 && <Step4 />}
+              {step === 5 && <Step5 />}
+              {step === 6 && <Step6 />}
+            </div>
           </div>
           {withEstimate && (
             <div className="mt-3 hidden shrink-0 flex-wrap items-center justify-between gap-3 border-t hairline pl-20 pt-3 lg:flex">

@@ -33,13 +33,13 @@ export function Check({ on, className }: { on: boolean; className?: string }) {
 
 export function StepHead({ no, title, sub }: { no: string; title: React.ReactNode; sub?: React.ReactNode }) {
   return (
-    <div className="rise shrink-0 min-w-0 w-full">
-      <div className="flex items-center gap-3 text-ink/50">
+    <div className="rise shrink-0 min-w-0 w-full md:text-center xl:text-left">
+      <div className="flex items-center gap-3 text-ink/50 md:justify-center xl:justify-start">
         <span className="eyebrow text-primary">Step {no}</span>
         <span className="h-px w-10 bg-ink/20" />
       </div>
       <h1 className="display mt-2 text-[clamp(1.75rem,min(5.2vw,8vh),5rem)] break-words">{title}</h1>
-      {sub && <p className="mt-2 max-w-2xl text-xs sm:text-sm leading-snug text-ink/70">{sub}</p>}
+      {sub && <p className="mt-2 max-w-2xl text-xs sm:text-sm leading-snug text-ink/70 md:mx-auto xl:mx-0">{sub}</p>}
     </div>
   );
 }

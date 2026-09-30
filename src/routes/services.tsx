@@ -251,7 +251,6 @@ const SERVICE_IMAGES: Record<string, string> = {
 
 function Services() {
   const [tab, setTab] = useState<string>("All");
-  const [selectedService, setSelectedService] = useState<(typeof SERVICES_11)[0] | null>(null);
   const navigate = useNavigate();
 
   const handleBook = () => {
@@ -305,20 +304,7 @@ function Services() {
         {list.map((s, i) => (
           <article
             key={s.t}
-            onClick={() => {
-              playTapSound();
-              setSelectedService(s);
-            }}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                playTapSound();
-                setSelectedService(s);
-              }
-            }}
-            className="rise group relative flex flex-col justify-between overflow-hidden bg-canvas p-5 sm:p-6 transition-all duration-300 hover:bg-surface-light cursor-pointer select-none"
+            className="rise group relative flex flex-col justify-between overflow-hidden bg-canvas p-5 sm:p-6 transition-all duration-300 hover:bg-surface-light select-none"
             style={{ animationDelay: `${i * 35}ms` }}
           >
             {/* Creative editorial visual: oversized animated hairline illustration */}
@@ -345,19 +331,16 @@ function Services() {
               </div>
             </div>
 
-            {/* Creative Visual Thumbnail Header */}
-            <div className="relative z-10 mt-4 h-24 w-full overflow-hidden rounded-xl border hairline bg-muted/40">
-              <img
-                src={SERVICE_IMAGES[s.no]}
-                alt={s.t}
-                className="h-full w-full object-cover brightness-90 transition-transform duration-500 group-hover:scale-110 group-hover:brightness-100"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <span className="absolute bottom-2 left-2 text-[0.65rem] font-bold uppercase tracking-wider text-white flex items-center gap-1">
-                <span>Inspect Visual & Specs</span>
-                <span className="transition-transform group-hover:translate-x-0.5">→</span>
-              </span>
-            </div>
+            {/* Image Container for Tab views (fitted natural landscape, no text overlay) */}
+            {tab !== "All" && (
+              <div className="relative z-10 my-4 aspect-[16/10] w-full overflow-hidden rounded-xl border hairline bg-muted/30">
+                <img
+                  src={SERVICE_IMAGES[s.no]}
+                  alt={s.t}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+            )}
 
             {/* Bottom block: Service Title & Scaled Human Description */}
             <div className="relative z-10 mt-4 flex flex-col justify-end">
@@ -411,79 +394,6 @@ function Services() {
           </div>
         )}
       </div>
-
-      {/* Interactive Editorial Visual Spotlight Modal */}
-      {selectedService && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200"
-          onClick={() => setSelectedService(null)}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-lg overflow-hidden rounded-3xl border hairline bg-surface-dark text-white shadow-2xl animate-in zoom-in-95 duration-200"
-          >
-            {/* Close Button */}
-            <button
-              type="button"
-              onClick={() => setSelectedService(null)}
-              className="absolute top-4 right-4 z-20 flex size-9 items-center justify-center rounded-full bg-black/60 text-white/80 backdrop-blur-md transition hover:bg-black hover:text-white cursor-pointer"
-            >
-              ✕
-            </button>
-
-            {/* High-Res Service Photograph */}
-            <div className="relative h-56 sm:h-64 w-full overflow-hidden bg-neutral-900">
-              <img
-                src={SERVICE_IMAGES[selectedService.no]}
-                alt={selectedService.t}
-                className="h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-surface-dark via-transparent to-black/30" />
-
-              {/* Category Badge & Number */}
-              <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                <span className="display text-3xl font-black text-primary">{selectedService.no}</span>
-                <span className="rounded-full bg-black/60 backdrop-blur-md px-3 py-1 font-mono text-xs uppercase tracking-wider text-white border border-white/10 font-bold">
-                  {selectedService.tab} Coordination
-                </span>
-              </div>
-
-              {/* Bespoke Editorial Animated Icon Float */}
-              <div className="absolute bottom-4 right-4 size-14 rounded-2xl bg-black/70 backdrop-blur-md p-3 border border-white/20 text-primary shadow-xl">
-                <ServiceIcon id={selectedService.no} className="size-full animate-pulse" />
-              </div>
-            </div>
-
-            {/* Service Details & Action */}
-            <div className="p-6">
-              <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">
-                {SERVICE_TAGS[selectedService.no] || "Direct coordination by Mr. Bondz"}
-              </p>
-              <h3 className="font-display mt-1 text-2xl font-black tracking-tight text-white [font-variation-settings:'wdth'_85]">
-                {selectedService.t}
-              </h3>
-              <p className="mt-2.5 text-sm leading-relaxed text-white/80 font-medium">{selectedService.d}</p>
-
-              <div className="mt-6 flex items-center gap-3 border-t border-white/10 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setSelectedService(null)}
-                  className="flex-1 rounded-full border border-white/20 py-3 text-xs font-bold uppercase tracking-wider text-white hover:bg-white/10 transition cursor-pointer"
-                >
-                  Close Visual
-                </button>
-                <button
-                  type="button"
-                  onClick={handleBook}
-                  className="flex-1 rounded-full bg-primary py-3 text-xs font-black uppercase tracking-wider text-white shadow-raised hover:brightness-110 active:scale-95 transition cursor-pointer"
-                >
-                  Book with Mr. Bondz →
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

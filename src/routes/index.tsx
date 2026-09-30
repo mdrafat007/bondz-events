@@ -44,16 +44,67 @@ const pillars = [
 const portraitUrl = (path: string) => `https://id-preview--b05e6b12-3dde-49e9-ac29-9053c6b86cea.lovable.app${path}`;
 
 const reviews = [
-  { name: "Amira K.", tag: "Wedding - 90", quote: "I booked a 90-person wedding on my lunch break. My mom still doesn't believe me.", avatar: portraitUrl(amira.url) },
-  { name: "Jonah R.", tag: "Birthday - 40", quote: "Not one phone call. The DJ texted me before I'd closed the tab.", avatar: portraitUrl(jonah.url) },
-  { name: "Priya S.", tag: "Anniversary - 24", quote: "Every date it showed me actually worked. That alone is witchcraft.", avatar: portraitUrl(priya.url) },
-  { name: "Lena M.", tag: "Corporate - 140", quote: "Our offsite had caterer, AV and venue confirmed in one sitting.", avatar: portraitUrl(lena.url) },
-  { name: "Marcus T.", tag: "BBQ - 60", quote: "Smoke, sun and a long table. Exactly as promised.", avatar: portraitUrl(marcus.url) },
-  { name: "Tolu A.", tag: "Hybrid - 110", quote: "The stream was cleaner than our actual meeting room. Remote guests stayed the whole night.", avatar: portraitUrl(tolu.url) },
-  { name: "Sara V.", tag: "Birthday - 35", quote: "Bondz was there before the caterer and left after the sweep. Felt like having an older brother who runs festivals.", avatar: portraitUrl(sara.url) },
-  { name: "Dev P.", tag: "Anniversary - 50", quote: "We swapped the venue three weeks out. The calendar re-calculated and everything held together.", avatar: portraitUrl(jonah.url) },
-  { name: "Hannah L.", tag: "Wedding - 120", quote: "He told our photographer where the sun was going to hit the terrace. Saved the golden hour.", avatar: portraitUrl(hannah.url) },
-  { name: "Omar F.", tag: "Corporate - 85", quote: "Zero vendor emails in my inbox. Bondz absorbed the entire logistics blast radius.", avatar: portraitUrl(omar.url) },
+  {
+    name: "Amira K.",
+    tag: "Wedding - 90",
+    quote: "I booked a 90-person wedding on my lunch break. My mom still doesn't believe me.",
+    avatar: portraitUrl(amira.url),
+  },
+  {
+    name: "Jonah R.",
+    tag: "Birthday - 40",
+    quote: "Not one phone call. The DJ texted me before I'd closed the tab.",
+    avatar: portraitUrl(jonah.url),
+  },
+  {
+    name: "Priya S.",
+    tag: "Anniversary - 24",
+    quote: "Every date it showed me actually worked. That alone is witchcraft.",
+    avatar: portraitUrl(priya.url),
+  },
+  {
+    name: "Lena M.",
+    tag: "Corporate - 140",
+    quote: "Our offsite had caterer, AV and venue confirmed in one sitting.",
+    avatar: portraitUrl(lena.url),
+  },
+  {
+    name: "Marcus T.",
+    tag: "BBQ - 60",
+    quote: "Smoke, sun and a long table. Exactly as promised.",
+    avatar: portraitUrl(marcus.url),
+  },
+  {
+    name: "Tolu A.",
+    tag: "Hybrid - 110",
+    quote: "The stream was cleaner than our actual meeting room. Remote guests stayed the whole night.",
+    avatar: portraitUrl(tolu.url),
+  },
+  {
+    name: "Sara V.",
+    tag: "Birthday - 35",
+    quote:
+      "Bondz was there before the caterer and left after the sweep. Felt like having an older brother who runs festivals.",
+    avatar: portraitUrl(sara.url),
+  },
+  {
+    name: "Dev P.",
+    tag: "Anniversary - 50",
+    quote: "We swapped the venue three weeks out. The calendar re-calculated and everything held together.",
+    avatar: portraitUrl(jonah.url),
+  },
+  {
+    name: "Hannah L.",
+    tag: "Wedding - 120",
+    quote: "He told our photographer where the sun was going to hit the terrace. Saved the golden hour.",
+    avatar: portraitUrl(hannah.url),
+  },
+  {
+    name: "Omar F.",
+    tag: "Corporate - 85",
+    quote: "Zero vendor emails in my inbox. Bondz absorbed the entire logistics blast radius.",
+    avatar: portraitUrl(omar.url),
+  },
 ];
 
 const partners = [
@@ -66,10 +117,19 @@ const partners = [
 
 function ReviewMarquee() {
   return (
-    <div className="relative overflow-x-hidden border-b border-hairline py-2 sm:py-2.5 [mask-image:linear-gradient(90deg,transparent,black_4%,black_96%,transparent)]" aria-label="Client reviews">
+    <div
+      className="relative overflow-x-hidden border-b border-hairline py-2 sm:py-2.5 [mask-image:linear-gradient(90deg,transparent,black_4%,black_96%,transparent)]"
+      aria-label="Client reviews"
+    >
       {/* Subtle white shadows from both sides on dark mode */}
-      <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-r from-white/20 via-white/5 to-transparent" />
-      <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-l from-white/20 via-white/5 to-transparent" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-r from-white/20 via-white/5 to-transparent"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-l from-white/20 via-white/5 to-transparent"
+      />
       <div className="ticker-marquee-left">
         {[0, 1].map((copy) => (
           <div
@@ -112,24 +172,31 @@ function ReviewMarquee() {
 
 function PartnerMarquee() {
   return (
-    <div className="relative overflow-x-hidden border-b border-hairline py-1.5 sm:py-2 [mask-image:linear-gradient(90deg,transparent,black_4%,black_96%,transparent)]" aria-label="Event partners">
+    <div
+      className="relative overflow-x-hidden border-b border-hairline py-1.5 sm:py-2 [mask-image:linear-gradient(90deg,transparent,black_4%,black_96%,transparent)]"
+      aria-label="Event partners"
+    >
       {/* Subtle white shadows from both sides on dark mode */}
-      <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-r from-white/20 via-white/5 to-transparent" />
-      <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-l from-white/20 via-white/5 to-transparent" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-r from-white/20 via-white/5 to-transparent"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 sm:w-16 opacity-0 dark:opacity-100 transition-opacity bg-gradient-to-l from-white/20 via-white/5 to-transparent"
+      />
       <div className="ticker-marquee-right">
         {[0, 1].map((copy) => (
-          <div
-            key={copy}
-            className="flex shrink-0 items-center gap-3 pr-3"
-            aria-hidden={copy === 1 ? true : undefined}
-          >
+          <div key={copy} className="flex shrink-0 items-center gap-3 pr-3" aria-hidden={copy === 1 ? true : undefined}>
             {partners.map((partner) => (
               <div
                 key={partner.name}
                 className="flex shrink-0 items-center gap-2 rounded-full border border-hairline bg-surface-light px-3.5 py-1 shadow-soft"
               >
                 <span className="font-serif text-xs italic text-primary">{partner.category}</span>
-                <span className="font-sans text-xs font-extrabold uppercase tracking-tight text-ink">{partner.name}</span>
+                <span className="font-sans text-xs font-extrabold uppercase tracking-tight text-ink">
+                  {partner.name}
+                </span>
                 <span className="size-1.5 shrink-0 rounded-full bg-status" aria-label="Available" />
               </div>
             ))}
@@ -161,10 +228,14 @@ function LandingPage() {
                   className="bondz-hero-title font-sans font-black tracking-tight text-ink [font-variation-settings:'wdth'_85]"
                 >
                   <span className="block whitespace-nowrap">
-                    Get <span className="font-serif font-normal italic tracking-normal text-primary">“yourself booked”</span>
+                    Get{" "}
+                    <span className="font-serif font-normal italic tracking-normal text-primary">
+                      “yourself booked”
+                    </span>
                   </span>
                   <span className="block whitespace-nowrap">
-                    and Leave the <span className="font-serif font-normal italic tracking-normal text-primary">“rest on us”!</span>
+                    and Leave the{" "}
+                    <span className="font-serif font-normal italic tracking-normal text-primary">“rest on us”!</span>
                   </span>
                 </h1>
               </div>
@@ -190,8 +261,11 @@ function LandingPage() {
               </div>
             </div>
 
-            <div className="min-w-0 lg:flex lg:min-h-0 lg:items-center lg:justify-end">
-              <ActualBookingDemo onLaunchBooking={launchBooking} className="mx-auto w-full max-w-md lg:mx-0 lg:max-w-[30rem]" />
+            <div className="min-w-0 lg:flex lg:min-h-0 lg:items-center lg:justify-end lg:pt-3">
+              <ActualBookingDemo
+                onLaunchBooking={launchBooking}
+                className="mx-auto w-full max-w-md lg:mx-0 lg:max-w-[30rem] lg:max-h-[calc(100%-1.5rem)]"
+              />
             </div>
           </section>
         </div>

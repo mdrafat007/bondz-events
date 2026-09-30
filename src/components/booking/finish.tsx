@@ -329,7 +329,12 @@ function Confetti() {
     c.width = r.width;
     c.height = r.height;
     const css = getComputedStyle(document.documentElement);
-    const colors = ["--accent-brand", "--success", "--canvas", "--surface-light"].map((v) => css.getPropertyValue(v).trim());
+    // Read the real Bondz theme variables; the previous names did not exist, so
+    // every particle was painted with an empty colour and nothing was visible.
+    const colors = ["--bondz-primary", "--bondz-status", "--bondz-paper", "--bondz-cta-top"]
+      .map((v) => css.getPropertyValue(v).trim())
+      .filter(Boolean);
+    if (!colors.length) colors.push("#f1453b", "#10b981", "#f6f1e7");
     const ps = Array.from({ length: 160 }, () => ({
       x: c.width / 2 + (Math.random() - 0.5) * 80,
       y: c.height * 0.6,

@@ -153,11 +153,12 @@ export function Step5() {
   const pay = () => {
     setLoading(true);
     signalBot({ mood: "think" });
-    playThump();
+    // The self-playing showcase stays completely silent; only real bookings make sound.
+    if (!s.demo) playThump();
     [1, 2, 3, 4].forEach((i) =>
       window.setTimeout(() => {
         setPhase(i);
-        playThump(0.85 + i * 0.05);
+        if (!s.demo) playThump(0.85 + i * 0.05);
       }, i * 750),
     );
     window.setTimeout(() => {

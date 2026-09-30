@@ -262,3 +262,34 @@ export function playCelebrationSequence() {
     }
   }, 480);
 }
+
+/**
+ * Deep "dhap" drum thud used to pace the booking confirmation loader.
+ * Two quick low hits per call build anticipation before the celebration audio.
+ */
+export function playThump(intensity = 1) {
+  if (!isSoundEnabled()) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  try {
+    const hit = (offset: number, freq: number, gainPeak: number) => {
+      const t = ctx.currentTime + offset;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, t);
+      osc.frequency.exponentialRampToValueAtTime(Math.max(38, freq * 0.4), t + 0.16);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(gainPeak, t + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.26);
+    };
+    hit(0, 132, 0.34 * intensity);
+    hit(0.17, 104, 0.22 * intensity);
+    triggerHaptic([22, 60, 16]);
+  } catch {
+    // Audio is a flourish - never block the flow.
+  }
+}

@@ -116,7 +116,7 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
       {/* Matched celebration clip closing every round */}
       {celebrating && (
         <div className="absolute inset-0 z-20 flex items-center justify-center overflow-hidden p-6 text-center animate-in fade-in duration-500">
-          <img src={media.poster} alt="" aria-hidden className="absolute inset-0 size-full object-cover brightness-[0.55]" />
+          <img src={media.poster} alt="" aria-hidden className="absolute inset-0 size-full object-cover brightness-50" />
           <video
             key={media.video}
             src={media.video}
@@ -125,17 +125,17 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
             muted
             loop
             playsInline
-            className="absolute inset-0 size-full object-cover brightness-[0.55]"
+            className="absolute inset-0 size-full object-cover brightness-50"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-night/90 via-night/40 to-night/60" />
           <div className="relative z-10 flex max-w-sm flex-col items-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-[0.68rem] font-black uppercase tracking-wider text-white shadow-raised">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-black uppercase tracking-wider text-paper shadow-raised">
               ✓ Celebration Confirmed
             </span>
-            <h3 className="mt-3 font-serif-i text-3xl italic leading-tight text-white sm:text-4xl">
+            <h3 className="mt-3 font-serif-i text-3xl italic leading-tight text-paper sm:text-4xl">
               {scenario?.name ?? "Your celebration"}
             </h3>
-            <p className="mt-1 text-xs font-bold uppercase tracking-wider text-white/80">
+            <p className="mt-1 text-xs font-bold uppercase tracking-wider text-paper/80">
               {eventTitle(scenario?.event ?? "wedding")}
             </p>
             <div className="mt-3 flex flex-wrap justify-center gap-1.5">
@@ -145,7 +145,7 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
                 venue ? venue.name : "Their own place",
                 scenario?.ref ?? "BZ-0000",
               ].map((pill) => (
-                <span key={pill} className="rounded-full bg-white/20 px-2.5 py-0.5 text-[0.62rem] font-bold text-white backdrop-blur-xs">
+                <span key={pill} className="rounded-full bg-paper/20 px-3 py-1 text-xs font-bold text-paper backdrop-blur-xs">
                   {pill}
                 </span>
               ))}
@@ -155,11 +155,11 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
       )}
 
       {/* Headline and scrubber */}
-      <figcaption className="absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end bg-gradient-to-t from-[#faf7f2] via-[#faf7f2]/85 to-transparent p-4 pt-10 dark:from-[#110e14] dark:via-[#110e14]/85 sm:p-5 sm:pt-12">
-        <p className="text-xs font-black uppercase leading-snug tracking-tight text-primary sm:text-sm md:text-base [font-variation-settings:'wdth'_85]">
+      <figcaption className="absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end bg-gradient-to-t from-paper via-paper/85 to-transparent p-4 pt-10 dark:from-canvas dark:via-canvas/85 sm:p-5 sm:pt-12">
+        <p className="text-xs font-black uppercase leading-snug tracking-tight text-primary sm:text-sm md:text-base">
           {media.title}
         </p>
-        <div className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-black/15 dark:bg-white/20">
+        <div className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-ink/15">
           <div className="h-full rounded-full bg-primary transition-all duration-100 ease-linear" style={{ width: `${celebrating ? 100 : progress}%` }} />
         </div>
       </figcaption>

@@ -9,9 +9,10 @@ import { cn } from "@/lib/utils";
 interface HeroBookingCTAProps {
   onClick?: () => void;
   className?: string;
+  disabled?: boolean;
 }
 
-export function HeroBookingCTA({ onClick, className }: HeroBookingCTAProps) {
+export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAProps) {
   const { theme } = useTheme();
   const mascotImg = theme === "dark" ? mascotWhite : mascotRed;
   const [isHovered, setIsHovered] = useState(false);
@@ -158,6 +159,7 @@ export function HeroBookingCTA({ onClick, className }: HeroBookingCTAProps) {
   }, [isHovered, playPushJumpAnimation]);
 
   const handleMouseEnter = () => {
+    if (disabled) return;
     setIsHovered(true);
     playPushJumpAnimation();
     if (isSoundEnabled()) {
@@ -176,6 +178,7 @@ export function HeroBookingCTA({ onClick, className }: HeroBookingCTAProps) {
   };
 
   const handleTap = () => {
+    if (disabled) return;
     setIsHovered(true);
     triggerTap();
     if (isSoundEnabled()) {

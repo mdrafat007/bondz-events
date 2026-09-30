@@ -1,4 +1,4 @@
-﻿import { useMemo } from "react";
+import { useMemo } from "react";
 import { Card, cn, triggerTap } from "@/index";
 import {
   HORIZON, SLOTS, SLOT_TIMES, VENUES, availableDays, cheapest, dayToDate, freeDayCount, slotOpen,
@@ -59,7 +59,7 @@ export function Step4Date({ ctx }: { ctx: BookingCtx }) {
                   onClick={() => { triggerTap(); setDay(d); }}
                   className={cn("flex aspect-square min-h-11 flex-col items-center justify-center rounded-control border text-center transition-colors",
                     on ? "border-primary bg-primary text-surface-light ring-2 ring-primary/40"
-                      : ok ? "border-hairline bg-surface-light text-ink hover:border-ink"
+                      : ok ? "border-white/10 bg-[#151118] text-[#fbf8f2] dark:bg-[#f6f1e7] dark:text-[#151118] dark:border-[#151118]/15 hover:border-primary/60"
                         : "cursor-not-allowed border-transparent bg-ink/5 text-subtle line-through opacity-30")}>
                   <span className="text-xs font-bold uppercase opacity-70">{dt.toLocaleDateString("en-US", { month: "short" })}</span>
                   <span className="font-serif text-lg leading-none">{dt.getDate()}</span>

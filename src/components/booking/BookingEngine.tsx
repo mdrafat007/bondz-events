@@ -329,20 +329,30 @@ function Frame({ intro }: { intro: boolean }) {
             <aside className="hidden min-h-0 xl:block">
               <RealityPanel />
             </aside>
-            <div className="fixed inset-x-2 bottom-2 top-24 z-50 xl:hidden">
-              <RealityPanel onClose={() => setReveal(false)} />
+            <div
+              className="fixed inset-0 z-50 flex flex-col justify-end bg-black/60 backdrop-blur-xs xl:hidden animate-in fade-in duration-200"
+              onClick={() => setReveal(false)}
+            >
+              <div
+                className="w-full max-h-[85vh] overflow-y-auto rounded-t-3xl border-t border-hairline bg-surface p-4 shadow-2xl animate-in slide-in-from-bottom duration-300"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-ink/20" />
+                <RealityPanel onClose={() => setReveal(false)} />
+              </div>
             </div>
           </>
         )}
       </div>
 
       {split && (
-        <div aria-hidden className="pointer-events-none fixed inset-0 z-[70] flex">
-          <div className="split-left relative h-full w-1/2 bg-ink flex items-center justify-end pr-4 sm:pr-8">
-            <span className="display text-[clamp(2.4rem,8vw,7.5rem)] text-canvas whitespace-nowrap">Let’s get</span>
-          </div>
-          <div className="split-right relative h-full w-1/2 bg-ink flex items-center justify-start pl-4 sm:pl-8">
-            <span className="font-serif-i text-[clamp(2.4rem,8vw,7.5rem)] leading-none text-primary whitespace-nowrap">you booked.</span>
+        <div aria-hidden className="pointer-events-none fixed inset-0 z-[70] flex overflow-hidden">
+          <div className="split-left relative h-full w-1/2 bg-ink" />
+          <div className="split-right relative h-full w-1/2 bg-ink" />
+          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-4">
+            <h2 className="text-center font-display text-[clamp(2.4rem,7.5vw,6.5rem)] font-black uppercase tracking-tight text-canvas drop-shadow-2xl [font-variation-settings:'wdth'_85]">
+              Let’s get <span className="font-serif-i font-normal italic text-primary">you booked.</span>
+            </h2>
           </div>
         </div>
       )}

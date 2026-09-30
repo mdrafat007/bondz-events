@@ -1,12 +1,29 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
-import { CATEGORIES, EVENT_TYPES, TERMS, VENUES, assignPartner, dayToDate, estimate, money, priceOf } from "@/lib/bondz-data";
+import {
+  CATEGORIES,
+  EVENT_TYPES,
+  TERMS,
+  VENUES,
+  assignPartner,
+  dayToDate,
+  estimate,
+  money,
+  priceOf,
+  availableDays,
+  HORIZON,
+} from "@/lib/bondz-data";
 import { signalBot } from "@/lib/bot-bus";
 import { cn } from "@/lib/utils";
 import { StepHead } from "./panels";
 import { Ghost, Primary } from "./steps";
 import { useBooking } from "./store";
-import { triggerHaptic, playTapSound, isSoundEnabled } from "@/lib/haptics";
+import { triggerHaptic, playTapSound, isSoundEnabled, playCelebrationSequence } from "@/lib/haptics";
+import lightIcon from "@/assets/icons/BONDZ_LOGO_ICON_-_LIGHT.png";
+import darkIcon from "@/assets/icons/BONDZ_LOGO_ICON_DARK.png";
+import lightTemplate from "@/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_LIGHT.png";
+import darkTemplate from "@/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_DARK.png";
+
 
 /* ───────────────── helpers ───────────────── */
 function useSummary() {
@@ -107,11 +124,12 @@ export function Step5() {
   const s = useSummary();
   const { sel, setSel, details, setDetails, signature, setSignature, setStep, setRef, est, parties } = s;
   const [agree, setAgree] = useState(false);
-  const [card, setCard] = useState({ n: "", exp: "", cvc: "" });
+  const [card, setCard] = useState({ n: "•••• •••• •••• 4242", exp: "12/28", cvc: "742" });
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState(0);
 
-  const ready = details.name.trim() && /\S+@\S+\.\S+/.test(details.email) && details.phone.trim().length >= 6 && agree && signature && card.n.replace(/\s/g, "").length >= 12 && card.exp.length >= 4 && card.cvc.length >= 3;
+  const cardValid = (card.n.includes("4242") || card.n.replace(/\s/g, "").length >= 12) && card.exp.length >= 4 && card.cvc.length >= 3;
+  const ready = details.name.trim() && /\S+@\S+\.\S+/.test(details.email) && details.phone.trim().length >= 6 && agree && signature && cardValid;
   const missing = !details.name.trim() ? "your name" : !/\S+@\S+\.\S+/.test(details.email) ? "a valid email" : details.phone.trim().length < 6 ? "a phone number" : !agree ? "agreement to the terms" : !signature ? "your signature" : "demo card details";
 
   const pay = () => {
@@ -178,7 +196,7 @@ export function Step5() {
         <div className="mt-5 space-y-3">
           <label className="block">
             <span className="eyebrow text-foreground/60">Card number</span>
-            <input inputMode="numeric" placeholder="4242 4242 4242 4242" value={card.n} onChange={(e) => setCard({ ...card, n: e.target.value.replace(/[^\d ]/g, "").slice(0, 19) })} className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm tabular-nums outline-none focus:ring-2 focus:ring-primary" />
+            <input inputMode="numeric" placeholder="4242 4242 4242 4242" value={card.n} onChange={(e) => setCard({ ...card, n: e.target.value.replace(/[^\d •]/g, "").slice(0, 19) })} className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm tabular-nums outline-none focus:ring-2 focus:ring-primary" />
           </label>
           <div className="grid grid-cols-2 gap-2">
             <label className="block">
@@ -190,7 +208,7 @@ export function Step5() {
               <input placeholder="123" inputMode="numeric" value={card.cvc} onChange={(e) => setCard({ ...card, cvc: e.target.value.replace(/\D/g, "").slice(0, 4) })} className="mt-1 w-full rounded-xl border bg-card px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary" />
             </label>
           </div>
-          <p className="eyebrow text-foreground/45">Demo sandbox · no real charge</p>
+          <p className="eyebrow text-foreground/45">Demo sandbox · prefilled verified card</p>
         </div>
         <Primary disabled={!ready} onClick={pay} className="mt-5 w-full py-4">
           Pay {money(est.deposit)} & book
@@ -206,8 +224,9 @@ export function Step5() {
               <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl animate-pulse" />
               <div className="absolute inset-0 rounded-full border-2 border-white/10 border-t-primary animate-spin [animation-duration:1.2s]" />
               <div className="absolute inset-2 rounded-full border-2 border-white/10 border-b-primary/60 border-l-primary/40 animate-spin [animation-duration:2s] [animation-direction:reverse]" />
-              <div className="relative flex size-9 items-center justify-center rounded-full bg-primary/15 border border-primary/40 shadow-[0_0_15px_rgba(255,45,85,0.4)]">
-                <span className="text-[0.65rem] font-black tracking-wider text-primary">BZ</span>
+              <div className="relative flex size-10 items-center justify-center rounded-full bg-primary/15 border border-primary/40 shadow-[0_0_15px_rgba(255,45,85,0.4)] overflow-hidden p-1.5">
+                <img src={lightIcon} alt="Mr. Bondz" className="size-full object-contain block dark:hidden" />
+                <img src={darkIcon} alt="Mr. Bondz" className="size-full object-contain hidden dark:block" />
               </div>
             </div>
 
@@ -334,107 +353,292 @@ function loadImg(src: string) {
   });
 }
 
+/* ───────────────── Reschedule & Cancel Modals ───────────────── */
+function RescheduleModal({
+  onClose,
+  total,
+  current,
+  sel,
+  anchor,
+  onConfirm,
+}: {
+  onClose: () => void;
+  total: number;
+  current: number | null;
+  sel: any;
+  anchor: Date;
+  onConfirm: (d: number) => void;
+}) {
+  const [when, setWhen] = useState<"today" | "later">("today");
+  const [pick, setPick] = useState<number | null>(null);
+  const days = availableDays(sel).filter((d) => d !== current).slice(0, 18);
+  const fee = when === "today" ? 0 : Math.round(total * 0.05);
+  const fmt = (d: number | null) =>
+    d !== null ? dayToDate(anchor, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }) : "-";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onClick={onClose}>
+      <div className="relative w-full max-w-lg rounded-2xl border hairline bg-surface-light p-6 text-ink shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-start justify-between">
+          <div>
+            <h3 className="text-2xl font-bold tracking-tight">Reschedule Celebration</h3>
+            <p className="mt-1 text-xs text-ink/60">Current date: <span className="font-semibold text-ink">{fmt(current)}</span></p>
+          </div>
+          <button onClick={onClose} className="rounded-full p-1.5 hover:bg-ink/10 transition-colors text-ink/70">✕</button>
+        </div>
+
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => setWhen("today")}
+            className={cn("rounded-xl border px-3 py-2 text-xs font-bold transition-all text-left", when === "today" ? "border-primary bg-primary text-white" : "hairline bg-surface hover:border-ink/40")}
+          >
+            <span className="block font-bold">Today (Booking Day)</span>
+            <span className="text-[0.65rem] opacity-80">Free reschedule</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setWhen("later")}
+            className={cn("rounded-xl border px-3 py-2 text-xs font-bold transition-all text-left", when === "later" ? "border-primary bg-primary text-white" : "hairline bg-surface hover:border-ink/40")}
+          >
+            <span className="block font-bold">Within 3 Days of Event</span>
+            <span className="text-[0.65rem] opacity-80">5% transfer fee</span>
+          </button>
+        </div>
+
+        <p className="mt-4 text-xs font-bold text-ink/70 uppercase tracking-wider">Select new verified open date</p>
+        <div className="mt-2 grid grid-cols-3 sm:grid-cols-6 gap-1.5 max-h-48 overflow-y-auto pr-1">
+          {days.map((d) => {
+            const dt = dayToDate(anchor, d);
+            const on = pick === d;
+            return (
+              <button
+                key={d}
+                type="button"
+                onClick={() => setPick(d)}
+                className={cn(
+                  "flex flex-col items-center justify-center rounded-xl border p-2 text-xs transition-all",
+                  on ? "border-primary bg-primary text-white font-bold shadow-xs" : "hairline bg-surface hover:border-primary/50 text-ink"
+                )}
+              >
+                <span className="text-[0.62rem] uppercase opacity-70">{dt.toLocaleDateString("en-US", { weekday: "short" })}</span>
+                <span className="text-base font-bold">{dt.getDate()}</span>
+                <span className="text-[0.60rem] opacity-70">{dt.toLocaleDateString("en-US", { month: "short" })}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-5 flex items-center justify-between border-t hairline pt-3 text-xs">
+          <span className="text-ink/70">{when === "today" ? "Same-day transfer fee:" : "5% transfer policy fee:"}</span>
+          <span className="text-base font-extrabold text-primary">{money(fee)}</span>
+        </div>
+
+        <div className="mt-4 flex gap-2">
+          <button onClick={onClose} className="flex-1 rounded-full border hairline py-2.5 text-xs font-bold hover:bg-ink/5">
+            Keep Current Date
+          </button>
+          <Primary
+            disabled={pick === null}
+            onClick={() => {
+              if (pick !== null) {
+                onConfirm(pick);
+                toast.success(`Rescheduled to ${fmt(pick)}!`);
+              }
+            }}
+            className="flex-1 py-2.5 text-xs"
+          >
+            Confirm {pick !== null ? fmt(pick) : "Date"}
+          </Primary>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CancelModal({
+  onClose,
+  deposit,
+  onConfirm,
+}: {
+  onClose: () => void;
+  deposit: number;
+  onConfirm: () => void;
+}) {
+  const [when, setWhen] = useState<"today" | "later">("today");
+  const [confirmed, setConfirmed] = useState(false);
+  const refund = when === "today" ? deposit : 0;
+  const retained = deposit - refund;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onClick={onClose}>
+      <div className="relative w-full max-w-lg rounded-2xl border hairline bg-surface-light p-6 text-ink shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-start justify-between">
+          <div>
+            <h3 className="text-2xl font-bold tracking-tight text-destructive">Cancel Booking</h3>
+            <p className="mt-1 text-xs text-ink/60">Refund calculations follow the signed 8-clause terms.</p>
+          </div>
+          <button onClick={onClose} className="rounded-full p-1.5 hover:bg-ink/10 transition-colors text-ink/70">✕</button>
+        </div>
+
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => setWhen("today")}
+            className={cn("rounded-xl border px-3 py-2 text-xs font-bold transition-all text-left", when === "today" ? "border-primary bg-primary text-white" : "hairline bg-surface hover:border-ink/40")}
+          >
+            <span className="block font-bold">Today (Booking Day)</span>
+            <span className="text-[0.65rem] opacity-80">100% full deposit refund</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setWhen("later")}
+            className={cn("rounded-xl border px-3 py-2 text-xs font-bold transition-all text-left", when === "later" ? "border-primary bg-primary text-white" : "hairline bg-surface hover:border-ink/40")}
+          >
+            <span className="block font-bold">After Booking Day</span>
+            <span className="text-[0.65rem] opacity-80">Deposit retained</span>
+          </button>
+        </div>
+
+        <div className="mt-4 space-y-2 rounded-xl border hairline bg-surface p-3.5 text-xs">
+          <div className="flex justify-between text-ink/70">
+            <span>Deposit Paid:</span>
+            <span className="font-semibold text-ink">{money(deposit)}</span>
+          </div>
+          <div className="flex justify-between text-ink/70">
+            <span>Retained by policy:</span>
+            <span className="font-semibold text-ink">{money(retained)}</span>
+          </div>
+          <div className="flex justify-between border-t hairline pt-2 text-sm font-bold">
+            <span className="text-ink">Net Refund to Original Card:</span>
+            <span className="text-primary font-black">{money(refund)}</span>
+          </div>
+        </div>
+
+        <label className="mt-4 flex items-start gap-2.5 text-xs text-ink/80 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={confirmed}
+            onChange={(e) => setConfirmed(e.target.checked)}
+            className="mt-0.5 size-4 accent-primary"
+          />
+          <span>I understand this releases all {HORIZON}-day reserved vendor holds and cancels my event.</span>
+        </label>
+
+        <div className="mt-5 flex gap-2">
+          <button onClick={onClose} className="flex-1 rounded-full border hairline py-2.5 text-xs font-bold hover:bg-ink/5">
+            Keep My Booking
+          </button>
+          <button
+            disabled={!confirmed}
+            onClick={() => {
+              onConfirm();
+              toast.info(refund > 0 ? `Booking cancelled. ${money(refund)} refund processed.` : "Booking cancelled. Retained per policy.");
+            }}
+            className="flex-1 rounded-full bg-destructive text-destructive-foreground py-2.5 text-xs font-bold transition hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Confirm Cancellation
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ───────────────── STEP 6 ───────────────── */
 export function Step6() {
   const s = useSummary();
-  const { ev, sel, dateStr, slot, place, ref, parties, assigned, venue, details, est, signature, reset } = s;
+  const { ev, sel, dateStr, slot, place, ref, parties, assigned, venue, details, est, signature, reset, day, anchor } = s;
   const [tab, setTab] = useState(0);
   const [head, setHead] = useState(`${details.honor || details.name.split(" ")[0] || "You"}’s ${ev?.title ?? "Celebration"}`);
   const [tag, setTag] = useState("Come hungry. Leave with stories.");
   const [theme, setTheme] = useState(THEMES[0]!);
+  const [modal, setModal] = useState<null | "reschedule" | "cancel">(null);
+  const [cancelled, setCancelled] = useState(false);
+  const [movedDay, setMovedDay] = useState<number | null>(null);
+
+  const activeDay = movedDay !== null ? movedDay : day;
+  const activeDate = activeDay ? dayToDate(anchor, activeDay) : (day ? dayToDate(anchor, day) : null);
+  const shownDateText = activeDate?.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) ?? dateStr;
 
   useEffect(() => {
-    cheer();
+    playCelebrationSequence();
     signalBot({ mood: "happy", tip: "You're booked! Everyone's been told. Go celebrate." });
-
-    let audio: HTMLAudioElement | null = null;
-    let fadeInterval: number | null = null;
-    let stopTimeout: number | null = null;
-
-    if (isSoundEnabled()) {
-      try {
-        audio = new Audio("/celebration.wav");
-        audio.volume = 0.85;
-        audio.play().catch(() => {});
-
-        // Play celebration audio for first 5.8s, then smooth fade out over 1s (total ~6.8s)
-        stopTimeout = window.setTimeout(() => {
-          fadeInterval = window.setInterval(() => {
-            if (audio && audio.volume > 0.08) {
-              audio.volume = Math.max(0, audio.volume - 0.1);
-            } else if (audio) {
-              audio.pause();
-              if (fadeInterval) window.clearInterval(fadeInterval);
-            }
-          }, 80);
-        }, 5800);
-      } catch {
-        /* audio optional */
-      }
-    }
-
-    return () => {
-      if (stopTimeout) window.clearTimeout(stopTimeout);
-      if (fadeInterval) window.clearInterval(fadeInterval);
-      if (audio) {
-        audio.pause();
-        audio = null;
-      }
-    };
   }, []);
 
   const recipients = [
-    { who: "Client", to: details.email || "you@example.com", subj: `You're booked - ${ev?.title} on ${dateStr}`, body: `Hi ${details.name || "there"},\n\nIt's official. Your ${ev?.title?.toLowerCase()} for ${sel.guests} guests is locked for ${dateStr} (${slot}) at ${place}.\n\nDeposit paid: ${money(est.deposit)}. Balance of ${money(est.balance)} is due 7 days before.\nReference: ${ref}\n\nYour signed agreement and receipt are attached. Nothing else to do - Mr. Bondz has it from here.` },
-    { who: "Mr. Bondz", to: "bondz@bondzevents.com", subj: `New booking ${ref} · ${ev?.title} · ${sel.guests} guests`, body: `Client: ${details.name} · ${details.phone} · ${details.email}\nWhen: ${dateStr}, ${slot}\nWhere: ${place}\nPartners locked: ${assigned.map((a) => a.p!.name).join(", ") || "Solo event"}\nNotes: ${details.notes || "-"}\n\nCalendar blocked. Deposit cleared.` },
-    ...(venue ? [{ who: venue.name, to: `bookings@${venue.id}.venue`, subj: `Confirmed hold - ${dateStr}`, body: `Hello ${venue.name} team,\n\nConfirmed: ${ev?.title} for ${sel.guests} guests on ${dateStr} (${slot}). Organizer: Mr. Bondz. Venue fee ${money(venue.price)} is covered under ref ${ref}.\n\nYour calendar has been locked for this date.` }] : []),
-    ...assigned.map((a) => ({ who: a.p!.name, to: `jobs@${a.p!.id}.partner`, subj: `You're on: ${a.cat} · ${dateStr}`, body: `Hi ${a.p!.name},\n\nYou're booked for ${a.cat.toLowerCase()} - ${ev?.title?.toLowerCase()}, ${sel.guests} guests, ${dateStr} (${slot}) at ${place}.\nAgreed: ${money(priceOf(a.p!, sel.guests))}. Ref ${ref}.\n\nMr. Bondz will share the run-of-show 14 days out.` })),
+    { who: "Client", to: details.email || "you@example.com", subj: `You're booked - ${ev?.title} on ${shownDateText}`, body: `Hi ${details.name || "there"},\n\nIt's official. Your ${ev?.title?.toLowerCase()} for ${sel.guests} guests is locked for ${shownDateText} (${slot}) at ${place}.\n\nDeposit paid: ${money(est.deposit)}. Balance of ${money(est.balance)} is due 7 days before.\nReference: ${ref}\n\nYour signed agreement and receipt are attached. Nothing else to do - Mr. Bondz has it from here.` },
+    { who: "Mr. Bondz", to: "bondz@bondzevents.com", subj: `New booking ${ref} · ${ev?.title} · ${sel.guests} guests`, body: `Client: ${details.name} · ${details.phone} · ${details.email}\nWhen: ${shownDateText}, ${slot}\nWhere: ${place}\nPartners locked: ${assigned.map((a) => a.p!.name).join(", ") || "Solo event"}\nNotes: ${details.notes || "-"}\n\nCalendar blocked. Deposit cleared.` },
+    ...(venue ? [{ who: venue.name, to: `bookings@${venue.id}.venue`, subj: `Confirmed hold - ${shownDateText}`, body: `Hello ${venue.name} team,\n\nConfirmed: ${ev?.title} for ${sel.guests} guests on ${shownDateText} (${slot}). Organizer: Mr. Bondz. Venue fee ${money(venue.price)} is covered under ref ${ref}.\n\nYour calendar has been locked for this date.` }] : []),
+    ...assigned.map((a) => ({ who: a.p!.name, to: `jobs@${a.p!.id}.partner`, subj: `You're on: ${a.cat} · ${shownDateText}`, body: `Hi ${a.p!.name},\n\nYou're booked for ${a.cat.toLowerCase()} - ${ev?.title?.toLowerCase()}, ${sel.guests} guests, ${shownDateText} (${slot}) at ${place}.\nAgreed: ${money(priceOf(a.p!, sel.guests))}. Ref ${ref}.\n\nMr. Bondz will share the run-of-show 14 days out.` })),
   ];
   const r = recipients[Math.min(tab, recipients.length - 1)]!;
   const link = typeof window !== "undefined" ? `${window.location.origin}/invite/${ref}` : `/invite/${ref}`;
-  const guestMsg = `${head}\n${tag}\n${dateStr} · ${slot}\n${place}\n\nDetails & RSVP: ${link}`;
+  const guestMsg = `${head}\n${tag}\n${shownDateText} · ${slot}\n${place}\n\nDetails & RSVP: ${link}`;
+
+  const calendarUrl = (() => {
+    if (!activeDate) return "#";
+    const d = `${activeDate.getFullYear()}${String(activeDate.getMonth() + 1).padStart(2, "0")}${String(activeDate.getDate()).padStart(2, "0")}`;
+    const next = new Date(activeDate); next.setDate(next.getDate() + 1);
+    const d2 = `${next.getFullYear()}${String(next.getMonth() + 1).padStart(2, "0")}${String(next.getDate()).padStart(2, "0")}`;
+    const q = new URLSearchParams({
+      action: "TEMPLATE",
+      text: head,
+      dates: `${d}/${d2}`,
+      details: `${tag}\nBondz Events · Ref ${ref}\nHost: ${details.name}\nRSVP: ${link}`,
+      location: place,
+    });
+    return `https://calendar.google.com/calendar/render?${q.toString()}`;
+  })();
 
   const download = async () => {
-    const S = 1080;
-    const c = document.createElement("canvas");
-    c.width = c.height = S;
-    const ctx = c.getContext("2d")!;
-    await document.fonts.load('italic 110px "Instrument Serif"');
-    await document.fonts.load('700 36px "Bricolage Grotesque"');
-    ctx.fillStyle = theme.bg;
-    ctx.fillRect(0, 0, S, S);
-    const logoSrc = theme.logo === "dark" ? "/brand-lockup-dark.png" : "/brand-lockup.png";
-    const img = await loadImg(logoSrc);
-    const w = 380;
-    ctx.drawImage(img, S - w - 50, S - (w * img.height) / img.width - 50, w, (w * img.height) / img.width);
-    ctx.fillStyle = theme.hl;
-    ctx.font = '700 30px "Bricolage Grotesque"';
-    ctx.fillText("YOU'RE INVITED", 80, 130);
-    ctx.fillStyle = theme.fg;
-    ctx.font = 'italic 120px "Instrument Serif"';
-    const words = head.split(" ");
-    let line = "";
-    let y = 290;
-    for (const w of words) {
-      if (ctx.measureText(line + w).width > S - 160) {
-        ctx.fillText(line.trim(), 80, y);
-        line = "";
-        y += 120;
+    try {
+      const templateSrc = theme.logo === "dark" ? darkTemplate : lightTemplate;
+      const templateImg = await loadImg(templateSrc);
+      const W = templateImg.naturalWidth || 1080;
+      const H = templateImg.naturalHeight || 1080;
+      const c = document.createElement("canvas");
+      c.width = W;
+      c.height = H;
+      const ctx = c.getContext("2d")!;
+      ctx.drawImage(templateImg, 0, 0, W, H);
+
+      await document.fonts.load('italic 95px "Instrument Serif"');
+      await document.fonts.load('700 32px "Bricolage Grotesque"');
+
+      ctx.fillStyle = theme.fg;
+      ctx.font = 'italic 95px "Instrument Serif"';
+      const words = head.split(" ");
+      let line = "";
+      let y = 390;
+      for (const w of words) {
+        if (ctx.measureText(line + w).width > W - 220) {
+          ctx.fillText(line.trim(), 100, y);
+          line = "";
+          y += 105;
+        }
+        line += w + " ";
       }
-      line += w + " ";
+      ctx.fillText(line.trim(), 100, y);
+
+      ctx.font = 'italic 44px "Instrument Serif"';
+      ctx.fillStyle = theme.hl;
+      ctx.fillText(tag, 100, y + 75);
+
+      ctx.fillStyle = theme.fg;
+      ctx.font = '700 30px "Bricolage Grotesque"';
+      ctx.fillText(shownDateText.toUpperCase(), 100, y + 170);
+      ctx.font = '500 26px "Bricolage Grotesque"';
+      ctx.fillText(`${slot ? slot : "Evening"} · ${place}`, 100, y + 215);
+
+      const a = document.createElement("a");
+      a.download = `bondz-vip-invite-${ref}.png`;
+      a.href = c.toDataURL("image/png");
+      a.click();
+      toast.success("VIP Invite PNG exported");
+    } catch {
+      toast.error("Could not export invite image");
     }
-    ctx.fillText(line.trim(), 80, y);
-    ctx.font = 'italic 52px "Instrument Serif"';
-    ctx.fillStyle = theme.hl;
-    ctx.fillText(tag, 80, y + 90);
-    ctx.fillStyle = theme.fg;
-    ctx.font = '700 34px "Bricolage Grotesque"';
-    ctx.fillText(dateStr.toUpperCase(), 80, y + 200);
-    ctx.font = '500 30px "Bricolage Grotesque"';
-    ctx.fillText(`${slot} · ${place}`, 80, y + 250);
-    const a = document.createElement("a");
-    a.download = `bondz-invite-${ref}.png`;
-    a.href = c.toDataURL("image/png");
-    a.click();
   };
 
   const printPdf = (): void => {
@@ -442,6 +646,7 @@ export function Step6() {
     if (!w) { toast.error("Allow pop-ups to download your contract."); return; }
     const rows = est.lines.map((l) => `<tr><td><b>${l.label}</b><small>${l.note ?? ""}</small></td><td style="text-align:right">${money(l.amount)}</td></tr>`).join("");
     const terms = TERMS.map((t, i) => `<li><b>${i + 1}. ${t.t}.</b> ${t.b}</li>`).join("");
+    const logoUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/brand-lockup.png`;
     w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Bondz Events Agreement & Receipt - ${ref}</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
@@ -476,7 +681,7 @@ ol.terms li b { color: #151118; }
 </style></head><body>
 <div class="pdf-container">
 <header>
-  <div><img src="${typeof window !== "undefined" ? window.location.origin : ""}/brand-lockup.png" alt="Bondz Events" class="logo" /></div>
+  <div><img src="${logoUrl}" alt="Bondz Events" class="logo" /></div>
   <div style="text-align:right">
     <div class="k">Service Agreement & Receipt</div>
     <h1>You’re booked.</h1>
@@ -485,7 +690,7 @@ ol.terms li b { color: #151118; }
 </header>
 <div class="meta-grid">
   <div><div class="meta-label">Client</div><div class="meta-val"><b>${details.name}</b><br>${details.email}<br>${details.phone}</div></div>
-  <div><div class="meta-label">Event</div><div class="meta-val"><b>${ev?.title}</b> · ${sel.guests} guests<br>${dateStr}<br>${slot}</div></div>
+  <div><div class="meta-label">Event</div><div class="meta-val"><b>${ev?.title}</b> · ${sel.guests} guests<br>${shownDateText}<br>${slot}</div></div>
   <div><div class="meta-label">Location & Venue</div><div class="meta-val">${place}</div></div>
 </div>
 <table>
@@ -521,14 +726,17 @@ ol.terms li b { color: #151118; }
         <div className="relative grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
           <div>
             <p className="eyebrow flex flex-wrap items-center gap-3">
-              <span className="text-foreground/60 font-mono">Ref {ref}</span>
-              <span className="rounded-full bg-success px-2.5 py-1 text-success-foreground font-bold">✓ Deposit paid</span>
+              <span className={cn("font-mono", cancelled ? "line-through text-destructive" : "text-foreground/60")}>Ref {ref}</span>
+              <span className={cn("rounded-full px-2.5 py-1 font-bold", cancelled ? "bg-destructive text-destructive-foreground" : "bg-success text-success-foreground")}>
+                {cancelled ? "Booking Cancelled" : "✓ Deposit paid"}
+              </span>
             </p>
             <h1 className="mt-3 text-[clamp(3rem,min(8vw,13vh),7.5rem)] font-extrabold leading-[0.85] tracking-[-0.04em]">
-              You’re <span className="font-serif-i text-primary">Booked!</span>
+              {cancelled ? "Booking " : "You’re "}
+              <span className="font-serif-i text-primary">{cancelled ? "Cancelled." : "Booked!"}</span>
             </h1>
             <p className="mt-3 text-sm text-foreground/80 font-medium">
-              {ev?.title} · {sel.guests} guests · {dateStr}, {slot} · {place}
+              {ev?.title} · {sel.guests} guests · {shownDateText}, {slot} · {place}
             </p>
           </div>
           <p className="max-w-[16rem] text-sm text-foreground/70">
@@ -574,7 +782,7 @@ ol.terms li b { color: #151118; }
         {/* Bento 2: Guest Invitation (Underneath, Left) */}
         <section className="col-span-1 flex flex-col justify-between gap-3.5 rounded-2xl border hairline bg-surface-light p-4 sm:p-5 shadow-sm">
           <div>
-            <p className="eyebrow text-ink/55">Your guest invitation</p>
+            <p className="eyebrow text-ink/55">Your VIP guest invitation card</p>
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-[1fr_9rem] gap-3.5">
               <div className="space-y-2.5">
                 <input
@@ -614,37 +822,43 @@ ol.terms li b { color: #151118; }
                 </div>
               </div>
               <div
-                className="relative aspect-square overflow-hidden rounded-xl p-3 shadow-md select-none shrink-0"
-                style={{ background: theme.bg, color: theme.fg }}
+                className="relative aspect-square overflow-hidden rounded-xl p-3 shadow-md select-none shrink-0 border hairline flex flex-col justify-between"
+                style={{
+                  backgroundImage: `url(${theme.logo === "dark" ? darkTemplate : lightTemplate})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  color: theme.fg,
+                }}
               >
-                <img
-                  src={theme.logo === "dark" ? "/brand-lockup-dark.png" : "/brand-lockup.png"}
-                  alt="Bondz Events"
-                  className="absolute bottom-2.5 right-2.5 w-[38%] object-contain"
-                />
-                <p className="relative text-[0.45rem] font-bold tracking-[0.16em] uppercase" style={{ color: theme.hl }}>
-                  YOU’RE INVITED
-                </p>
-                <p className="font-serif-i relative mt-1.5 text-[1.02rem] leading-[0.95] line-clamp-3">{head}</p>
-                <p className="font-serif-i relative mt-1 text-[0.60rem]" style={{ color: theme.hl }}>
-                  {tag}
-                </p>
+                <div>
+                  <p className="text-[0.45rem] font-bold tracking-[0.16em] uppercase" style={{ color: theme.hl }}>
+                    YOU’RE INVITED
+                  </p>
+                  <p className="font-serif-i mt-1 text-[0.98rem] leading-[0.95] line-clamp-3">{head}</p>
+                  <p className="font-serif-i mt-1 text-[0.58rem] line-clamp-1" style={{ color: theme.hl }}>
+                    {tag}
+                  </p>
+                </div>
+                <div className="text-[0.55rem] font-mono opacity-85 leading-tight">
+                  <p className="font-bold truncate">{shownDateText}</p>
+                  <p className="truncate">{slot} · {place}</p>
+                </div>
               </div>
             </div>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-2 pt-2 border-t hairline">
             <button
               onClick={download}
-              className="rounded-full bg-ink py-2.5 px-3 text-xs font-bold text-canvas hover:brightness-110 active:scale-95 transition-all shadow-xs"
+              className="rounded-full bg-ink py-2.5 px-3 text-xs font-bold text-canvas hover:brightness-110 active:scale-95 transition-all shadow-xs cursor-pointer"
             >
-              Download image
+              Download VIP card PNG
             </button>
             <button
               onClick={() => {
                 navigator.clipboard.writeText(guestMsg);
                 toast.success("Guest message copied");
               }}
-              className="rounded-full border hairline bg-surface-light py-2.5 px-3 text-xs font-bold text-ink hover:bg-canvas active:scale-95 transition-all"
+              className="rounded-full border hairline bg-surface-light py-2.5 px-3 text-xs font-bold text-ink hover:bg-canvas active:scale-95 transition-all cursor-pointer"
             >
               Copy guest message
             </button>
@@ -653,14 +867,14 @@ ol.terms li b { color: #151118; }
                 navigator.clipboard.writeText(link);
                 toast.success("Read-only booking link copied");
               }}
-              className="col-span-2 rounded-full border hairline bg-surface-light py-2.5 text-xs font-bold text-ink hover:bg-canvas active:scale-95 transition-all"
+              className="col-span-2 rounded-full border hairline bg-surface-light py-2.5 text-xs font-bold text-ink hover:bg-canvas active:scale-95 transition-all cursor-pointer"
             >
               Copy booking link <span className="font-normal text-ink/50">· read-only, for guests</span>
             </button>
           </div>
         </section>
 
-        {/* Bento 3: Receipt & Signed Contract (Underneath, Right) */}
+        {/* Bento 3: Receipt & Signed Contract (Underneath, Right) with 2x2 Button Grid */}
         <section className="col-span-1 flex flex-col justify-between rounded-2xl border hairline bg-surface-light p-5 shadow-sm">
           <div>
             <p className="eyebrow text-ink/55">Receipt & signed contract</p>
@@ -680,19 +894,74 @@ ol.terms li b { color: #151118; }
               </li>
             </ul>
           </div>
-          <div className="space-y-2 pt-6 border-t hairline mt-4">
-            <Primary onClick={printPdf} className="w-full text-center">
-              Download / Print PDF
+
+          {/* 2x2 Receipt button grid */}
+          <div className="grid grid-cols-2 gap-2.5 pt-5 border-t hairline mt-4">
+            <Primary onClick={printPdf} className="w-full text-center py-2.5 text-xs sm:text-sm">
+              Download PDF
             </Primary>
+            <a
+              href={calendarUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-ink/20 px-3 py-2.5 text-xs sm:text-sm font-bold text-ink hover:border-ink active:scale-95 transition-all text-center cursor-pointer"
+            >
+              Add to Google Cal ↗
+            </a>
+            <button
+              disabled={cancelled}
+              onClick={() => setModal("reschedule")}
+              className="rounded-full bg-ink px-3 py-2.5 text-xs sm:text-sm font-bold text-canvas hover:brightness-110 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            >
+              Reschedule Event
+            </button>
+            <button
+              disabled={cancelled}
+              onClick={() => setModal("cancel")}
+              className="rounded-full border border-destructive/40 text-destructive px-3 py-2.5 text-xs sm:text-sm font-bold hover:bg-destructive/10 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            >
+              Cancel Booking
+            </button>
+          </div>
+
+          <div className="mt-3 flex items-center justify-between text-xs text-ink/60">
             <button
               onClick={reset}
-              className="w-full rounded-full border hairline py-2.5 text-xs sm:text-sm font-bold text-ink hover:bg-canvas active:scale-95 transition-all"
+              className="font-bold underline underline-offset-4 hover:text-primary cursor-pointer"
             >
               Book another celebration
             </button>
+            <a href="/" className="font-bold underline underline-offset-4 hover:text-primary">
+              Return to home
+            </a>
           </div>
         </section>
       </div>
+
+      {modal === "reschedule" && (
+        <RescheduleModal
+          onClose={() => setModal(null)}
+          total={est.total}
+          current={activeDay}
+          sel={sel}
+          anchor={anchor}
+          onConfirm={(d) => {
+            setMovedDay(d);
+            setModal(null);
+          }}
+        />
+      )}
+      {modal === "cancel" && (
+        <CancelModal
+          onClose={() => setModal(null)}
+          deposit={est.deposit}
+          onConfirm={() => {
+            setCancelled(true);
+            setModal(null);
+          }}
+        />
+      )}
     </div>
   );
 }
+

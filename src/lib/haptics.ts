@@ -171,3 +171,33 @@ export function playCelebrationAudio() {
     /* ignore */
   }
 }
+
+/**
+ * Tactical celebration sequence: tactile flourish immediately, followed 480ms later by human crowd cheers
+ */
+export function playCelebrationSequence() {
+  if (!isSoundEnabled()) return;
+  triggerHaptic([35, 60, 45, 60, 80]);
+  playCelebrationAudio();
+
+  setTimeout(() => {
+    try {
+      const audio = new Audio("/celebration.wav");
+      audio.volume = 0.85;
+      audio.play().catch(() => {});
+      setTimeout(() => {
+        const fade = setInterval(() => {
+          if (audio.volume > 0.08) {
+            audio.volume = Math.max(0, audio.volume - 0.1);
+          } else {
+            audio.pause();
+            clearInterval(fade);
+          }
+        }, 80);
+      }, 5500);
+    } catch {
+      /* audio optional */
+    }
+  }, 480);
+}
+

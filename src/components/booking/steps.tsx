@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   CATEGORIES,
   EVENT_TYPES,
@@ -118,7 +118,7 @@ export function Step1() {
   return (
     <div className="flex w-full max-w-full min-w-0 h-full min-h-0 flex-col gap-3 sm:gap-4">
       <StepHead no="01" title={<>What are we <span className="font-serif-i text-primary">celebrating?</span></>} sub="Pick the shape of the event. Let us make your moment real." />
-      <div className="scroll-quiet grid w-full max-w-full min-h-0 flex-1 auto-rows-[minmax(6.5rem,1fr)] grid-cols-2 gap-2 sm:gap-2.5 overflow-x-hidden overflow-y-auto md:grid-cols-4 md:grid-rows-3 md:overflow-visible">
+      <div className="scroll-quiet grid w-full max-w-full min-h-0 flex-1 auto-rows-[minmax(5.25rem,1fr)] sm:auto-rows-[minmax(6.5rem,1fr)] grid-cols-2 gap-2 sm:gap-2.5 overflow-x-hidden overflow-y-auto md:grid-cols-4 md:grid-rows-3 md:overflow-visible">
         {EVENT_TYPES.map((e) => {
           const on = sel.event === e.id;
           return (
@@ -131,21 +131,21 @@ export function Step1() {
               }}
               aria-pressed={on}
               className={cn(
-                "group relative flex min-w-0 w-full flex-col justify-between overflow-hidden rounded-2xl border p-3 sm:p-4 text-left transition-all",
+                "group relative flex min-w-0 w-full flex-col justify-between overflow-hidden rounded-2xl border p-2.5 sm:p-4 text-left transition-all",
                 on ? "border-primary bg-surface-light ring-2 ring-primary shadow-sm" : "hairline bg-surface-light/60 hover:border-ink/40 hover:bg-surface-light",
                 SPANS[e.id],
               )}
             >
               <span className="relative z-10 flex w-full items-start justify-between min-w-0">
-                <span className="text-xs font-bold text-ink/40">{e.no}</span>
+                <span className="text-[clamp(0.65rem,1.8vw,0.75rem)] font-bold text-ink/40">{e.no}</span>
                 <Check on={on} />
               </span>
               <div
                 className={cn(
                   "pointer-events-none absolute transition-all duration-500",
                   e.id === "wedding"
-                    ? "right-2 sm:right-6 top-6 sm:top-8 size-24 sm:size-32 md:size-40 group-hover:scale-105"
-                    : "right-1.5 sm:right-3 top-1/2 -translate-y-1/2 size-12 sm:size-14 md:size-18 group-hover:scale-105",
+                    ? "right-1.5 sm:right-6 top-5 sm:top-8 size-20 sm:size-32 md:size-40 group-hover:scale-105"
+                    : "right-1 sm:right-3 top-1/2 -translate-y-1/2 size-9 sm:size-14 md:size-18 group-hover:scale-105",
                   on
                     ? "opacity-65 text-primary scale-105"
                     : "opacity-25 text-ink/70 group-hover:opacity-45 group-hover:text-primary/70",
@@ -154,8 +154,8 @@ export function Step1() {
                 <EventEditorialSvg id={e.id} className="size-full" />
               </div>
               <span className="relative z-10 min-w-0 w-full">
-                <span className={cn("display block leading-tight", e.id === "wedding" ? "text-3xl sm:text-5xl md:text-6xl" : "text-base sm:text-xl md:text-2xl")}>{e.title}</span>
-                <span className="mt-1 block text-[0.70rem] sm:text-xs leading-snug text-ink/60 line-clamp-2">{e.line}</span>
+                <span className={cn("display block leading-tight", e.id === "wedding" ? "text-[clamp(1.5rem,5.5vw,3.75rem)]" : "text-[clamp(0.95rem,3.4vw,1.45rem)]")}>{e.title}</span>
+                <span className="mt-1 block text-[clamp(0.62rem,1.8vw,0.75rem)] leading-snug text-ink/60 line-clamp-2">{e.line}</span>
               </span>
             </button>
           );
@@ -309,15 +309,22 @@ export function Step2() {
       </div>
       <div className="scroll-quiet grid min-h-0 flex-1 gap-3 overflow-y-auto md:grid-cols-2">
         {branches.map((b) => (
-          <div
+          <button
             key={b.id}
+            type="button"
+            onClick={() => {
+              playTapSound();
+              setSel((s) => ({ ...s, where: b.id, venue: b.id === "home" ? null : s.venue }));
+              setStep(3);
+              signalBot({ mood: "happy", tip: b.id === "home" ? "Add partners - only ones free together are offered." : "Only venues that fit your crowd made it onto this screen." });
+            }}
             className={cn(
-              "group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-5 transition md:p-7 shadow-sm",
-              b.id === "venue" ? "border-ink bg-ink text-canvas" : "hairline bg-surface-light text-ink"
+              "group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-5 text-left transition md:p-7 shadow-sm cursor-pointer hover:border-primary active:scale-[0.99] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30",
+              b.id === "venue" ? "border-ink bg-ink text-canvas hover:ring-2 hover:ring-primary/40" : "hairline bg-surface-light text-ink hover:ring-2 hover:ring-primary/40"
             )}
           >
             {/* Top Row: Editorial Badge & Big Editorial Architecture SVG */}
-            <div className="flex items-start justify-between">
+            <div className="flex w-full items-start justify-between">
               <span
                 className={cn(
                   "eyebrow inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-bold text-xs uppercase",
@@ -340,7 +347,7 @@ export function Step2() {
               </div>
             </div>
 
-            <div>
+            <div className="mt-4 w-full">
               <h2 className="display text-4xl md:text-5xl lg:text-6xl">{b.t}</h2>
               <p className="mt-3 max-w-md text-sm leading-snug opacity-75">{b.d}</p>
               <ul className="mt-4 flex flex-wrap gap-1.5">
@@ -348,19 +355,12 @@ export function Step2() {
                   <li key={t} className={cn("eyebrow rounded-full border px-2.5 py-1", b.id === "venue" ? "border-canvas/25" : "hairline")}>{t}</li>
                 ))}
               </ul>
-              <button
-                onClick={() => {
-                  playTapSound();
-                  setSel((s) => ({ ...s, where: b.id, venue: b.id === "home" ? null : s.venue }));
-                  setStep(3);
-                  signalBot({ mood: "happy", tip: b.id === "home" ? "Add partners - only ones free together are offered." : "Only venues that fit your crowd made it onto this screen." });
-                }}
-                className="mt-6 inline-flex items-center gap-3 rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-primary-foreground transition hover:brightness-110 active:scale-95 shadow-md cursor-pointer"
-              >
-                Choose →
-              </button>
+              <div className="mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary group-hover:translate-x-1 transition-transform">
+                <span>Select this route</span>
+                <span>→</span>
+              </div>
             </div>
-          </div>
+          </button>
         ))}
       </div>
       <div className="shrink-0 pl-20"><Ghost onClick={() => setStep(1)}>← Back</Ghost></div>
@@ -551,14 +551,14 @@ export function Step4() {
   return (
     <div className="flex flex-col gap-4">
       <StepHead no="04" title={<>Pick a date. <span className="font-serif-i text-primary">Every one works.</span></>} sub={`We intersected ${calCount} live calendars. Days where anyone is booked aren't shown at all.`} />
-      <div className="scroll-quiet flex items-stretch gap-1.5 overflow-x-auto pb-1">
+      <div className="flex flex-wrap items-center gap-1.5 pb-1">
         {sources.map((s, i) => (
           <div key={s.n} className="flex shrink-0 items-center gap-1.5">
             <div className="rounded-xl border hairline bg-surface-light px-3 py-2">
               <p className="eyebrow text-ink/50">{s.n}</p>
               <p className="text-lg font-extrabold tabular-nums">{s.free}<span className="text-xs font-medium text-ink/40"> free</span></p>
             </div>
-            <span className="text-ink/30">{i < sources.length - 1 ? "∩" : "="}</span>
+            <span className="text-ink/40 font-bold px-0.5">{i < sources.length - 1 ? "∩" : "="}</span>
           </div>
         ))}
         <div className="flex shrink-0 items-center rounded-xl bg-ink px-4 py-2 text-canvas">
@@ -591,17 +591,17 @@ export function Step4() {
                     "flex flex-col justify-between rounded-xl p-3 text-left transition-all border shadow-2xs group cursor-pointer",
                     on
                       ? "border-primary bg-primary text-white shadow-md ring-2 ring-primary/30 -translate-y-0.5"
-                      : "border-[#e2ded6] bg-white text-[#151118] hover:border-primary/60 hover:shadow-sm hover:-translate-y-0.5"
+                      : "border-white/10 bg-[#151118] text-[#fbf8f2] dark:bg-[#f6f1e7] dark:text-[#151118] dark:border-[#151118]/15 hover:border-primary/60 hover:shadow-sm hover:-translate-y-0.5"
                   )}
                 >
                   <div className="flex items-center justify-between w-full">
-                    <span className={cn("text-[0.68rem] font-bold uppercase tracking-wider", on ? "text-white/80" : "text-[#151118]/60")}>
+                    <span className={cn("text-[0.68rem] font-bold uppercase tracking-wider", on ? "text-white/80" : "text-white/70 dark:text-[#151118]/70")}>
                       {date.toLocaleDateString("en-US", { weekday: "short" })}
                     </span>
                     <span
                       className={cn(
                         "text-[0.62rem] font-semibold px-1.5 py-0.5 rounded-md",
-                        on ? "bg-white/20 text-white" : "bg-primary/10 text-primary"
+                        on ? "bg-white/20 text-white" : "bg-primary/20 text-primary dark:bg-primary/15"
                       )}
                     >
                       {on ? "✓ Selected" : `${openSlots.length} shift${openSlots.length > 1 ? "s" : ""}`}
@@ -613,7 +613,7 @@ export function Step4() {
                   <div
                     className={cn(
                       "mt-1 flex flex-col gap-1 border-t pt-1.5 text-[0.63rem] leading-tight w-full",
-                      on ? "border-white/20 text-white/90" : "border-black/10 text-[#151118]/80"
+                      on ? "border-white/20 text-white/90" : "border-white/15 text-white/80 dark:border-black/10 dark:text-[#151118]/80"
                     )}
                   >
                     {openSlots.map((s) => (
@@ -665,12 +665,12 @@ export function SlotPicker() {
                 "group shrink-0 flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition shadow-xs cursor-pointer whitespace-nowrap",
                 slot === s
                   ? "border-primary bg-primary text-white shadow-md ring-2 ring-primary/30"
-                  : "bg-white text-[#151118] border-[#e2ded6] hover:border-primary/60 hover:shadow"
+                  : "bg-[#151118] text-[#fbf8f2] border-white/10 dark:bg-[#f6f1e7] dark:text-[#151118] dark:border-[#151118]/15 hover:border-primary/60 hover:shadow"
               )}
             >
               <span className={cn("inline-block size-1.5 rounded-full", slot === s ? "bg-white" : "bg-emerald-500")} />
               <span>{s}</span>
-              <span className={cn("text-[0.62rem] font-medium opacity-85", slot === s ? "text-white/90" : "text-[#151118]/70")}>
+              <span className={cn("text-[0.62rem] font-medium opacity-85", slot === s ? "text-white/90" : "text-white/70 dark:text-[#151118]/70")}>
                 ({SHIFT_DETAILS[s].shortTime})
               </span>
               {slot === s && <span className="text-xs">✓</span>}

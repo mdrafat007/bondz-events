@@ -229,3 +229,74 @@ export function EventEditorialSvg({ id, className }: { id: EventTypeId; classNam
       return null;
   }
 }
+
+export const EVENT_SVGS: Record<EventTypeId, (props: EditorialSvgProps) => React.JSX.Element> = {
+  wedding: WeddingIcon,
+  anniversary: AnniversaryIcon,
+  birthday: BirthdayIcon,
+  bbq: BbqIcon,
+  family: FamilyIcon,
+  corporate: CorporateIcon,
+  hybrid: HybridIcon,
+  custom: CustomIcon,
+};
+
+export function HomeEditorialSvg({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
+      <circle cx="80" cy="80" r="64" fill="currentColor" fillOpacity="0.05" />
+      <line x1="16" y1="138" x2="144" y2="138" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
+      <line x1="28" y1="144" x2="132" y2="144" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.2" />
+      <path d="M40 138V66L80 34L120 66V138H40Z" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
+      <path d="M34 69L80 32L126 69" stroke="#f1453b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="80" cy="52" r="7" stroke="currentColor" strokeWidth="1.8" />
+      <line x1="80" y1="45" x2="80" y2="59" stroke="currentColor" strokeWidth="1.2" />
+      <line x1="73" y1="52" x2="87" y2="52" stroke="currentColor" strokeWidth="1.2" />
+      <rect x="52" y="74" width="16" height="24" rx="8" stroke="currentColor" strokeWidth="1.8" />
+      <line x1="52" y1="84" x2="68" y2="84" stroke="currentColor" strokeWidth="1.2" />
+      <line x1="60" y1="74" x2="60" y2="98" stroke="currentColor" strokeWidth="1.2" />
+      <rect x="92" y="74" width="16" height="24" rx="8" stroke="currentColor" strokeWidth="1.8" />
+      <line x1="92" y1="84" x2="108" y2="84" stroke="currentColor" strokeWidth="1.2" />
+      <line x1="100" y1="74" x2="100" y2="98" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M70 138V110C70 105.5 73.5 102 78 102H82C86.5 102 90 105.5 90 110V138H70Z" stroke="currentColor" strokeWidth="2" />
+      <path d="M66 102H94" stroke="#f1453b" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="76" cy="122" r="1.5" fill="#f1453b" />
+      <rect x="49" y="112" width="12" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="99" y="112" width="12" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="80" cy="95" r="2" fill="#f1453b" />
+      <path d="M26 44L28 38L34 36L28 34L26 28L24 34L18 36L24 38L26 44Z" fill="#f1453b" opacity="0.8" />
+      <path d="M136 50L137.5 45L142 43.5L137.5 42L136 37L134.5 42L130 43.5L134.5 45L136 50Z" fill="#f1453b" opacity="0.6" />
+    </svg>
+  );
+}
+
+export function VenueEditorialSvg({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
+      <circle cx="80" cy="80" r="64" fill="currentColor" fillOpacity="0.05" />
+      <line x1="14" y1="138" x2="146" y2="138" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" opacity="0.5" />
+      <line x1="22" y1="143" x2="138" y2="143" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" opacity="0.3" />
+      <line x1="32" y1="148" x2="128" y2="148" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.15" />
+      <path d="M30 68C30 40 52 24 80 24C108 24 130 40 130 68" stroke="#f1453b" strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M42 68C42 46 59 34 80 34C101 34 118 46 118 68" stroke="currentColor" strokeWidth="1.4" opacity="0.6" />
+      <rect x="24" y="68" width="112" height="8" rx="1.5" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.05" />
+      <line x1="20" y1="68" x2="140" y2="68" stroke="#f1453b" strokeWidth="2" strokeLinecap="round" />
+      <rect x="34" y="76" width="10" height="62" stroke="currentColor" strokeWidth="1.8" />
+      <line x1="39" y1="78" x2="39" y2="136" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <rect x="58" y="76" width="10" height="62" stroke="currentColor" strokeWidth="1.8" />
+      <line x1="63" y1="78" x2="63" y2="136" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <rect x="92" y="76" width="10" height="62" stroke="currentColor" strokeWidth="1.8" />
+      <line x1="97" y1="78" x2="97" y2="136" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <rect x="116" y="76" width="10" height="62" stroke="currentColor" strokeWidth="1.8" />
+      <line x1="121" y1="78" x2="121" y2="136" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <path d="M72 138V98C72 93 75.5 89 80 89C84.5 89 88 93 88 98V138" stroke="#f1453b" strokeWidth="2" />
+      <line x1="80" y1="68" x2="80" y2="82" stroke="currentColor" strokeWidth="1.2" />
+      <circle cx="80" cy="84" r="2.5" fill="#f1453b" />
+      <line x1="80" y1="24" x2="80" y2="68" stroke="currentColor" strokeWidth="1.2" opacity="0.4" />
+      <line x1="56" y1="31" x2="68" y2="68" stroke="currentColor" strokeWidth="1.2" opacity="0.4" />
+      <line x1="104" y1="31" x2="92" y2="68" stroke="currentColor" strokeWidth="1.2" opacity="0.4" />
+      <path d="M142 34L144 28L150 26L144 24L142 18L140 24L134 26L140 28L142 34Z" fill="#f1453b" opacity="0.8" />
+    </svg>
+  );
+}
+

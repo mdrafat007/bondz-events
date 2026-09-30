@@ -1,4 +1,4 @@
-﻿import { Badge, Card, cn, triggerTap } from "@/index";
+import { Badge, Card, cn, triggerTap } from "@/index";
 import { EVENT_NARRATIVES, EVENT_TYPES, VIBES_BY_EVENT, type EventTypeId } from "@/lib/bondz-data";
 import { EVENT_SVGS } from "./EventEditorialSvgs";
 import { Chip, StepHead, type BookingCtx } from "./shared";
@@ -39,8 +39,8 @@ export function Step1Event({ ctx }: { ctx: BookingCtx }) {
               <span className="relative flex h-full flex-col justify-between gap-6">
                 <span className="text-xs font-bold tabular-nums text-subtle">{e.no}</span>
                 <span className="w-2/3">
-                  <span className={cn("block font-serif leading-tight text-ink", big ? "text-3xl sm:text-4xl" : "text-xl")}>{e.title}</span>
-                  <span className="mt-1 block text-xs text-subtle">{e.line}</span>
+                  <span className={cn("block font-serif leading-tight text-ink", big ? "text-[clamp(1.5rem,5.5vw,3.75rem)]" : "text-[clamp(0.95rem,3.4vw,1.45rem)]")}>{e.title}</span>
+                  <span className="mt-1 block text-[clamp(0.62rem,1.8vw,0.75rem)] text-subtle">{e.line}</span>
                 </span>
               </span>
             </button>

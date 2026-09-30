@@ -1,4 +1,4 @@
-﻿export type EventTypeId = "wedding" | "anniversary" | "birthday" | "bbq" | "family" | "corporate" | "hybrid" | "custom";
+export type EventTypeId = "wedding" | "anniversary" | "birthday" | "bbq" | "family" | "corporate" | "hybrid" | "custom";
 export type CategoryId = "catering" | "decor" | "dj" | "equipment" | "staff" | "cleaning" | "photo" | "lighting" | "hybrid";
 export type Slot = "Morning" | "Evening" | "Night";
 
@@ -86,18 +86,18 @@ export const VENUES: Venue[] = [
 ];
 
 export type ServiceTab = "Plan" | "Host" | "Produce";
-export const SERVICES_11: { no: string; title: string; tagline: string; tab: ServiceTab }[] = [
-  { no: "01", title: "Events Production", tagline: "Run-of-show, cues and one person holding every thread.", tab: "Plan" },
-  { no: "02", title: "Design Support", tagline: "Mood, palette and floor plan before anyone buys a napkin.", tab: "Plan" },
-  { no: "03", title: "Media & PR", tagline: "Announcements, press lists and a story worth telling.", tab: "Plan" },
-  { no: "04", title: "Catering", tagline: "Menus built around your guests, not a set list.", tab: "Host" },
-  { no: "05", title: "Decorations", tagline: "Florals, draping, tablescapes - styled, installed, struck.", tab: "Host" },
-  { no: "06", title: "Music & DJ", tagline: "A set that reads the room, mic for the speeches.", tab: "Host" },
-  { no: "07", title: "Post-Event Cleaning Support", tagline: "The morning after, handled before you wake.", tab: "Host" },
-  { no: "08", title: "Photo & Videography", tagline: "Candids, portraits and a same-week highlight reel.", tab: "Produce" },
-  { no: "09", title: "Equipment Support", tagline: "Tables, tents, heaters, power - delivered and cleared.", tab: "Produce" },
-  { no: "10", title: "Lights & Sound", tagline: "Warm washes, clean audio, zero feedback squeal.", tab: "Produce" },
-  { no: "11", title: "Hybrid Events", tagline: "Live + digital. Stage, cameras and a platform that just works.", tab: "Produce" },
+export const SERVICES_11: { no: string; title: string; tagline: string; t: string; d: string; tab: ServiceTab }[] = [
+  { no: "01", title: "Events Production", tagline: "Run-of-show, cues and one person holding every thread.", t: "Events Production", d: "Run-of-show, cues and one person holding every thread.", tab: "Plan" },
+  { no: "02", title: "Design Support", tagline: "Mood, palette and floor plan before anyone buys a napkin.", t: "Design Support", d: "Mood, palette and floor plan before anyone buys a napkin.", tab: "Plan" },
+  { no: "03", title: "Media & PR", tagline: "Announcements, press lists and a story worth telling.", t: "Media & PR", d: "Announcements, press lists and a story worth telling.", tab: "Plan" },
+  { no: "04", title: "Catering", tagline: "Menus built around your guests, not a set list.", t: "Catering", d: "Menus built around your guests, not a set list.", tab: "Host" },
+  { no: "05", title: "Decorations", tagline: "Florals, draping, tablescapes - styled, installed, struck.", t: "Decorations", d: "Florals, draping, tablescapes - styled, installed, struck.", tab: "Host" },
+  { no: "06", title: "Music & DJ", tagline: "A set that reads the room, mic for the speeches.", t: "Music & DJ", d: "A set that reads the room, mic for the speeches.", tab: "Host" },
+  { no: "07", title: "Post-Event Cleaning Support", tagline: "The morning after, handled before you wake.", t: "Post-Event Cleaning Support", d: "The morning after, handled before you wake.", tab: "Host" },
+  { no: "08", title: "Photo & Videography", tagline: "Candids, portraits and a same-week highlight reel.", t: "Photo & Videography", d: "Candids, portraits and a same-week highlight reel.", tab: "Produce" },
+  { no: "09", title: "Equipment Support", tagline: "Tables, tents, heaters, power - delivered and cleared.", t: "Equipment Support", d: "Tables, tents, heaters, power - delivered and cleared.", tab: "Produce" },
+  { no: "10", title: "Lights & Sound", tagline: "Warm washes, clean audio, zero feedback squeal.", t: "Lights & Sound", d: "Warm washes, clean audio, zero feedback squeal.", tab: "Produce" },
+  { no: "11", title: "Hybrid Events", tagline: "Live + digital. Stage, cameras and a platform that just works.", t: "Hybrid Events", d: "Live + digital. Stage, cameras and a platform that just works.", tab: "Produce" },
 ];
 
 /** Deterministic pseudo-random in [0, 1). Same seed + index always returns the same value. */
@@ -281,3 +281,49 @@ export function dayToDate(anchor: Date, d: number): Date {
 
 export const usd = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 export const money = usd;
+
+export const TERMS: { t: string; b: string }[] = [
+  { t: "Booking & deposit", b: "Your booking is confirmed once the 25% deposit is paid and these terms are signed. The balance is due 7 days before the event." },
+  { t: "Availability guarantee", b: "Every date shown was free across Mr. Bondz, your venue (if any) and every assigned partner at the moment of booking. Those calendars are now locked for you." },
+  { t: "Rescheduling", b: "One free reschedule up to 30 days before the event, subject to live availability across the same partners. Later changes are handled personally by Mr. Bondz." },
+  { t: "Cancellation tiers", b: "More than 60 days out: deposit refunded minus a 5% processing fee. 30-60 days: 50% of deposit refunded. Under 30 days: deposit is non-refundable." },
+  { t: "Guest-count flexibility", b: "Final numbers may move ±10% up to 14 days before the event at the same per-guest rates. Larger changes re-run availability." },
+  { t: "Access & property", b: "At-home events require safe access for partners from 4 hours before start. Venue rules apply at venues." },
+  { t: "Liability & conduct", b: "Each partner carries their own insurance. The client is responsible for guest conduct and damage beyond normal wear." },
+  { t: "Force majeure", b: "If an event can't take place due to causes beyond anyone's control, we move it to the next mutually available date at no cost." },
+];
+
+export const TESTIMONIALS_A = [
+  { q: "I booked a 90-person wedding on my lunch break. My mom still doesn't believe me.", n: "Amira K.", e: "Wedding · 90" },
+  { q: "Not one phone call. The DJ texted me before I'd closed the tab.", n: "Jonah R.", e: "Birthday · 40" },
+  { q: "Every date it showed me actually worked. That alone is witchcraft.", n: "Priya S.", e: "Anniversary · 24" },
+  { q: "Our offsite had caterer, AV and venue confirmed in one sitting.", n: "Lena M.", e: "Corporate · 140" },
+  { q: "Smoke, sun and a long table. Exactly as promised.", n: "Marcus T.", e: "BBQ · 60" },
+];
+
+export const TESTIMONIALS_B = [
+  { q: "Half our family joined from Lagos on the stream. Felt like one room.", n: "Tolu A.", e: "Hybrid · 80+200" },
+  { q: "The receipt and contract were in my inbox before the confetti stopped.", n: "Sara V.", e: "Family · 35" },
+  { q: "Mr. Bondz showed up knowing everything. I didn't have to relay a thing.", n: "Dev P.", e: "Wedding · 180" },
+  { q: "Cleaning crew arrived at 8am. I found out after brunch.", n: "Hannah L.", e: "Birthday · 55" },
+  { q: "Genuinely the calmest event planning of my life.", n: "Omar F.", e: "Custom · 30" },
+];
+
+
+export const PARTNER_GROUPS: { g: string; names: string[] }[] = [
+  { g: "Venues", names: VENUES.map((v) => v.name) },
+  { g: "Catering", names: ["Halal Feast Co.", "Smoke & Cedar Catering", "Ember & Oak Kitchen"] },
+  { g: "Decor", names: ["Petal Theory", "Linen & Light Studio"] },
+  { g: "DJ / Music", names: ["DJ Nova", "Static Bloom Sound"] },
+  { g: "Equipment", names: ["RentIt Pro", "Canopy Works"] },
+  { g: "Staffing", names: ["Hostline Staffing"] },
+  { g: "Cleaning", names: ["Tidy Morning Co.", "Afterglow Cleaners"] },
+];
+
+export const CONTACT = {
+  email: "hello@bondzevents.com",
+  phone: "+1 (555) 014-2266",
+  studio: "Studio 4, Old Mill Row",
+  hours: "Replies within one business day",
+};
+

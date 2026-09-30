@@ -78,9 +78,12 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
         className="pointer-events-none absolute inset-0 z-30 rounded-3xl opacity-0 transition-opacity dark:opacity-100 [background:linear-gradient(135deg,rgba(255,255,255,0.45)_0%,rgba(241,69,59,0.55)_35%,rgba(255,255,255,0.25)_70%,rgba(241,69,59,0.65)_100%)_border-box] [border:1.5px_solid_transparent] [mask-composite:exclude] [mask:linear-gradient(#fff_0_0)_padding-box,linear-gradient(#fff_0_0)]"
       />
 
-      {/* The real booking engine, running itself inside a scaled viewport */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="pointer-events-none h-[125%] w-[125%] origin-top-left scale-[0.80] md:h-[117.6%] md:w-[117.6%] md:scale-[0.85]">
+      {/* The real booking engine, running itself inside a scaled desktop viewport */}
+      <div ref={boxRef} className="absolute inset-0 overflow-hidden">
+        <div
+          className="pointer-events-none absolute left-0 top-0 origin-top-left"
+          style={{ width: STAGE_W, height: box.h ? box.h / (box.w / STAGE_W || 1) : STAGE_W * 1.25, transform: `scale(${box.w ? box.w / STAGE_W : 0.5})` }}
+        >
           <BookingEngine
             init={{}}
             intro={false}

@@ -771,9 +771,19 @@ export function Step6() {
   const { ev, sel, dateStr, slot, place, ref, parties, assigned, venue, details, est, signature, reset, day, anchor } =
     s;
   const [tab, setTab] = useState(0);
-  const [head, setHead] = useState(
-    `${details.honor || details.name.split(" ")[0] || "You"}’s ${ev?.title ?? "Celebration"}`,
-  );
+  const [head, setHead] = useState(() => {
+    const rawHonor = details.honor?.trim();
+    const rawName = details.name?.trim().split(" ")[0];
+    const who = rawHonor || rawName;
+    const title = ev?.title ?? "Celebration";
+    if (who) {
+      if (who.toLowerCase().includes(title.toLowerCase())) {
+        return who;
+      }
+      return `${who}’s ${title}`;
+    }
+    return title;
+  });
   const [tag, setTag] = useState("Come hungry. Leave with stories.");
   const [theme, setTheme] = useState(THEMES[0]!);
   const [modal, setModal] = useState<null | "reschedule" | "cancel">(null);
@@ -1106,70 +1116,90 @@ ol.terms li b { color: #151118; }
         <section className="col-span-1 flex flex-col justify-between gap-3.5 rounded-2xl border hairline bg-surface-light p-4 sm:p-5 shadow-sm">
           <div>
             <p className="eyebrow text-ink/55">Your VIP guest invitation card</p>
-            <div className="mt-3 grid grid-cols-1 sm:grid-cols-[1fr_9rem] gap-3.5">
-              <div className="space-y-2.5">
-                <input
-                  value={head}
-                  onChange={(e) => setHead(e.target.value)}
-                  aria-label="Invitation headline"
-                  className="w-full rounded-xl border hairline bg-canvas px-3 py-2 text-xs font-medium outline-none focus:border-primary"
-                />
-                <input
-                  value={tag}
-                  onChange={(e) => setTag(e.target.value)}
-                  aria-label="Invitation tagline"
-                  className="w-full rounded-xl border hairline bg-canvas px-3 py-2 text-xs font-medium outline-none focus:border-primary"
-                />
-                <div className="flex items-center gap-2 pt-1">
-                  {THEMES.map((t) => (
-                    <button
-                      key={t.id}
-                      onClick={() => setTheme(t)}
-                      title={t.name}
-                      aria-label={t.name}
-                      aria-pressed={theme.id === t.id}
-                      className={cn(
-                        "relative size-7 rounded-full border hairline transition-transform hover:scale-105",
-                        theme.id === t.id && "ring-2 ring-primary ring-offset-2 ring-offset-surface-light",
-                      )}
-                      style={{ background: t.bg }}
-                    >
-                      {theme.id === t.id && (
-                        <span
-                          className="absolute inset-0 grid place-items-center text-[0.6rem] font-black"
-                          style={{ color: t.fg }}
-                        >
-                          ✓
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                  <span className="eyebrow text-ink/50 ml-1 text-[0.68rem]">{theme.name}</span>
+            <div className="mt-3.5 flex flex-col md:flex-row gap-4 items-stretch">
+              <div className="flex-1 space-y-3">
+                <div>
+                  <span className="eyebrow text-ink/45 text-[0.65rem] block mb-1">Invitation headline</span>
+                  <input
+                    value={head}
+                    onChange={(e) => setHead(e.target.value)}
+                    aria-label="Invitation headline"
+                    className="w-full rounded-xl border hairline bg-canvas px-3 py-2 text-xs font-semibold outline-none focus:border-primary text-ink"
+                  />
+                </div>
+                <div>
+                  <span className="eyebrow text-ink/45 text-[0.65rem] block mb-1">Tagline</span>
+                  <input
+                    value={tag}
+                    onChange={(e) => setTag(e.target.value)}
+                    aria-label="Invitation tagline"
+                    className="w-full rounded-xl border hairline bg-canvas px-3 py-2 text-xs font-medium outline-none focus:border-primary text-ink"
+                  />
+                </div>
+                <div className="pt-1">
+                  <span className="eyebrow text-ink/45 text-[0.65rem] block mb-1.5">Color palette</span>
+                  <div className="flex items-center gap-2">
+                    {THEMES.map((t) => (
+                      <button
+                        key={t.id}
+                        onClick={() => setTheme(t)}
+                        title={t.name}
+                        aria-label={t.name}
+                        aria-pressed={theme.id === t.id}
+                        className={cn(
+                          "relative size-7 rounded-full border hairline transition-transform hover:scale-105",
+                          theme.id === t.id && "ring-2 ring-primary ring-offset-2 ring-offset-surface-light",
+                        )}
+                        style={{ background: t.bg }}
+                      >
+                        {theme.id === t.id && (
+                          <span
+                            className="absolute inset-0 grid place-items-center text-[0.6rem] font-black"
+                            style={{ color: t.fg }}
+                          >
+                            ✓
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                    <span className="eyebrow text-ink/60 ml-1 text-[0.68rem] font-mono">{theme.name}</span>
+                  </div>
                 </div>
               </div>
-              <div
-                className="relative aspect-square overflow-hidden rounded-xl p-3 shadow-md select-none shrink-0 border hairline flex flex-col justify-between"
-                style={{
-                  backgroundImage: `url(${theme.logo === "dark" ? darkTemplate : lightTemplate})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  color: theme.fg,
-                }}
-              >
-                <div>
-                  <p className="text-[0.45rem] font-bold tracking-[0.16em] uppercase" style={{ color: theme.hl }}>
-                    YOU’RE INVITED
-                  </p>
-                  <p className="font-serif-i mt-1 text-[0.98rem] leading-[0.95] line-clamp-3">{head}</p>
-                  <p className="font-serif-i mt-1 text-[0.58rem] line-clamp-1" style={{ color: theme.hl }}>
-                    {tag}
-                  </p>
-                </div>
-                <div className="text-[0.55rem] font-mono opacity-85 leading-tight">
-                  <p className="font-bold truncate">{shownDateText}</p>
-                  <p className="truncate">
-                    {slot} · {place}
-                  </p>
+
+              {/* High-Fidelity Proportional Card Preview */}
+              <div className="w-full sm:w-56 md:w-52 shrink-0 flex items-center justify-center">
+                <div
+                  className="relative w-full aspect-square overflow-hidden rounded-2xl p-4 shadow-xl select-none border hairline flex flex-col justify-between"
+                  style={{
+                    backgroundImage: `url(${theme.logo === "dark" ? darkTemplate : lightTemplate})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    color: theme.fg,
+                  }}
+                >
+                  <div className="space-y-1">
+                    <p
+                      className="text-[0.52rem] font-black tracking-[0.18em] uppercase leading-none"
+                      style={{ color: theme.hl }}
+                    >
+                      YOU’RE INVITED
+                    </p>
+                    <p className="font-serif-i text-[1.12rem] sm:text-[1.18rem] leading-[1.08] line-clamp-3 font-normal drop-shadow-xs">
+                      {head}
+                    </p>
+                    <p className="font-serif-i text-[0.72rem] line-clamp-1 italic pt-0.5" style={{ color: theme.hl }}>
+                      {tag}
+                    </p>
+                  </div>
+
+                  {/* Date & Location with clearance on right so it never overlaps the bottom-right brand lockup */}
+                  <div className="text-[0.58rem] font-mono opacity-90 leading-tight pr-14 pb-0.5">
+                    <p className="font-extrabold uppercase tracking-tight truncate">{shownDateText}</p>
+                    <p className="truncate opacity-80 mt-0.5">
+                      {slot} · {place}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

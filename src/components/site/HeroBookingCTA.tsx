@@ -105,35 +105,36 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
       await new Promise((r) => setTimeout(r, 100));
       if (!mountedRef.current) return;
 
-      // 3. Arrow receives the collision force and JUMPS FORWARD out the right edge (within pill bounds)
+      // 3. Arrow receives the collision force and JUMPS FORWARD out the right edge, smoothly fading out at exit
       await arrowControls.start({
-        x: [0, jumpDist],
-        scale: [1, 1.12],
+        x: jumpDist,
+        opacity: [1, 0],
+        scale: [1, 1.1],
         transition: {
-          duration: 0.16,
-          ease: [0.16, 1, 0.3, 1],
+          duration: 0.18,
+          ease: "easeOut",
         },
       });
       if (!mountedRef.current) return;
 
-      // 4. Instantly teleport behind the text to the far left (back of the text)
-      await arrowControls.start({
-        x: -travelDist,
-        scale: 0.92,
-        transition: { duration: 0.01 },
+      // 4. Instantly set arrow behind the text while completely invisible (no 0.01s interpolation glitch)
+      arrowControls.set({
+        x: -jumpDist,
+        opacity: 0,
+        scale: 0.95,
       });
-      if (!mountedRef.current) return;
 
       // 5. Crisp pause at the rear
-      await new Promise((r) => setTimeout(r, 20));
+      await new Promise((r) => setTimeout(r, 40));
       if (!mountedRef.current) return;
 
-      // 6. Come back from the back of the text: glide smoothly across behind the text back to resting slot
+      // 6. Come back smoothly from the back of the text, fading in cleanly to rest slot
       await arrowControls.start({
         x: 0,
+        opacity: 1,
         scale: 1,
         transition: {
-          duration: 0.36,
+          duration: 0.32,
           ease: [0.22, 1, 0.36, 1],
         },
       });
@@ -252,7 +253,8 @@ export function HeroBookingCTA({ onClick, className, disabled }: HeroBookingCTAP
       */}
       <motion.div
         ref={buttonRef}
-        className="relative z-10 flex max-w-full items-center justify-between gap-2 xs:gap-3 sm:gap-5 rounded-full bg-gradient-to-b from-[#f55248] via-[#ee4339] to-[#de3429] px-3.5 xs:px-5 sm:px-8 md:px-10 py-2.5 xs:py-3 sm:py-4 md:py-5 shadow-[inset_0_1.5px_1px_rgba(255,255,255,0.45),inset_0_-2px_4px_rgba(0,0,0,0.18),0_12px_32px_rgba(241,69,59,0.36)] ring-1 ring-white/20 ring-inset overflow-hidden"
+        style={{ transform: "translateZ(0)", WebkitMaskImage: "-webkit-radial-gradient(white, black)" }}
+        className="relative z-10 flex max-w-full items-center justify-between gap-2 xs:gap-3 sm:gap-5 rounded-full bg-gradient-to-b from-[#f55248] via-[#ee4339] to-[#de3429] px-3.5 xs:px-5 sm:px-8 md:px-10 py-2.5 xs:py-3 sm:py-4 md:py-5 shadow-[inset_0_1.5px_1px_rgba(255,255,255,0.45),inset_0_-2px_4px_rgba(0,0,0,0.18),0_12px_32px_rgba(241,69,59,0.36)] ring-1 ring-white/20 ring-inset overflow-hidden isolate"
         animate={isHovered ? { scale: 1.02 } : isLooping ? { scale: 1.015 } : { scale: 1 }}
         whileTap={{ scale: 0.97 }}
         transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}

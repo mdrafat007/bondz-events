@@ -615,8 +615,12 @@ export function Step6() {
   const shownDateText = activeDate?.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) ?? dateStr;
 
   useEffect(() => {
-    playCelebrationSequence();
-    signalBot({ mood: "happy", tip: "You're booked! Everyone's been told. Go celebrate." });
+    // The showcase simulation never plays the fanfare; only a real confirmation does.
+    if (!s.demo) {
+      playCelebrationSequence();
+      signalBot({ mood: "happy", tip: "You're booked! Everyone's been told. Go celebrate." });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const recipients = [

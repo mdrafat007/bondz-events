@@ -970,12 +970,20 @@ ol.terms li b { color: #151118; }
             <button
               onClick={() => {
                 navigator.clipboard.writeText(link);
-                toast.success("Read-only booking link copied");
+                toast.success("Read-only invitation link copied");
               }}
-              className="col-span-2 rounded-full border hairline bg-surface-light py-2.5 text-xs font-bold text-ink hover:bg-canvas active:scale-95 transition-all cursor-pointer"
+              className="rounded-full border hairline bg-surface-light py-2.5 px-3 text-xs font-bold text-ink hover:bg-canvas active:scale-95 transition-all cursor-pointer"
             >
-              Copy booking link <span className="font-normal text-ink/50">· read-only, for guests</span>
+              Copy Invitation Link
             </button>
+            <a
+              href={link}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-center rounded-full border hairline bg-surface-light py-2.5 px-3 text-xs font-bold text-ink hover:bg-canvas active:scale-95 transition-all cursor-pointer"
+            >
+              Open Invitation Link
+            </a>
           </div>
         </section>
 

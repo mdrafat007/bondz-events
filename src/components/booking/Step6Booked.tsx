@@ -38,7 +38,7 @@ export function Step6Booked({ ctx, code, onRestart }: { ctx: BookingCtx; code: s
     ...(venue ? [{ who: venue.name, what: `Locked for ${shownText}` }] : []),
     ...sel.services.map((c) => {
       const p = day !== null ? assignPartner(c, sel, day) : null;
-      return { who: p?.name ?? CATEGORIES.find((x) => x.id === c)!.label, what: `${CATEGORIES.find((x) => x.id === c)!.label} work order · ${sel.guests} guests` };
+      return { who: p?.name ?? categoryLabel(c), what: `${categoryLabel(c)} work order · ${sel.guests} guests` };
     }),
     { who: "Mr. Bondz", what: "Master on-site production brief" },
   ];

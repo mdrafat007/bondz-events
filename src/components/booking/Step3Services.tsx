@@ -23,7 +23,7 @@ export function Step3Services({ ctx }: { ctx: BookingCtx }) {
     const next = sel.services.includes(c) ? sel.services.filter((x) => x !== c) : [...sel.services, c];
     patch({ services: next });
     const after = availableDays({ ...sel, services: next }).length;
-    record(`${sel.services.includes(c) ? "Removed" : "Added"} ${CATEGORIES.find((x) => x.id === c)!.label}`, before, after);
+    record(`${sel.services.includes(c) ? "Removed" : "Added"} ${categoryLabel(c)}`, before, after);
   };
 
   const pickVenue = (id: string) => {

@@ -25,14 +25,46 @@ const assetUrl = (path: string) => `https://id-preview--b05e6b12-3dde-49e9-ac29-
 
 /** Celebration clip and human-toned headline for each of the eight event types. */
 const EVENT_MEDIA: Record<EventTypeId, { title: string; video: string; poster: string }> = {
-  wedding: { title: "Your wedding day, locked without a single awkward phone call.", video: assetUrl(clipWedding.url), poster: weddingImg },
-  birthday: { title: "Milestone birthday locked in one sitting. Bass kicks at 8.", video: assetUrl(clipBirthday.url), poster: birthdayImg },
-  bbq: { title: "Oak smoke, pitmaster feasts, and zero logistical stress.", video: assetUrl(clipBbq.url), poster: bbqImg },
-  corporate: { title: "Keynote, high-speed stream and barista bar, all ready.", video: assetUrl(clipCorporate.url), poster: corporateImg },
-  anniversary: { title: "Candlelit dinner, strings and fine dining, all set.", video: assetUrl(clipAnniversary.url), poster: dinnerImg },
-  family: { title: "Four generations under one roof. Every table sorted.", video: assetUrl(clipFamily.url), poster: dinnerImg },
-  hybrid: { title: "Zero lag, crystal sound: in-room and remote together.", video: assetUrl(clipHybrid.url), poster: corporateImg },
-  custom: { title: "Your own wild celebration concept, flawlessly brought to life.", video: assetUrl(clipCustom.url), poster: weddingImg },
+  wedding: {
+    title: "Your wedding day, locked without a single awkward phone call.",
+    video: assetUrl(clipWedding.url),
+    poster: weddingImg,
+  },
+  birthday: {
+    title: "Milestone birthday locked in one sitting. Bass kicks at 8.",
+    video: assetUrl(clipBirthday.url),
+    poster: birthdayImg,
+  },
+  bbq: {
+    title: "Oak smoke, pitmaster feasts, and zero logistical stress.",
+    video: assetUrl(clipBbq.url),
+    poster: bbqImg,
+  },
+  corporate: {
+    title: "Keynote, high-speed stream and barista bar, all ready.",
+    video: assetUrl(clipCorporate.url),
+    poster: corporateImg,
+  },
+  anniversary: {
+    title: "Candlelit dinner, strings and fine dining, all set.",
+    video: assetUrl(clipAnniversary.url),
+    poster: dinnerImg,
+  },
+  family: {
+    title: "Four generations under one roof. Every table sorted.",
+    video: assetUrl(clipFamily.url),
+    poster: dinnerImg,
+  },
+  hybrid: {
+    title: "Zero lag, crystal sound: in-room and remote together.",
+    video: assetUrl(clipHybrid.url),
+    poster: corporateImg,
+  },
+  custom: {
+    title: "Your own wild celebration concept, flawlessly brought to life.",
+    video: assetUrl(clipCustom.url),
+    poster: weddingImg,
+  },
 };
 
 const eventTitle = (id: EventTypeId) => EVENT_TYPES.find((e) => e.id === id)?.title ?? "Celebration";
@@ -60,7 +92,6 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
     return () => ro.disconnect();
   }, []);
 
-
   const handleRoundEnd = useCallback(() => {
     setCelebrating(true);
     if (celebrationTimer.current) window.clearTimeout(celebrationTimer.current);
@@ -70,9 +101,12 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
     }, 6000);
   }, []);
 
-  useEffect(() => () => {
-    if (celebrationTimer.current) window.clearTimeout(celebrationTimer.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (celebrationTimer.current) window.clearTimeout(celebrationTimer.current);
+    },
+    [],
+  );
 
   const media = EVENT_MEDIA[scenario?.event ?? "wedding"];
   const venue = VENUES.find((v) => v.id === scenario?.venue) ?? null;
@@ -83,19 +117,21 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
       onPointerEnter={() => setHovering(true)}
       onPointerLeave={() => setHovering(false)}
       className={cn(
-        "accent-shimmer-card group relative flex aspect-[4/5] cursor-pointer select-none flex-col overflow-hidden rounded-3xl border border-hairline bg-paper shadow-raised transition-colors duration-300 sm:aspect-[3/4] md:aspect-[4/5]",
+        "group relative flex aspect-[4/5] cursor-pointer select-none flex-col overflow-hidden rounded-3xl border border-hairline bg-paper shadow-raised transition-colors duration-300 sm:aspect-[3/4] md:aspect-[4/5] dark:border-primary/45 dark:shadow-[0_0_30px_rgba(241,69,59,0.16)] ring-1 ring-primary/20",
         "dark:bg-canvas",
         className,
       )}
       aria-label="Self-playing booking engine showcase. Select to start your own booking."
     >
-
-
       {/* The real booking engine, running itself inside a scaled desktop viewport */}
       <div ref={boxRef} className="absolute inset-0 overflow-hidden">
         <div
           className="pointer-events-none absolute left-0 top-0 origin-top-left"
-          style={{ width: STAGE_W, height: box.h ? box.h / (box.w / STAGE_W || 1) : STAGE_W * 1.25, transform: `scale(${box.w ? box.w / STAGE_W : 0.5})` }}
+          style={{
+            width: STAGE_W,
+            height: box.h ? box.h / (box.w / STAGE_W || 1) : STAGE_W * 1.25,
+            transform: `scale(${box.w ? box.w / STAGE_W : 0.5})`,
+          }}
         >
           <BookingEngine
             init={{}}
@@ -112,7 +148,12 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
       {/* Matched celebration clip closing every round */}
       {celebrating && (
         <div className="absolute inset-0 z-20 flex items-center justify-center overflow-hidden p-6 text-center animate-in fade-in duration-500">
-          <img src={media.poster} alt="" aria-hidden className="absolute inset-0 size-full object-cover brightness-50" />
+          <img
+            src={media.poster}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 size-full object-cover brightness-50"
+          />
           <video
             key={media.video}
             src={media.video}
@@ -141,7 +182,10 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
                 venue ? venue.name : "Their own place",
                 scenario?.ref ?? "BZ-0000",
               ].map((pill) => (
-                <span key={pill} className="rounded-full bg-paper/20 px-3 py-1 text-xs font-bold text-paper backdrop-blur-xs">
+                <span
+                  key={pill}
+                  className="rounded-full bg-paper/20 px-3 py-1 text-xs font-bold text-paper backdrop-blur-xs"
+                >
                   {pill}
                 </span>
               ))}
@@ -156,7 +200,10 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
           {media.title}
         </p>
         <div className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-ink/15">
-          <div className="h-full rounded-full bg-primary transition-all duration-100 ease-linear" style={{ width: `${celebrating ? 100 : progress}%` }} />
+          <div
+            className="h-full rounded-full bg-primary transition-all duration-100 ease-linear"
+            style={{ width: `${celebrating ? 100 : progress}%` }}
+          />
         </div>
       </figcaption>
     </figure>

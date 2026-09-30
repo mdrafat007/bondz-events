@@ -461,7 +461,7 @@ function Frame({ intro, demo, paused, onDemoProgress, onDemoRoundEnd, onDemoScen
               <div className="flex items-center justify-between gap-2 py-1">
                 <Ghost onClick={() => setStep((step - 1) as Step)}>← Back</Ghost>
               </div>
-              <EstimateSheet cta={<div className="w-40 sm:w-44">{cta}</div>} />
+              <EstimateSheet cta={<div className="w-44 shrink-0 sm:w-52">{cta}</div>} />
             </div>
           )}
         </div>

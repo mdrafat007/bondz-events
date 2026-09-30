@@ -31,7 +31,7 @@ export function PolicyDialog({ children }: { children: React.ReactNode }) {
             <div className="flex shrink-0 items-start justify-between gap-3 border-b hairline px-4 py-4 sm:px-6 sm:py-5">
               <div className="min-w-0">
                 <p className="eyebrow text-primary">Policy</p>
-                <h2 className="display mt-1 text-xl sm:text-2xl">Cancellation &amp; Rescheduling</h2>
+        <h2 className="display mt-1 text-xl sm:text-2xl">POLICY</h2>
               </div>
               <button
                 type="button"
@@ -71,7 +71,7 @@ export function SiteFooter() {
           type="button"
           className="eyebrow shrink-0 underline-offset-4 hover:text-ink hover:underline"
         >
-          Cancellation<span className="hidden sm:inline"> &amp; Rescheduling</span>
+          BOOKING POLICY
         </button>
       </PolicyDialog>
     </footer>

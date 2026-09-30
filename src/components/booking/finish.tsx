@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import {
   CATEGORIES,
+  categoryLabel,
   EVENT_TYPES,
   TERMS,
   VENUES,
@@ -20,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { StepHead } from "./panels";
 import { Ghost, Primary } from "./steps";
 import { useBooking } from "./store";
-import { triggerHaptic, playTapSound, isSoundEnabled, playCelebrationSequence } from "@/lib/haptics";
+import { triggerHaptic, playTapSound, isSoundEnabled, playCelebrationSequence, playThump } from "@/lib/haptics";
 import lightIcon from "@/assets/icons/bondz-icon-red.png";
 import darkIcon from "@/assets/icons/bondz-icon-white.png";
 import lightTemplate from "@/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_LIGHT.png";
@@ -36,7 +37,7 @@ function useSummary() {
   const date = day ? dayToDate(anchor, day) : null;
   const dateStr = date?.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) ?? "";
   const assigned = day
-    ? sel.services.map((c) => ({ cat: CATEGORIES.find((x) => x.id === c)!.label, p: assignPartner(c, sel, day) })).filter((x) => x.p)
+    ? sel.services.map((c) => ({ cat: categoryLabel(c), p: assignPartner(c, sel, day) })).filter((x) => x.p)
     : [];
   const place = venue ? `${venue.name}, ${venue.area}` : "Client's own space";
   const est = estimate(sel);

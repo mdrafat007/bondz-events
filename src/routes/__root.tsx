@@ -1,11 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  Outlet,
-  createRootRouteWithContext,
-  HeadContent,
-  Scripts,
-  useRouterState,
-} from "@tanstack/react-router";
+import { Outlet, createRootRouteWithContext, HeadContent, Scripts, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { Toaster } from "sonner";
 import { motion } from "framer-motion";
@@ -21,7 +15,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "Bondz Events - Turn “can we book you?” into “you're booked.”" },
-      { name: "description", content: "A self-serve booking engine for Mr. Bondz: pick your event, and only dates that work for every venue and vendor ever appear." },
+      {
+        name: "description",
+        content:
+          "A self-serve booking engine for Mr. Bondz: pick your event, and only dates that work for every venue and vendor ever appear.",
+      },
       { property: "og:title", content: "Bondz Events - Turn “can we book you?” into “you're booked.”" },
       { property: "og:description", content: "No phone calls. Every date shown already works for every partner." },
       { property: "og:type", content: "website" },
@@ -32,7 +30,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&display=swap",
+      },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
   }),
@@ -44,7 +45,12 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
-        <script dangerouslySetInnerHTML={{ __html: "try{document.documentElement.classList.toggle('dark',localStorage.getItem('bondz-theme')==='dark')}catch(e){document.documentElement.classList.remove('dark')}" }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{document.documentElement.classList.toggle('dark',localStorage.getItem('bondz-theme')==='dark')}catch(e){document.documentElement.classList.remove('dark')}",
+          }}
+        />
         <HeadContent />
       </head>
       <body>
@@ -68,14 +74,14 @@ function BookingCurtain() {
         initial={{ x: "-100%" }}
         animate={{ x: isClosed ? "0%" : "-100%" }}
         transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-        className="h-full w-1/2 bg-night border-r border-primary/40"
+        className="h-full w-1/2 bg-[#130f16] dark:bg-[#faf7f2] border-r border-primary/40"
       />
       {/* Right Curtain */}
       <motion.div
         initial={{ x: "100%" }}
         animate={{ x: isClosed ? "0%" : "100%" }}
         transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-        className="h-full w-1/2 bg-night border-l border-primary/40"
+        className="h-full w-1/2 bg-[#130f16] dark:bg-[#faf7f2] border-l border-primary/40"
       />
       {/* True center-aligned unified headline overlay */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[101]">
@@ -85,10 +91,10 @@ function BookingCurtain() {
           transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
           className="text-center px-6"
         >
-          <p className="font-serif text-3xl sm:text-5xl md:text-6xl text-parchment tracking-tight">
+          <p className="font-serif text-3xl sm:text-5xl md:text-6xl text-white dark:text-[#130f16] tracking-tight">
             Let’s get <span className="font-serif-i italic text-primary">you booked.</span>
           </p>
-          <p className="eyebrow mt-2 text-parchment/60 tracking-widest text-[0.68rem] uppercase font-mono">
+          <p className="eyebrow mt-2 text-white/60 dark:text-[#130f16]/60 tracking-widest text-[0.68rem] uppercase font-mono">
             Bondz Events · Locking Calendars
           </p>
         </motion.div>

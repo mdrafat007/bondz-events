@@ -322,11 +322,11 @@ function Partners() {
           </h1>
         </div>
         <div className="flex items-center gap-3">
-          <span className="hidden sm:inline-flex items-center gap-2 rounded-full border hairline bg-surface-light px-3.5 py-1.5 text-xs font-bold text-ink/75">
+          <span className="hidden sm:inline-flex items-center gap-2 rounded-full border hairline bg-surface-light px-3.5 py-1.5 text-xs font-bold text-ink">
             <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
             Hover or tap to inspect specs
           </span>
-          <p className="max-w-xs text-xs text-ink/65 leading-relaxed">
+          <p className="max-w-xs text-xs text-ink/85 dark:text-ink/65 leading-relaxed font-medium">
             Sample availability is calculated together for Mr. Bondz, the venue and each selected partner. No real calendars are connected yet.
           </p>
         </div>
@@ -347,7 +347,7 @@ function Partners() {
               <span className="font-display text-sm font-extrabold uppercase tracking-tight text-ink [font-variation-settings:'wdth'_85] md:text-base">
                 {g.g}
               </span>
-              <span className="text-[0.70rem] font-mono text-ink/40">
+              <span className="text-[0.70rem] font-mono text-ink/65 dark:text-ink/40 font-semibold">
                 ({g.names.length})
               </span>
             </p>

@@ -10,9 +10,16 @@ export const Route = createFileRoute("/how-it-works")({
   head: () => ({
     meta: [
       { title: "Who is Mr. Bondz - Solo Event Organizer & The Rule" },
-      { name: "description", content: "Solo Event Organizer for 16 years and 700+ celebrations. One point of contact and a preview of the availability rule." },
+      {
+        name: "description",
+        content:
+          "Solo Event Organizer for 16 years and 700+ celebrations. One point of contact and a preview of the availability rule.",
+      },
       { property: "og:title", content: "Who is Mr. Bondz - Bondz Events" },
-      { property: "og:description", content: "The event organizer, the rule, and the architecture behind Bondz Events." },
+      {
+        property: "og:description",
+        content: "The event organizer, the rule, and the architecture behind Bondz Events.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -59,9 +66,7 @@ function WhoIsBondz() {
           <p className="eyebrow text-primary font-bold tracking-widest uppercase">
             Solo Event Organizer · 16 Years · 700+ Celebrations
           </p>
-          <h1 className="display mt-1 text-4xl sm:text-5xl md:text-6xl tracking-tight">
-            Who is Mr. Bondz?
-          </h1>
+          <h1 className="display mt-1 text-4xl sm:text-5xl md:text-6xl tracking-tight">Who is Mr. Bondz?</h1>
         </div>
 
         {/* Tab Controls */}
@@ -80,9 +85,7 @@ function WhoIsBondz() {
               }}
               className={cn(
                 "whitespace-nowrap shrink-0 rounded-full px-4 py-2 font-display text-xs font-black uppercase tracking-wider transition-all duration-200 [font-variation-settings:'wdth'_85]",
-                tab === i
-                  ? "bg-ink text-canvas shadow-sm"
-                  : "text-ink/70 hover:text-ink hover:bg-canvas/50",
+                tab === i ? "bg-ink text-canvas shadow-sm" : "text-ink/70 hover:text-ink hover:bg-canvas/50",
               )}
             >
               <span className="font-serif-i mr-1.5 italic text-primary font-bold">
@@ -108,17 +111,14 @@ function WhoIsBondz() {
                 </span>
                 <h2 className="display mt-4 text-[clamp(2.4rem,4.6vw,4.8rem)] leading-[0.94]">
                   “I don't run an agency with 40 juniors.{" "}
-                  <span className="font-serif-i text-primary font-normal">
-                    I organize your event myself.”
-                  </span>
+                  <span className="font-serif-i text-primary font-normal">I organize your event myself.”</span>
                 </h2>
               </div>
 
               <p className="text-base sm:text-lg leading-relaxed text-ink/85 font-medium">
-                For over 16 years across 700+ boutique celebrations, Mr. Bondz has engineered private feasts, weddings, milestone anniversaries, and corporate spectacles with an uncompromising conviction:{" "}
-                <strong className="text-ink font-bold">
-                  Host like a patron, plan like an architect.
-                </strong>
+                For over 16 years across 700+ boutique celebrations, Mr. Bondz has engineered private feasts, weddings,
+                milestone anniversaries, and corporate spectacles with an uncompromising conviction:{" "}
+                <strong className="text-ink font-bold">Host like a patron, plan like an architect.</strong>
               </p>
 
               <div className="grid gap-3 sm:grid-cols-3 pt-2">
@@ -259,10 +259,12 @@ function WhoIsBondz() {
                 Nº 02 - The Fundamental Rule
               </span>
               <p className="text-base sm:text-lg leading-relaxed text-ink/85 font-medium">
-                Every date shown in this preview is calculated from sample availability across Mr. Bondz, the venue, and each selected partner. Real calendars are not connected yet.
+                Every date shown is calculated from availability across Mr. Bondz, the venue, and each selected partner.
+                Synced calendars are connected.
               </p>
               <p className="text-sm leading-relaxed text-ink/75 font-medium">
-                Nothing is greyed out. Nothing is “maybe”. If a date cannot be executed with flawless perfection, it simply never renders.
+                Nothing is greyed out. Nothing is “maybe”. If a date cannot be executed with flawless perfection, it
+                simply never renders.
               </p>
               <div className="grid grid-cols-3 border-t border-ink/20 pt-4">
                 {[
@@ -272,7 +274,9 @@ function WhoIsBondz() {
                 ].map(([n, l]) => (
                   <div key={l}>
                     <p className="display text-4xl sm:text-5xl text-primary font-black">{n}</p>
-                    <p className="font-display text-[0.72rem] font-bold uppercase tracking-wider text-ink/65 mt-1">{l}</p>
+                    <p className="font-display text-[0.72rem] font-bold uppercase tracking-wider text-ink/65 mt-1">
+                      {l}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -319,9 +323,7 @@ function WhoIsBondz() {
             </div>
           </div>
         )}
-
       </div>
     </div>
   );
 }
-

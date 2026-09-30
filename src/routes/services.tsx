@@ -30,7 +30,15 @@ function ServiceIcon({ id, className }: { id: string; className?: string }) {
   switch (id) {
     case "01": // Events Production: Baton / Run-of-show cue sheet
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={className}
+        >
           <rect x="4" y="3" width="16" height="18" rx="2" />
           <line x1="8" y1="8" x2="16" y2="8" />
           <line x1="8" y1="12" x2="14" y2="12" />
@@ -40,7 +48,15 @@ function ServiceIcon({ id, className }: { id: string; className?: string }) {
       );
     case "02": // Design Support: Architectural Drafting Caliper / Swatch
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={className}
+        >
           <path d="M12 2L4 20h3l5-12 5 12h3L12 2z" />
           <circle cx="12" cy="7" r="1.5" fill="currentColor" />
           <line x1="7" y1="14" x2="17" y2="14" />
@@ -48,7 +64,15 @@ function ServiceIcon({ id, className }: { id: string; className?: string }) {
       );
     case "03": // Media & PR: Editorial Megaphone & Broadcast Waves
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={className}
+        >
           <path d="M3 11v2a2 2 0 0 0 2 2h2l5 4V5L7 9H5a2 2 0 0 0-2 2z" />
           <path d="M16 8a4.5 4.5 0 0 1 0 8" />
           <path d="M19 5a8.5 8.5 0 0 1 0 14" />
@@ -56,7 +80,15 @@ function ServiceIcon({ id, className }: { id: string; className?: string }) {
       );
     case "04": // Catering: Gourmet Cloche Dome & Platter
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={className}
+        >
           <path d="M3 18h18" />
           <path d="M4 18a8 8 0 0 1 16 0" />
           <circle cx="12" cy="8" r="1.5" />
@@ -65,7 +97,15 @@ function ServiceIcon({ id, className }: { id: string; className?: string }) {
       );
     case "05": // Decorations: Botanical Flora & Table Arch
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={className}
+        >
           <path d="M12 22V8" />
           <path d="M12 8C12 4 16 3 18 5c1 1 0 4-4 5" />
           <path d="M12 13C12 9 8 8 6 10c-1 1 0 4 4 5" />
@@ -74,7 +114,15 @@ function ServiceIcon({ id, className }: { id: string; className?: string }) {
       );
     case "06": // Music & DJ: Turntable Vinyl Grooves & Needle
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={className}
+        >
           <circle cx="12" cy="12" r="9" />
           <circle cx="12" cy="12" r="3" />
           <circle cx="12" cy="12" r="0.8" fill="currentColor" />
@@ -84,7 +132,15 @@ function ServiceIcon({ id, className }: { id: string; className?: string }) {
       );
     case "07": // Post-Event Cleaning Support: Pristine Whisk & Sparkle
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={className}
+        >
           <path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z" />
           <path d="M18 16l.9 2.1L21 19l-2.1.9L18 22l-.9-2.1L15 19l2.1-.9L18 16z" />
           <path d="M5 16l.6 1.4L7 18l-1.4.6L5 20l-.6-1.4L3 18l1.4-.6L5 16z" />
@@ -92,7 +148,15 @@ function ServiceIcon({ id, className }: { id: string; className?: string }) {
       );
     case "08": // Photo & Videography: Rangefinder Camera Viewfinder
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={className}
+        >
           <rect x="2" y="6" width="20" height="15" rx="3" />
           <circle cx="12" cy="13.5" r="4" />
           <circle cx="12" cy="13.5" r="1.5" fill="currentColor" />
@@ -101,7 +165,15 @@ function ServiceIcon({ id, className }: { id: string; className?: string }) {
       );
     case "09": // Equipment Support: Event Canopy Pavilion & Staging
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={className}
+        >
           <path d="M12 3L2 10l2 11h16l2-11L12 3z" />
           <line x1="12" y1="3" x2="12" y2="21" />
           <line x1="7" y1="13" x2="17" y2="13" />
@@ -109,7 +181,15 @@ function ServiceIcon({ id, className }: { id: string; className?: string }) {
       );
     case "10": // Lights & Sound: Stage Luminaire & Flare
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={className}
+        >
           <path d="M12 2v4" />
           <path d="M5.5 5.5l2.8 2.8" />
           <path d="M18.5 5.5l-2.8 2.8" />
@@ -120,7 +200,15 @@ function ServiceIcon({ id, className }: { id: string; className?: string }) {
       );
     case "11": // Hybrid Events: Dual Synchronous Broadcast Feed
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={className}
+        >
           <rect x="2" y="4" width="13" height="10" rx="1.5" />
           <path d="M9 18h6" />
           <path d="M12 14v4" />
@@ -152,7 +240,7 @@ const SERVICE_IMAGES: Record<string, string> = {
   "02": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80",
   "03": "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=800&q=80",
   "04": "https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=800&q=80",
-  "05": "https://images.unsplash.com/photo-1519225438128-d8906660144f?auto=format&fit=crop&w=800&q=80",
+  "05": "https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=800&q=80",
   "06": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80",
   "07": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80",
   "08": "https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=800&q=80",
@@ -163,7 +251,7 @@ const SERVICE_IMAGES: Record<string, string> = {
 
 function Services() {
   const [tab, setTab] = useState<string>("All");
-  const [selectedService, setSelectedService] = useState<typeof SERVICES_11[0] | null>(null);
+  const [selectedService, setSelectedService] = useState<(typeof SERVICES_11)[0] | null>(null);
   const navigate = useNavigate();
 
   const handleBook = () => {
@@ -178,9 +266,7 @@ function Services() {
       {/* Header Bar */}
       <div className="flex shrink-0 flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-ink/15 pb-4">
         <div>
-          <p className="eyebrow text-primary font-bold tracking-widest uppercase">
-            Nº 03 - Comprehensive Coordination
-          </p>
+          <p className="eyebrow text-primary font-bold tracking-widest uppercase">Nº 03 - Comprehensive Coordination</p>
           <h1 className="display mt-1 text-4xl sm:text-5xl md:text-6xl tracking-tight">
             Eleven services. <span className="text-primary font-serif-i italic">One Bondz.</span>
           </h1>
@@ -202,9 +288,7 @@ function Services() {
               }}
               className={cn(
                 "whitespace-nowrap shrink-0 rounded-full px-4 py-2 font-display text-xs font-black uppercase tracking-wider transition-all duration-200 [font-variation-settings:'wdth'_85]",
-                tab === t
-                  ? "bg-ink text-canvas shadow-sm"
-                  : "text-ink/70 hover:text-ink hover:bg-canvas/50",
+                tab === t ? "bg-ink text-canvas shadow-sm" : "text-ink/70 hover:text-ink hover:bg-canvas/50",
               )}
             >
               {t}
@@ -290,7 +374,6 @@ function Services() {
           </article>
         ))}
 
-
         {/* Dynamic Build Yours Card */}
         {tab === "All" && (
           <div
@@ -301,9 +384,7 @@ function Services() {
             className="group cursor-pointer flex flex-col justify-between p-6 text-white transition-all duration-300 relative overflow-hidden bg-gradient-to-b from-[#f55248] via-[#ee4339] to-[#de3429] shadow-[inset_0_1.5px_1px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.2),0_12px_32px_rgba(241,69,59,0.36)] ring-1 ring-white/20 ring-inset hover:brightness-105 active:scale-[0.98]"
           >
             <div className="flex items-start justify-between">
-              <span className="font-mono text-xs uppercase tracking-widest text-white/80 font-bold">
-                Live Engine
-              </span>
+              <span className="font-mono text-xs uppercase tracking-widest text-white/80 font-bold">Live Engine</span>
               <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wider backdrop-blur-sm">
                 Instant Lock
               </span>
@@ -358,12 +439,10 @@ function Services() {
                 className="h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-surface-dark via-transparent to-black/30" />
-              
+
               {/* Category Badge & Number */}
               <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                <span className="display text-3xl font-black text-primary">
-                  {selectedService.no}
-                </span>
+                <span className="display text-3xl font-black text-primary">{selectedService.no}</span>
                 <span className="rounded-full bg-black/60 backdrop-blur-md px-3 py-1 font-mono text-xs uppercase tracking-wider text-white border border-white/10 font-bold">
                   {selectedService.tab} Coordination
                 </span>
@@ -383,9 +462,7 @@ function Services() {
               <h3 className="font-display mt-1 text-2xl font-black tracking-tight text-white [font-variation-settings:'wdth'_85]">
                 {selectedService.t}
               </h3>
-              <p className="mt-2.5 text-sm leading-relaxed text-white/80 font-medium">
-                {selectedService.d}
-              </p>
+              <p className="mt-2.5 text-sm leading-relaxed text-white/80 font-medium">{selectedService.d}</p>
 
               <div className="mt-6 flex items-center gap-3 border-t border-white/10 pt-4">
                 <button
@@ -410,4 +487,3 @@ function Services() {
     </div>
   );
 }
-

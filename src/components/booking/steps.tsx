@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import {
   CATEGORIES,
+  categoryLabel,
   EVENT_TYPES,
   HORIZON,
   SLOTS,
@@ -536,7 +537,7 @@ export function Step4() {
     if (venue) s.push({ n: venue.name, free: all.filter((d) => !isBusy(venue.seed, venue.busyRate, d)).length });
     for (const c of sel.services) {
       const ps = eligiblePartners(c, sel.guests, sel.event, venue);
-      s.push({ n: CATEGORIES.find((x) => x.id === c)!.label, free: all.filter((d) => ps.some((p) => !isBusy(p.seed, p.busyRate, d))).length });
+      s.push({ n: categoryLabel(c), free: all.filter((d) => ps.some((p) => !isBusy(p.seed, p.busyRate, d))).length });
     }
     return s;
   }, [sel, venue]);

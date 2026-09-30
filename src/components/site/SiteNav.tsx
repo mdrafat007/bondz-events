@@ -18,7 +18,7 @@ const LINKS = [
 ] as const;
 
 /** Borderless, physically tactile icon control - no button chrome, real press depth. */
-function TactileIcon({
+export function TactileIcon({
   label,
   onClick,
   children,

@@ -1,6 +1,7 @@
 ﻿import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import {
   CATEGORIES,
+  categoryLabel,
   SLOTS,
   VENUES,
   availableDays,
@@ -75,7 +76,7 @@ export function useBookingState(init: { event?: EventTypeId | undefined; where?:
     const after = availableDays(next).length;
     const venue = VENUES.find((v) => v.id === sel.venue) ?? null;
     const n = eligiblePartners(c, sel.guests, sel.event, venue).length;
-    const label = CATEGORIES.find((x) => x.id === c)!.label;
+    const label = categoryLabel(c);
     signalBot({ mood: "think" });
     if (on) push(`${label} removed - ${after - before} date${after - before === 1 ? "" : "s"} came back`, before, after);
     else push(`${label} added - polled ${n} partner calendar${n === 1 ? "" : "s"}. ${before - after} date${before - after === 1 ? "" : "s"} stopped existing`, before, after);

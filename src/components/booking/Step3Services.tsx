@@ -1,7 +1,7 @@
 ﻿import { useState } from "react";
 import { Badge, Card, cn, triggerTap } from "@/index";
 import {
-  CATEGORIES, VENUES, availableDays, cheapest, estimate, priceOf, usd, venueReason,
+  CATEGORIES, categoryLabel, VENUES, availableDays, cheapest, estimate, priceOf, usd, venueReason,
   type CategoryId, type LogLine,
 } from "@/lib/bondz-data";
 import { GuestSlider, StepHead, type BookingCtx } from "./shared";
@@ -23,7 +23,7 @@ export function Step3Services({ ctx }: { ctx: BookingCtx }) {
     const next = sel.services.includes(c) ? sel.services.filter((x) => x !== c) : [...sel.services, c];
     patch({ services: next });
     const after = availableDays({ ...sel, services: next }).length;
-    record(`${sel.services.includes(c) ? "Removed" : "Added"} ${CATEGORIES.find((x) => x.id === c)!.label}`, before, after);
+    record(`${sel.services.includes(c) ? "Removed" : "Added"} ${categoryLabel(c)}`, before, after);
   };
 
   const pickVenue = (id: string) => {

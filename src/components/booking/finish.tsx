@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import {
   CATEGORIES,
+  categoryLabel,
   EVENT_TYPES,
   TERMS,
   VENUES,
@@ -20,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { StepHead } from "./panels";
 import { Ghost, Primary } from "./steps";
 import { useBooking } from "./store";
-import { triggerHaptic, playTapSound, isSoundEnabled, playCelebrationSequence } from "@/lib/haptics";
+import { triggerHaptic, playTapSound, isSoundEnabled, playCelebrationSequence, playThump } from "@/lib/haptics";
 import lightIcon from "@/assets/icons/bondz-icon-red.png";
 import darkIcon from "@/assets/icons/bondz-icon-white.png";
 import lightTemplate from "@/assets/templates/BONDZ_EVENTS_INVITE_CARD_-_LIGHT.png";
@@ -36,7 +37,7 @@ function useSummary() {
   const date = day ? dayToDate(anchor, day) : null;
   const dateStr = date?.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) ?? "";
   const assigned = day
-    ? sel.services.map((c) => ({ cat: CATEGORIES.find((x) => x.id === c)!.label, p: assignPartner(c, sel, day) })).filter((x) => x.p)
+    ? sel.services.map((c) => ({ cat: categoryLabel(c), p: assignPartner(c, sel, day) })).filter((x) => x.p)
     : [];
   const place = venue ? `${venue.name}, ${venue.area}` : "Client's own space";
   const est = estimate(sel);
@@ -130,6 +131,21 @@ export function Step5() {
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState(0);
 
+  // Sample details are prefilled so the flow can be tested by signing and paying only.
+  const prefilled = useRef(false);
+  useEffect(() => {
+    if (prefilled.current) return;
+    prefilled.current = true;
+    const seed: Record<string, string> = {};
+    if (!details.name.trim()) seed["name"] = "Amira Kensington";
+    if (!details.phone.trim()) seed["phone"] = "+1 555 234 5678";
+    if (!details.email.trim()) seed["email"] = "amira.k@example.com";
+    if (!details.honor.trim()) seed["honor"] = s.ev?.title ? `${s.ev.title} guest of honour` : "Guest of honour";
+    if (!details.notes.trim()) seed["notes"] = "Two vegetarian tables, easy step-free access, surprise toast at 9.";
+    if (Object.keys(seed).length) setDetails({ ...details, ...seed });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const cardValid = (card.n.includes("4242") || card.n.replace(/\s/g, "").length >= 12) && card.exp.length >= 4 && card.cvc.length >= 3;
   const ready = details.name.trim() && /\S+@\S+\.\S+/.test(details.email) && details.phone.trim().length >= 6 && agree && signature && cardValid;
   const missing = !details.name.trim() ? "your name" : !/\S+@\S+\.\S+/.test(details.email) ? "a valid email" : details.phone.trim().length < 6 ? "a phone number" : !agree ? "agreement to the terms" : !signature ? "your signature" : "demo card details";
@@ -137,7 +153,13 @@ export function Step5() {
   const pay = () => {
     setLoading(true);
     signalBot({ mood: "think" });
-    [1, 2, 3, 4].forEach((i) => window.setTimeout(() => setPhase(i), i * 750));
+    playThump();
+    [1, 2, 3, 4].forEach((i) =>
+      window.setTimeout(() => {
+        setPhase(i);
+        playThump(0.85 + i * 0.05);
+      }, i * 750),
+    );
     window.setTimeout(() => {
       setRef("BZ-" + Math.random().toString(36).slice(2, 6).toUpperCase() + "-" + String(Date.now()).slice(-4));
       setStep(6);
@@ -195,6 +217,29 @@ export function Step5() {
         <p className="eyebrow text-primary">Secure deposit</p>
         <p className="display mt-3 text-6xl tabular-nums">{money(est.deposit)}</p>
         <p className="mt-1 text-xs text-foreground/60">due today · balance {money(est.balance)} due 7 days before</p>
+
+        {/* What is paid, and when */}
+        <dl className="mt-4 space-y-1.5 rounded-xl border border-white/10 bg-white/5 p-3 text-xs">
+          {est.lines.map((l) => (
+            <div key={l.label} className="flex items-baseline justify-between gap-3">
+              <dt className="min-w-0 truncate text-foreground/65">{l.label}{l.note ? <span className="text-foreground/35"> · {l.note}</span> : null}</dt>
+              <dd className="shrink-0 tabular-nums text-foreground/85">{money(l.amount)}</dd>
+            </div>
+          ))}
+          <div className="flex items-baseline justify-between gap-3 border-t border-white/10 pt-2 font-semibold">
+            <dt>Full celebration total</dt>
+            <dd className="tabular-nums">{money(est.total)}</dd>
+          </div>
+          <div className="flex items-baseline justify-between gap-3 text-primary">
+            <dt>Paid today · 25% deposit</dt>
+            <dd className="tabular-nums">{money(est.deposit)}</dd>
+          </div>
+          <div className="flex items-baseline justify-between gap-3 text-foreground/65">
+            <dt>Remaining balance · 75%</dt>
+            <dd className="tabular-nums">{money(est.balance)}</dd>
+          </div>
+        </dl>
+
         <div className="mt-5 space-y-3">
           <label className="block">
             <span className="eyebrow text-foreground/60">Card number</span>

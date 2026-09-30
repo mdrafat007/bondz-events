@@ -30,15 +30,15 @@ export function InviteCard({ theme, content, className }: { theme: InviteTheme; 
     >
       <img src={INVITE_TEMPLATES[theme].src} alt="" aria-hidden className="absolute inset-0 size-full object-cover" draggable={false} />
       <div className={cn("absolute inset-0 flex flex-col p-[7.4cqw]", dark ? "text-paper" : "text-night")}>
-        <p className="font-sans text-[2.3cqw] font-bold uppercase tracking-[0.18em] text-primary">You’re invited</p>
-        <p className="font-serif mt-[4cqw] line-clamp-3 text-[9cqw] italic leading-[0.98]">{content.head}</p>
-        <p className="font-serif mt-[2.2cqw] line-clamp-2 text-[4cqw] italic leading-tight text-primary">{content.tag}</p>
-        <div className="mt-auto max-w-[52%] space-y-[1cqw] pb-[1cqw]">
-          <p className="font-sans text-[3cqw] font-extrabold uppercase leading-tight tracking-tight">{content.dateStr}</p>
-          <p className="font-sans text-[2.5cqw] font-medium leading-snug opacity-85">{content.slot} · {content.time}</p>
-          <p className="font-sans text-[2.5cqw] font-medium leading-snug opacity-85">{content.place}</p>
-          <p className="font-serif text-[2.7cqw] italic leading-snug">Hosted by {content.host}</p>
-          <p className="font-sans pt-[0.6cqw] text-[1.8cqw] font-bold uppercase tracking-[0.16em] text-primary">RSVP · Ref {content.ref}</p>
+        <p className="font-sans text-[2.8cqw] font-bold uppercase tracking-[0.18em] text-primary">You’re invited</p>
+        <p className="font-serif mt-[3.6cqw] line-clamp-3 text-[10.6cqw] italic leading-[0.98]">{content.head}</p>
+        <p className="font-serif mt-[2.2cqw] line-clamp-2 text-[4.8cqw] italic leading-tight text-primary">{content.tag}</p>
+        <div className="mt-auto max-w-[58%] space-y-[1cqw] pb-[1cqw]">
+          <p className="font-sans text-[3.6cqw] font-extrabold uppercase leading-tight tracking-tight">{content.dateStr}</p>
+          <p className="font-sans text-[3cqw] font-medium leading-snug opacity-85">{content.slot} · {content.time}</p>
+          <p className="font-sans text-[3cqw] font-medium leading-snug opacity-85">{content.place}</p>
+          <p className="font-serif text-[3.3cqw] italic leading-snug">Hosted by {content.host}</p>
+          <p className="font-sans pt-[0.6cqw] text-[2.2cqw] font-bold uppercase tracking-[0.16em] text-primary">RSVP · Ref {content.ref}</p>
         </div>
       </div>
     </div>

@@ -293,14 +293,45 @@ export function OwnerDashboard({
               inspect availability.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
+            {/* Partner Switcher Dropdown */}
+            {onSwitchToPartner && (
+              <div className="flex items-center gap-1.5 rounded-full border hairline bg-canvas px-3 py-1.5 shadow-2xs">
+                <span className="eyebrow text-ink/50 text-[0.65rem] uppercase font-bold">Inspect:</span>
+                <select
+                  defaultValue=""
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      playTapSound();
+                      onSwitchToPartner(e.target.value);
+                    }
+                  }}
+                  className="bg-transparent text-xs font-bold text-ink outline-none cursor-pointer pr-1"
+                >
+                  <option value="" disabled className="bg-canvas text-ink/60">
+                    Switch Partner...
+                  </option>
+                  {PARTNERS.map((p) => (
+                    <option key={p.id} value={p.id} className="bg-canvas text-ink">
+                      {p.name} ({p.category})
+                    </option>
+                  ))}
+                  {customPartners.map((p) => (
+                    <option key={p.id} value={p.id} className="bg-canvas text-ink">
+                      {p.name} ({p.category})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <button
               type="button"
               onClick={() => {
                 playTapSound();
                 setShowAddPartner(true);
               }}
-              className="rounded-full border hairline bg-canvas px-3.5 py-1.5 text-xs font-bold text-ink hover:border-primary hover:text-primary transition cursor-pointer"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-full border hairline bg-canvas px-3.5 py-1.5 text-xs font-bold text-ink hover:border-primary hover:text-primary transition cursor-pointer"
             >
               + Onboard Partner
             </button>

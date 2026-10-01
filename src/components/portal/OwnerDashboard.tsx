@@ -1,11 +1,23 @@
 import { useState, useMemo } from "react";
-import { type PortalBooking, type CustomPartner, getAllPortalBookings, getCustomPartners } from "@/lib/portal-store";
+import {
+  type PortalBooking,
+  type CustomPartner,
+  getAllPortalBookings,
+  getCustomPartners,
+  getPartnerBlackouts,
+} from "@/lib/portal-store";
 import { PARTNERS, VENUES, type EventTypeId } from "@/lib/bondz-data";
 import { AddPartnerModal } from "./AddPartnerModal";
 import { triggerTap, playTapSound } from "@/lib/haptics";
 import mascotWhite from "@/assets/mascot-white.png";
 
-export function OwnerDashboard({ onLogout }: { onLogout: () => void }) {
+export function OwnerDashboard({
+  onLogout,
+  onSwitchToPartner,
+}: {
+  onLogout: () => void;
+  onSwitchToPartner?: (partnerId: string) => void;
+}) {
   const [filterEvent, setFilterEvent] = useState<string>("all");
   const [selectedBooking, setSelectedBooking] = useState<PortalBooking | null>(null);
   const [showAddPartner, setShowAddPartner] = useState(false);
@@ -150,53 +162,53 @@ export function OwnerDashboard({ onLogout }: { onLogout: () => void }) {
             </thead>
             <tbody className="divide-y hairline">
               {filteredBookings.map((b) => (
-                <tr key={b.id} className="hover:bg-canvas/50 transition">
+                <tr key={b.id} className="hover:bg-canvas/60 transition-colors">
                   <td className="py-3 px-3">
                     <span className="font-mono text-primary font-bold block">{b.ref}</span>
-                    <span className="font-bold text-ink text-sm block">{b.eventTitle}</span>
-                    <span className="text-[0.68rem] text-ink/55 capitalize">
-                      {b.event} · {b.guests} guests
+                    <span className="font-bold text-ink text-sm">{b.eventTitle}</span>
+                    <span className="text-[0.68rem] text-ink/55 block capitalize">
+                      {b.event} · {b.guests} Guests
                     </span>
                   </td>
-                  <td className="py-3 px-3 whitespace-nowrap">
+                  <td className="py-3 px-3">
                     <span className="font-semibold text-ink block">{b.dateStr}</span>
-                    <span className="text-[0.68rem] text-primary font-bold">{b.slot}</span>
+                    <span className="text-ink/65 text-[0.70rem]">{b.slot}</span>
                   </td>
                   <td className="py-3 px-3">
                     <span className="font-medium text-ink block">{b.venueName}</span>
-                    <span className="text-[0.68rem] text-ink/55 uppercase">{b.where}</span>
+                    <span className="text-ink/55 text-[0.70rem] capitalize">{b.where}</span>
                   </td>
-                  <td className="py-3 px-3 whitespace-nowrap">
-                    <span className="font-semibold text-ink block">{b.clientName}</span>
-                    <span className="text-[0.68rem] text-ink/60 font-mono block">{b.clientPhone}</span>
-                    <span className="text-[0.68rem] text-ink/55 font-mono">{b.clientEmail}</span>
+                  <td className="py-3 px-3">
+                    <span className="font-bold text-ink block">{b.clientName}</span>
+                    <span className="text-ink/65 text-[0.70rem] font-mono block">{b.clientPhone}</span>
+                    <span className="text-ink/55 text-[0.68rem] font-mono">{b.clientEmail}</span>
                   </td>
-                  <td className="py-3 px-3 whitespace-nowrap">
-                    <span className="font-bold text-ink text-sm block">${b.totalCost.toLocaleString()}</span>
-                    <span className="text-[0.68rem] text-success font-semibold">
+                  <td className="py-3 px-3">
+                    <span className="font-mono font-bold text-ink block">${b.totalCost.toLocaleString()}</span>
+                    <span className="font-mono text-success text-[0.70rem] font-semibold">
                       ${b.depositPaid.toLocaleString()} paid (25%)
                     </span>
                   </td>
                   <td className="py-3 px-3">
-                    <div className="flex flex-wrap gap-1 max-w-xs">
+                    <div className="flex flex-wrap gap-1">
                       {b.assignedPartners.map((p) => (
                         <span
                           key={p.partnerName}
-                          className="rounded bg-surface px-1.5 py-0.5 text-[0.65rem] font-bold text-ink/80 border hairline"
+                          className="rounded-md border hairline bg-surface px-1.5 py-0.5 text-[0.65rem] font-medium text-ink/80"
                         >
                           {p.partnerName}
                         </span>
                       ))}
                     </div>
                   </td>
-                  <td className="py-3 px-3 text-right whitespace-nowrap">
+                  <td className="py-3 px-3 text-right">
                     <button
                       type="button"
                       onClick={() => {
                         playTapSound();
                         setSelectedBooking(b);
                       }}
-                      className="rounded-full border hairline bg-surface px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary hover:text-primary-foreground transition cursor-pointer"
+                      className="rounded-lg border hairline bg-surface px-2.5 py-1 text-[0.68rem] font-bold text-ink hover:border-primary hover:text-primary transition cursor-pointer"
                     >
                       Inspect Timeline →
                     </button>
@@ -208,47 +220,78 @@ export function OwnerDashboard({ onLogout }: { onLogout: () => void }) {
         </div>
       </div>
 
-      {/* Section 2: Partner Fleet Management */}
+      {/* Section 2: Partner Status & Fleet Dispatch */}
       <div className="rounded-3xl border hairline bg-surface-light p-5 sm:p-7 shadow-xs">
-        <div className="flex items-center justify-between border-b hairline pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b hairline pb-4">
           <div>
-            <h2 className="display text-xl sm:text-2xl font-bold text-ink">Verified Partner Fleet</h2>
-            <p className="text-xs text-ink/60">Active vendors bound by the 100% calendar hold and quality guarantee.</p>
+            <div className="flex items-center gap-2">
+              <span className="eyebrow text-primary text-[0.68rem] font-mono">Real-Time Fleet</span>
+              <span className="rounded-full bg-success/15 px-2 py-0.5 text-[0.62rem] font-bold text-success">
+                ● 100% Calendar Linked
+              </span>
+            </div>
+            <h2 className="display text-xl sm:text-2xl font-bold text-ink mt-0.5">Partner Status</h2>
+            <p className="text-xs text-ink/60">
+              Active vendors bound by the 100% calendar hold and quality guarantee. Switch directly into partner view to
+              inspect availability.
+            </p>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              playTapSound();
-              setShowAddPartner(true);
-            }}
-            className="rounded-full border hairline bg-canvas px-3.5 py-1.5 text-xs font-bold text-ink hover:border-primary hover:text-primary transition cursor-pointer"
-          >
-            + Onboard Partner
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                playTapSound();
+                setShowAddPartner(true);
+              }}
+              className="rounded-full border hairline bg-canvas px-3.5 py-1.5 text-xs font-bold text-ink hover:border-primary hover:text-primary transition cursor-pointer"
+            >
+              + Onboard Partner
+            </button>
+          </div>
         </div>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {/* Default Partners */}
-          {PARTNERS.slice(0, 6).map((p) => (
-            <div key={p.id} className="rounded-2xl border hairline bg-canvas p-4 flex flex-col justify-between">
-              <div>
-                <div className="flex items-start justify-between">
-                  <span className="eyebrow text-primary text-[0.65rem] capitalize">{p.category}</span>
-                  <span className="rounded-full bg-success/15 px-2 py-0.5 text-[0.62rem] font-bold text-success">
-                    Active
-                  </span>
+          {PARTNERS.map((p) => {
+            const blackouts = getPartnerBlackouts(p.id);
+            return (
+              <div
+                key={p.id}
+                className="rounded-2xl border hairline bg-canvas p-4 flex flex-col justify-between group hover:border-primary/50 transition"
+              >
+                <div>
+                  <div className="flex items-start justify-between">
+                    <span className="eyebrow text-primary text-[0.65rem] capitalize">{p.category}</span>
+                    <span className="rounded-full bg-success/15 px-2 py-0.5 text-[0.62rem] font-bold text-success">
+                      Active
+                    </span>
+                  </div>
+                  <h4 className="font-display font-bold text-ink text-base mt-1">{p.name}</h4>
+                  <p className="text-xs text-ink/65 mt-0.5">
+                    Capacity: {p.min} - {p.max} guests · {p.perGuest ? `$${p.perGuest}/guest` : `$${p.flat} flat`}
+                  </p>
+                  <p className="text-[0.68rem] text-ink/50 mt-1 font-mono">
+                    {blackouts.length > 0 ? `${blackouts.length} blackout dates set` : "All 75 days open"}
+                  </p>
                 </div>
-                <h4 className="font-display font-bold text-ink text-base mt-1">{p.name}</h4>
-                <p className="text-xs text-ink/65 mt-0.5">
-                  Capacity: {p.min} - {p.max} guests · {p.perGuest ? `$${p.perGuest}/guest` : `$${p.flat} flat`}
-                </p>
+                <div className="mt-3 pt-2.5 border-t hairline flex items-center justify-between text-[0.68rem] text-ink/60">
+                  <span className="text-primary font-bold">Synchronized ✓</span>
+                  {onSwitchToPartner && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playTapSound();
+                        onSwitchToPartner(p.id);
+                      }}
+                      className="font-bold text-ink hover:text-primary transition cursor-pointer underline underline-offset-2"
+                    >
+                      Inspect Status →
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className="mt-3 pt-2.5 border-t hairline flex items-center justify-between text-[0.68rem] text-ink/60">
-                <span>Hold Horizon: 75 Days</span>
-                <span className="text-primary font-bold">Synchronized ✓</span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* Newly Added Custom Partners */}
           {customPartners.map((p) => (

@@ -54,6 +54,13 @@ function PortalPage() {
     }
   };
 
+  const handleSwitchToPartner = (targetPartnerId: string) => {
+    setRole("partner");
+    setStoredRole("partner");
+    setPartnerId(targetPartnerId);
+    setStoredPartnerId(targetPartnerId);
+  };
+
   const handleLogout = () => {
     playTapSound();
     clearStoredRole();
@@ -62,19 +69,23 @@ function PortalPage() {
 
   if (!isReady) {
     return (
-      <main className="flex min-h-[60vh] items-center justify-center">
-        <span className="eyebrow text-xs text-ink/50 animate-pulse">Loading authenticated portal...</span>
-      </main>
+      <div className="scroll-quiet h-full overflow-y-auto px-4 py-8 md:px-8">
+        <main className="flex min-h-[60vh] items-center justify-center">
+          <span className="eyebrow text-xs text-ink/50 animate-pulse">Loading authenticated portal...</span>
+        </main>
+      </div>
     );
   }
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12 md:px-8">
-      {!role && <PortalLoginModal onSelectRole={handleSelectRole} />}
+    <div className="scroll-quiet h-full overflow-y-auto px-4 py-6 md:px-8 pb-16">
+      <main className="mx-auto w-full max-w-6xl">
+        {!role && <PortalLoginModal onSelectRole={handleSelectRole} />}
 
-      {role === "owner" && <OwnerDashboard onLogout={handleLogout} />}
+        {role === "owner" && <OwnerDashboard onLogout={handleLogout} onSwitchToPartner={handleSwitchToPartner} />}
 
-      {role === "partner" && <PartnerDashboard currentPartnerId={partnerId} onLogout={handleLogout} />}
-    </main>
+        {role === "partner" && <PartnerDashboard currentPartnerId={partnerId} onLogout={handleLogout} />}
+      </main>
+    </div>
   );
 }

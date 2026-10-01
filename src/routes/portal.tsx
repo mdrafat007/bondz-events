@@ -86,8 +86,13 @@ function PortalPage() {
 
         {role === "partner" && (
           <PartnerDashboard
+            key={partnerId}
             currentPartnerId={partnerId}
             onLogout={handleLogout}
+            onBackToOwner={() => {
+              setRole("owner");
+              setStoredRole("owner");
+            }}
           />
         )}
       </main>

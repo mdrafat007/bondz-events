@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   type PortalBooking,
   getAllPortalBookings,
@@ -12,13 +12,21 @@ import { toast } from "sonner";
 export function PartnerDashboard({
   currentPartnerId,
   onLogout,
+  onBackToOwner,
 }: {
   currentPartnerId: string;
   onLogout: () => void;
+  onBackToOwner?: () => void;
 }) {
-  const [partnerId] = useState(currentPartnerId);
+  const [partnerId, setPartnerId] = useState(currentPartnerId);
   const [blackouts, setBlackouts] = useState<number[]>(() => getPartnerBlackouts(partnerId));
   const [expandedMobileOrder, setExpandedMobileOrder] = useState<string | null>(null);
+
+  // Sync internal partnerId state if currentPartnerId prop changes
+  useEffect(() => {
+    setPartnerId(currentPartnerId);
+    setBlackouts(getPartnerBlackouts(currentPartnerId));
+  }, [currentPartnerId]);
 
   const allPartners = useMemo(() => PARTNERS, []);
   const activePartner = useMemo(
@@ -76,13 +84,25 @@ export function PartnerDashboard({
         </div>
 
         <div className="flex items-center justify-start sm:justify-end gap-2.5 sm:shrink-0">
+          {onBackToOwner && (
+            <button
+              type="button"
+              onClick={() => {
+                playTapSound();
+                onBackToOwner();
+              }}
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-full border hairline bg-surface px-3.5 py-2 text-xs font-bold text-ink/80 hover:border-primary hover:text-primary transition cursor-pointer"
+            >
+              ← Back to Owner Dashboard
+            </button>
+          )}
           <button
             type="button"
             onClick={() => {
               playTapSound();
               onLogout();
             }}
-            className="rounded-full border hairline bg-canvas px-4 py-1.5 text-xs font-bold text-ink/75 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition cursor-pointer whitespace-nowrap"
+            className="inline-flex items-center justify-center whitespace-nowrap rounded-full border hairline bg-canvas px-4 py-2 text-xs font-bold text-ink/75 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition cursor-pointer"
           >
             Log Out
           </button>
@@ -134,18 +154,18 @@ export function PartnerDashboard({
             Oak Kitchen or DJ Nova) to inspect live schedules.
           </div>
         ) : (
-          <>
-            {/* Mobile Dropdown Cards (sm:hidden) */}
-            <div className="sm:hidden mt-4 space-y-3">
-              {partnerBookings.map((b) => {
-                const match = b.assignedPartners.find(
-                  (p) =>
-                    p.partnerId === partnerId || p.partnerName.toLowerCase().includes(activePartner.name.toLowerCase()),
-                );
-                const isExpanded = expandedMobileOrder === b.id;
+          /* Responsive Interactive Cards (Mobile, Tablet & Desktop) */
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            {partnerBookings.map((b) => {
+              const match = b.assignedPartners.find(
+                (p) =>
+                  p.partnerId === partnerId || p.partnerName.toLowerCase().includes(activePartner.name.toLowerCase()),
+              );
+              const isExpanded = expandedMobileOrder === b.id;
 
-                return (
-                  <div key={b.id} className="rounded-2xl border hairline bg-canvas p-4 shadow-2xs transition">
+              return (
+                <div key={b.id} className="rounded-2xl border hairline bg-canvas p-4 shadow-2xs transition flex flex-col justify-between">
+                  <div>
                     <div
                       className="flex items-start justify-between cursor-pointer select-none"
                       onClick={() => {
@@ -190,71 +210,20 @@ export function PartnerDashboard({
                           <span className="eyebrow text-ink/45 block text-[0.62rem]">Client Contact</span>
                           <p className="font-medium text-ink mt-0.5">{b.clientName}</p>
                         </div>
-
-                        <div className="pt-2 border-t hairline flex items-center justify-between text-[0.72rem]">
-                          <span className="text-ink/60">Dispatch Base</span>
-                          <span className="rounded-full bg-success/15 px-2.5 py-0.5 font-bold text-success text-[0.68rem]">
-                            ✓ Calendar Locked
-                          </span>
-                        </div>
                       </div>
                     )}
                   </div>
-                );
-              })}
-            </div>
 
-            {/* Desktop & Tablet Table (hidden sm:block) */}
-            <div className="hidden sm:block mt-4 overflow-x-auto">
-              <table className="w-full text-left text-xs text-ink/80 border-collapse">
-                <thead>
-                  <tr className="border-b hairline text-[0.68rem] uppercase font-bold text-ink/50">
-                    <th className="py-2.5 px-3">Event / Reference</th>
-                    <th className="py-2.5 px-3">Scheduled Date</th>
-                    <th className="py-2.5 px-3">Location / Venue</th>
-                    <th className="py-2.5 px-3">Guests</th>
-                    <th className="py-2.5 px-3">Agreed Fee</th>
-                    <th className="py-2.5 px-3">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y hairline">
-                  {partnerBookings.map((b) => {
-                    const match = b.assignedPartners.find(
-                      (p) =>
-                        p.partnerId === partnerId ||
-                        p.partnerName.toLowerCase().includes(activePartner.name.toLowerCase()),
-                    );
-                    return (
-                      <tr key={b.id} className="hover:bg-canvas/50 transition">
-                        <td className="py-3 px-3">
-                          <span className="font-mono text-primary font-bold block">{b.ref}</span>
-                          <span className="font-bold text-ink text-sm block">{b.eventTitle}</span>
-                          <span className="text-[0.68rem] text-ink/55">{b.clientName}</span>
-                        </td>
-                        <td className="py-3 px-3 whitespace-nowrap">
-                          <span className="font-semibold text-ink block">{b.dateStr}</span>
-                          <span className="text-[0.68rem] text-primary font-bold">{b.slot}</span>
-                        </td>
-                        <td className="py-3 px-3">
-                          <span className="font-medium text-ink block">{b.venueName}</span>
-                          <span className="text-[0.68rem] text-ink/55 capitalize">{b.where}</span>
-                        </td>
-                        <td className="py-3 px-3 font-semibold text-ink">{b.guests} guests</td>
-                        <td className="py-3 px-3 font-mono font-bold text-primary text-sm">
-                          ${match?.agreedFee.toLocaleString()}
-                        </td>
-                        <td className="py-3 px-3">
-                          <span className="rounded-full bg-success/15 px-2.5 py-0.5 text-[0.68rem] font-bold text-success">
-                            ✓ Calendar Locked
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </>
+                  <div className="mt-3 pt-2.5 border-t hairline flex items-center justify-between text-[0.72rem]">
+                    <span className="text-ink/60">{b.guests} guests</span>
+                    <span className="rounded-full bg-success/15 px-2.5 py-0.5 font-bold text-success text-[0.68rem]">
+                      ✓ Calendar Locked
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
 

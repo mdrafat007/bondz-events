@@ -182,163 +182,95 @@ export function OwnerDashboard({
           </div>
         </div>
 
-        {/* Mobile Dropdown Cards (sm:hidden) */}
-        <div className="sm:hidden mt-4 space-y-3">
+        {/* Responsive Interactive Bookings Cards Grid (Mobile, Tablet & Desktop) */}
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {filteredBookings.map((b) => {
             const isExpanded = expandedMobileBooking === b.id;
             return (
-              <div key={b.id} className="rounded-2xl border hairline bg-canvas p-4 shadow-2xs transition">
-                <div
-                  className="flex items-start justify-between cursor-pointer select-none"
-                  onClick={() => {
-                    playTapSound();
-                    setExpandedMobileBooking(isExpanded ? null : b.id);
-                  }}
-                >
-                  <div className="min-w-0 pr-2">
-                    <span className="font-mono text-primary font-bold text-xs">{b.ref}</span>
-                    <h3 className="font-bold text-ink text-base truncate mt-0.5">{b.eventTitle}</h3>
-                    <p className="text-[0.72rem] text-ink/60 mt-0.5">
-                      {b.dateStr} · {b.slot} · {b.guests} guests
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-end shrink-0">
-                    <span className="font-mono font-bold text-ink text-sm">${b.totalCost.toLocaleString()}</span>
-                    <span className="mt-1 flex items-center gap-1 rounded-full border hairline bg-surface px-2 py-0.5 text-[0.65rem] font-bold text-ink/70">
-                      <span>{isExpanded ? "Hide" : "Details"}</span>
-                      <span className="text-[0.60rem]">{isExpanded ? "▲" : "▼"}</span>
-                    </span>
-                  </div>
-                </div>
-
-                {/* Collapsible Dropdown Card Body */}
-                {isExpanded && (
-                  <div className="mt-3 pt-3 border-t hairline space-y-3 text-xs animate-in fade-in duration-200">
-                    <div className="grid grid-cols-2 gap-2 text-[0.75rem]">
-                      <div>
-                        <span className="eyebrow text-ink/45 block text-[0.62rem]">Venue / Setup</span>
-                        <p className="font-semibold text-ink mt-0.5">{b.venueName}</p>
-                        <p className="text-ink/60 capitalize text-[0.70rem]">{b.where}</p>
-                      </div>
-                      <div>
-                        <span className="eyebrow text-ink/45 block text-[0.62rem]">Deposit Locked</span>
-                        <p className="font-mono font-bold text-success mt-0.5">${b.depositPaid.toLocaleString()}</p>
-                        <p className="text-ink/60 text-[0.70rem]">25% confirmed</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <span className="eyebrow text-ink/45 block text-[0.62rem]">Client Contact</span>
-                      <p className="font-medium text-ink mt-0.5">{b.clientName}</p>
-                      <p className="text-ink/60 font-mono text-[0.70rem]">
-                        {b.clientPhone} · {b.clientEmail}
+              <div key={b.id} className="rounded-2xl border hairline bg-canvas p-4 shadow-2xs transition flex flex-col justify-between">
+                <div>
+                  <div
+                    className="flex items-start justify-between cursor-pointer select-none"
+                    onClick={() => {
+                      playTapSound();
+                      setExpandedMobileBooking(isExpanded ? null : b.id);
+                    }}
+                  >
+                    <div className="min-w-0 pr-2">
+                      <span className="font-mono text-primary font-bold text-xs">{b.ref}</span>
+                      <h3 className="font-bold text-ink text-base truncate mt-0.5">{b.eventTitle}</h3>
+                      <p className="text-[0.72rem] text-ink/60 mt-0.5">
+                        {b.dateStr} · {b.slot} · {b.guests} guests
                       </p>
                     </div>
-
-                    <div>
-                      <span className="eyebrow text-ink/45 block text-[0.62rem] mb-1">Assigned Fleet Partners</span>
-                      <div className="flex flex-wrap gap-1">
-                        {b.assignedPartners.map((p) => (
-                          <span
-                            key={p.partnerName}
-                            className="rounded-md border hairline bg-surface px-2 py-0.5 text-[0.65rem] font-medium text-ink"
-                          >
-                            {p.partnerName}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="pt-2 border-t hairline flex justify-end">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          playTapSound();
-                          setSelectedBooking(b);
-                        }}
-                        className="w-full rounded-xl bg-ink py-2 text-xs font-bold text-canvas hover:bg-primary transition cursor-pointer text-center"
-                      >
-                        Inspect Full Timeline &amp; Strike →
-                      </button>
+                    <div className="flex flex-col items-end shrink-0">
+                      <span className="font-mono font-bold text-ink text-sm">${b.totalCost.toLocaleString()}</span>
+                      <span className="mt-1 flex items-center gap-1 rounded-full border hairline bg-surface px-2 py-0.5 text-[0.65rem] font-bold text-ink/70">
+                        <span>{isExpanded ? "Hide" : "Details"}</span>
+                        <span className="text-[0.60rem]">{isExpanded ? "▲" : "▼"}</span>
+                      </span>
                     </div>
                   </div>
-                )}
+
+                  {/* Collapsible Dropdown Card Body */}
+                  {isExpanded && (
+                    <div className="mt-3 pt-3 border-t hairline space-y-3 text-xs animate-in fade-in duration-200">
+                      <div className="grid grid-cols-2 gap-2 text-[0.75rem]">
+                        <div>
+                          <span className="eyebrow text-ink/45 block text-[0.62rem]">Venue / Setup</span>
+                          <p className="font-semibold text-ink mt-0.5">{b.venueName}</p>
+                          <p className="text-ink/60 capitalize text-[0.70rem]">{b.where}</p>
+                        </div>
+                        <div>
+                          <span className="eyebrow text-ink/45 block text-[0.62rem]">Deposit Locked</span>
+                          <p className="font-mono font-bold text-success mt-0.5">${b.depositPaid.toLocaleString()}</p>
+                          <p className="text-ink/60 text-[0.70rem]">25% confirmed</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="eyebrow text-ink/45 block text-[0.62rem]">Client Contact</span>
+                        <p className="font-medium text-ink mt-0.5">{b.clientName}</p>
+                        <p className="text-ink/60 font-mono text-[0.70rem]">
+                          {b.clientPhone} · {b.clientEmail}
+                        </p>
+                      </div>
+
+                      <div>
+                        <span className="eyebrow text-ink/45 block text-[0.62rem] mb-1">Assigned Fleet Partners</span>
+                        <div className="flex flex-wrap gap-1">
+                          {b.assignedPartners.map((p) => (
+                            <span
+                              key={p.partnerName}
+                              className="rounded-md border hairline bg-surface px-2 py-0.5 text-[0.65rem] font-medium text-ink"
+                            >
+                              {p.partnerName}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-3 pt-2.5 border-t hairline flex items-center justify-between gap-2">
+                  <span className="font-mono text-[0.70rem] text-success font-semibold">
+                    ${b.depositPaid.toLocaleString()} deposit (25%)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTapSound();
+                      setSelectedBooking(b);
+                    }}
+                    className="rounded-lg border hairline bg-surface px-2.5 py-1 text-[0.68rem] font-bold text-ink hover:border-primary hover:text-primary transition cursor-pointer shrink-0"
+                  >
+                    Inspect Timeline →
+                  </button>
+                </div>
               </div>
             );
           })}
-        </div>
-
-        {/* Desktop & Tablet Bookings Table (hidden sm:block) */}
-        <div className="hidden sm:block mt-4 overflow-x-auto">
-          <table className="w-full text-left text-xs text-ink/80 border-collapse">
-            <thead>
-              <tr className="border-b hairline text-[0.68rem] uppercase font-bold text-ink/50">
-                <th className="py-2.5 px-3">Reference / Event</th>
-                <th className="py-2.5 px-3">Date &amp; Slot</th>
-                <th className="py-2.5 px-3">Location &amp; Venue</th>
-                <th className="py-2.5 px-3">Client &amp; Contact</th>
-                <th className="py-2.5 px-3">Total / Deposit</th>
-                <th className="py-2.5 px-3">Partner Locks</th>
-                <th className="py-2.5 px-3 text-right">Run of Show</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y hairline">
-              {filteredBookings.map((b) => (
-                <tr key={b.id} className="hover:bg-canvas/60 transition-colors">
-                  <td className="py-3 px-3">
-                    <span className="font-mono text-primary font-bold block">{b.ref}</span>
-                    <span className="font-bold text-ink text-sm">{b.eventTitle}</span>
-                    <span className="text-[0.68rem] text-ink/55 block capitalize">
-                      {b.event} · {b.guests} Guests
-                    </span>
-                  </td>
-                  <td className="py-3 px-3">
-                    <span className="font-semibold text-ink block">{b.dateStr}</span>
-                    <span className="text-ink/65 text-[0.70rem]">{b.slot}</span>
-                  </td>
-                  <td className="py-3 px-3">
-                    <span className="font-medium text-ink block">{b.venueName}</span>
-                    <span className="text-ink/55 text-[0.70rem] capitalize">{b.where}</span>
-                  </td>
-                  <td className="py-3 px-3">
-                    <span className="font-bold text-ink block">{b.clientName}</span>
-                    <span className="text-ink/65 text-[0.70rem] font-mono block">{b.clientPhone}</span>
-                    <span className="text-ink/55 text-[0.68rem] font-mono">{b.clientEmail}</span>
-                  </td>
-                  <td className="py-3 px-3">
-                    <span className="font-mono font-bold text-ink block">${b.totalCost.toLocaleString()}</span>
-                    <span className="font-mono text-success text-[0.70rem] font-semibold">
-                      ${b.depositPaid.toLocaleString()} paid (25%)
-                    </span>
-                  </td>
-                  <td className="py-3 px-3">
-                    <div className="flex flex-wrap gap-1">
-                      {b.assignedPartners.map((p) => (
-                        <span
-                          key={p.partnerName}
-                          className="rounded-md border hairline bg-surface px-1.5 py-0.5 text-[0.65rem] font-medium text-ink/80"
-                        >
-                          {p.partnerName}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="py-3 px-3 text-right">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        playTapSound();
-                        setSelectedBooking(b);
-                      }}
-                      className="rounded-lg border hairline bg-surface px-2.5 py-1 text-[0.68rem] font-bold text-ink hover:border-primary hover:text-primary transition cursor-pointer"
-                    >
-                      Inspect Timeline →
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
 

@@ -76,16 +76,55 @@ Thank you.`;
       {/* Left column: kicker and headline at the top, Mr. Bondz card pinned to the bottom */}
       <div className="flex min-w-0 flex-col justify-between gap-8 lg:col-span-5">
         <div className="min-w-0">
-          <p className="eyebrow text-primary">
-            Direct line to Mr. Bondz
-          </p>
+          <p className="eyebrow text-primary">Direct line to Mr. Bondz</p>
           <h1 className="display mt-3 text-4xl leading-none tracking-tight sm:text-5xl md:text-6xl">
             Tell me what you’re celebrating.
           </h1>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-ink/70">
-            This contact form is a preview and cannot send messages yet. You can still explore a sample booking
-            end to end.
+            This contact form is a preview and cannot send messages yet. You can still explore a sample booking end to
+            end.
           </p>
+        </div>
+
+        {/* London Studio HQ & Operating Location Card */}
+        <div className="rounded-2xl border hairline bg-surface-light p-4 sm:p-5 shadow-xs">
+          <div className="flex items-start justify-between gap-3 border-b hairline pb-3">
+            <div>
+              <span className="eyebrow text-primary">London Studio HQ</span>
+              <h3 className="font-display text-base font-black uppercase tracking-tight text-ink mt-0.5 [font-variation-settings:'wdth'_85]">
+                Bondz Events London
+              </h3>
+            </div>
+            <span className="rounded-full border hairline bg-canvas px-2.5 py-1 text-[0.68rem] font-bold text-ink/75">
+              Studio 4B
+            </span>
+          </div>
+
+          <div className="mt-3.5 space-y-2.5 text-xs text-ink/80">
+            <div className="flex items-start gap-2.5">
+              <span className="text-primary font-bold text-sm">📍</span>
+              <div>
+                <p className="font-bold text-ink">42 Bermondsey Street, Studio 4B</p>
+                <p className="text-ink/60">London SE1 3UD · Private Planning Studio</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2.5">
+              <span className="text-primary font-bold text-sm">🗺️</span>
+              <div>
+                <p className="font-bold text-ink">Coverage &amp; Destination Bookings</p>
+                <p className="text-ink/60">Greater London, Home Counties &amp; Global Private Celebrations</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2.5">
+              <span className="text-primary font-bold text-sm">⏱️</span>
+              <div>
+                <p className="font-bold text-ink">Studio Consultations &amp; Event Hours</p>
+                <p className="text-ink/60">Mon – Sat: 9:00 AM – 7:00 PM · 24/7 Live Event Strike</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="mt-auto flex max-w-lg items-center gap-4 rounded-2xl border border-paper/20 bg-night p-4 text-paper shadow-raised sm:p-5">
@@ -97,9 +136,7 @@ Thank you.`;
             />
           </div>
           <div className="flex min-w-0 flex-col">
-            <span className="eyebrow text-primary">
-              Personal Event Organizer Guarantee
-            </span>
+            <span className="eyebrow text-primary">Personal Event Organizer Guarantee</span>
             <p className="mt-0.5 font-sans text-base font-black tracking-tight text-paper [font-variation-settings:'wdth'_85] sm:text-lg">
               “Mr. Bondz will take care of it.”
             </p>

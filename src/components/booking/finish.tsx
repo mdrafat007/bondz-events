@@ -551,27 +551,11 @@ function cheer() {
 
 const THEMES = [
   {
-    id: "coral",
-    name: "Coral Night",
-    bg: "oklch(0.24 0.05 290)",
-    fg: "oklch(0.97 0.015 85)",
-    hl: "oklch(0.68 0.2 32)",
-    logo: "dark" as const,
-  },
-  {
-    id: "golden",
-    name: "Golden Hour",
-    bg: "oklch(0.84 0.12 75)",
-    fg: "oklch(0.2 0.03 290)",
-    hl: "oklch(0.52 0.19 30)",
-    logo: "light" as const,
-  },
-  {
-    id: "garden",
-    name: "Garden",
-    bg: "oklch(0.88 0.06 150)",
-    fg: "oklch(0.22 0.04 160)",
-    hl: "oklch(0.5 0.12 155)",
+    id: "white",
+    name: "Paper White",
+    bg: "#ffffff",
+    fg: "oklch(0.13 0.02 290)",
+    hl: "oklch(0.64 0.21 28)",
     logo: "light" as const,
   },
   {
@@ -581,6 +565,22 @@ const THEMES = [
     fg: "oklch(0.97 0.015 85)",
     hl: "oklch(0.64 0.21 28)",
     logo: "dark" as const,
+  },
+  {
+    id: "garden",
+    name: "Mint Garden",
+    bg: "oklch(0.88 0.06 150)",
+    fg: "oklch(0.22 0.04 160)",
+    hl: "oklch(0.5 0.12 155)",
+    logo: "light" as const,
+  },
+  {
+    id: "golden",
+    name: "Golden Hour",
+    bg: "oklch(0.84 0.12 75)",
+    fg: "oklch(0.2 0.03 290)",
+    hl: "oklch(0.52 0.19 30)",
+    logo: "light" as const,
   },
 ];
 
@@ -965,6 +965,8 @@ export function Step6() {
       c.width = W;
       c.height = H;
       const ctx = c.getContext("2d")!;
+      ctx.fillStyle = theme.bg;
+      ctx.fillRect(0, 0, W, H);
       ctx.drawImage(templateImg, 0, 0, W, H);
 
       await document.fonts.load('italic 105px "Instrument Serif"');

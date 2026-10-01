@@ -7,18 +7,18 @@ import { triggerBookingTransition } from "@/lib/booking-transition";
 import { ConnectAIAssistant } from "./ConnectAIAssistant";
 import { cn } from "@/lib/utils";
 
-
 const LINKS = [
   { to: "/book", label: "Get a Booking" },
   { to: "/how-it-works", label: "Who is Mr. Bondz" },
   { to: "/portfolios", label: "Events Gallery" },
   { to: "/services", label: "Event Services" },
   { to: "/partners", label: "Partners" },
+  { to: "/portal", label: "Login Portal" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
 /** Borderless, physically tactile icon control - no button chrome, real press depth. */
-export function TactileIcon({
+function TactileIcon({
   label,
   onClick,
   children,
@@ -89,13 +89,29 @@ export function SiteNav() {
             muted={!soundEnabled}
           >
             {soundEnabled ? (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="size-5">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-5"
+              >
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                 <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
                 <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
               </svg>
             ) : (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="size-5">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-5"
+              >
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                 <line x1="23" y1="9" x2="17" y2="15" />
                 <line x1="17" y1="9" x2="23" y2="15" />
@@ -111,7 +127,15 @@ export function SiteNav() {
             }}
           >
             {theme === "dark" ? (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="size-5">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-5"
+              >
                 <circle cx="12" cy="12" r="4.4" />
                 <line x1="12" y1="1.5" x2="12" y2="3.6" />
                 <line x1="12" y1="20.4" x2="12" y2="22.5" />
@@ -123,11 +147,31 @@ export function SiteNav() {
                 <line x1="18.3" y1="5.7" x2="19.8" y2="4.2" />
               </svg>
             ) : (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="size-5">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-5"
+              >
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
               </svg>
             )}
           </TactileIcon>
+
+          <Link
+            to="/portal"
+            onClick={() => {
+              playTapSound();
+              setOpen(false);
+            }}
+            className="bondz-tactile hidden sm:inline-flex h-9 sm:h-10 items-center px-3.5 rounded-full text-xs font-bold text-ink hover:text-primary transition-colors duration-200"
+            activeProps={{ className: "text-primary font-black bg-surface" }}
+          >
+            Portal
+          </Link>
 
           <button
             type="button"
@@ -140,13 +184,26 @@ export function SiteNav() {
             className="bondz-tactile flex h-9 shrink-0 items-center gap-2 rounded-full px-3 text-ink sm:h-10 sm:px-3.5"
           >
             <span className="grid gap-[3px]" aria-hidden>
-              <span className={cn("block h-[2px] w-4.5 rounded-full bg-current transition-transform duration-300", open && "translate-y-[5px] rotate-45")} />
-              <span className={cn("block h-[2px] w-4.5 rounded-full bg-current transition-opacity duration-200", open && "opacity-0")} />
-              <span className={cn("block h-[2px] w-4.5 rounded-full bg-current transition-transform duration-300", open && "-translate-y-[5px] -rotate-45")} />
+              <span
+                className={cn(
+                  "block h-[2px] w-4.5 rounded-full bg-current transition-transform duration-300",
+                  open && "translate-y-[5px] rotate-45",
+                )}
+              />
+              <span
+                className={cn(
+                  "block h-[2px] w-4.5 rounded-full bg-current transition-opacity duration-200",
+                  open && "opacity-0",
+                )}
+              />
+              <span
+                className={cn(
+                  "block h-[2px] w-4.5 rounded-full bg-current transition-transform duration-300",
+                  open && "-translate-y-[5px] -rotate-45",
+                )}
+              />
             </span>
-            <span className="eyebrow font-black">
-              {open ? "Close" : "Menu"}
-            </span>
+            <span className="eyebrow font-black">{open ? "Close" : "Menu"}</span>
           </button>
         </div>
       </div>

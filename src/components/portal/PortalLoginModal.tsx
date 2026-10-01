@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, type Variants } from "framer-motion";
-import { type PortalRole, setStoredRole, setStoredPartnerId } from "@/lib/portal-store";
-import { PARTNERS } from "@/lib/bondz-data";
+import { type PortalRole, setStoredRole, setStoredPartnerId, getCustomPartners } from "@/lib/portal-store";
+import { PARTNERS, VENUES } from "@/lib/bondz-data";
 import { triggerTap, playTapSound } from "@/lib/haptics";
 import { useTheme } from "@/lib/theme";
 import mascotWhite from "@/assets/mascot-white.png";
@@ -38,12 +38,29 @@ export function PortalLoginModal({ onSelectRole }: { onSelectRole: (role: Portal
     }, 1200);
   };
 
+  const customPartners = useMemo(() => getCustomPartners(), []);
+  const allPartnersList = useMemo(() => {
+    return [
+      ...PARTNERS,
+      ...customPartners.map((c) => ({
+        id: c.id,
+        name: c.name,
+        category: c.category,
+        min: 10,
+        max: 250,
+        events: "all" as const,
+        seed: 99,
+        busyRate: 0.2,
+      })),
+    ];
+  }, [customPartners]);
+
   const handlePartnerSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     playTapSound();
     triggerTap();
     setIsLoggingIn(true);
-    const partnerObj = PARTNERS.find((p) => p.id === selectedPartner);
+    const partnerObj = allPartnersList.find((p) => p.id === selectedPartner) || VENUES.find((v) => v.id === selectedPartner);
     setLoadingPartnerName(partnerObj?.name || "Partner Fleet");
 
     setTimeout(() => {
@@ -245,16 +262,46 @@ export function PortalLoginModal({ onSelectRole }: { onSelectRole: (role: Portal
                     <option value="nova">DJ Nova</option>
                     <option value="static">Static Bloom Sound</option>
                     <option value="aura">Aura Sound &amp; Lighting</option>
+                    <option value="prism">Prism Stagecraft</option>
                   </optgroup>
                   <optgroup label="Decorations & Florals">
                     <option value="petal">Petal Theory</option>
                     <option value="linen">Linen &amp; Light Studio</option>
                   </optgroup>
+                  <optgroup label="Photo & Video">
+                    <option value="lens">Lens &amp; Frame Studio</option>
+                    <option value="lumina">Lumina Cinematics</option>
+                  </optgroup>
+                  <optgroup label="Streaming & Hybrid">
+                    <option value="streamsync">StreamSync Studio</option>
+                  </optgroup>
+                  <optgroup label="Equipment & Rentals">
+                    <option value="rentit">RentIt Pro</option>
+                    <option value="canopy">Canopy Works</option>
+                  </optgroup>
+                  <optgroup label="Staffing & Coordination">
+                    <option value="hostline">Hostline Staffing</option>
+                  </optgroup>
+                  <optgroup label="Cleaning & Strike">
+                    <option value="tidy">Tidy Morning Co.</option>
+                    <option value="sparkle">Afterglow Cleaners</option>
+                  </optgroup>
                   <optgroup label="Venues">
                     <option value="smokestack">Smokestack Yard</option>
                     <option value="glasshouse">The Glasshouse</option>
                     <option value="loft9">Loft Nine</option>
+                    <option value="harbor">Harbor Hall</option>
+                    <option value="mews">Cedar Mews Room</option>
                   </optgroup>
+                  {customPartners.length > 0 && (
+                    <optgroup label="Custom Onboarded Partners">
+                      {customPartners.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name} ({c.category})
+                        </option>
+                      ))}
+                    </optgroup>
+                  )}
                 </select>
               </div>
 

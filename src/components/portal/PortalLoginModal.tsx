@@ -192,11 +192,23 @@ export function PortalLoginModal({ onSelectRole }: { onSelectRole: (role: Portal
               </div>
             </div>
 
+            <div className="flex items-center justify-between text-xs text-ink/70 pt-1">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  defaultChecked
+                  className="rounded border-hairline accent-primary cursor-pointer size-3.5"
+                />
+                <span>Remember this terminal</span>
+              </label>
+              <span className="font-mono text-[0.68rem] text-primary/80 font-bold">256-Bit SSL Encrypted</span>
+            </div>
+
             <button
               type="submit"
               className="w-full rounded-xl bg-ink py-3.5 text-xs font-extrabold uppercase tracking-wider text-canvas hover:bg-primary hover:text-primary-foreground active:scale-95 transition-all shadow-md cursor-pointer"
             >
-              Enter Command Center →
+              Sign In to Owner Portal →
             </button>
           </form>
         ) : (
@@ -272,11 +284,23 @@ export function PortalLoginModal({ onSelectRole }: { onSelectRole: (role: Portal
               </div>
             </div>
 
+            <div className="flex items-center justify-between text-xs text-ink/70 pt-1">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  defaultChecked
+                  className="rounded border-hairline accent-primary cursor-pointer size-3.5"
+                />
+                <span>Remember this terminal</span>
+              </label>
+              <span className="font-mono text-[0.68rem] text-primary/80 font-bold">256-Bit SSL Encrypted</span>
+            </div>
+
             <button
               type="submit"
               className="w-full rounded-xl bg-ink py-3.5 text-xs font-extrabold uppercase tracking-wider text-canvas hover:bg-primary hover:text-primary-foreground active:scale-95 transition-all shadow-md cursor-pointer"
             >
-              Enter Partner Dashboard →
+              Sign In to Partner Portal →
             </button>
           </form>
         )}

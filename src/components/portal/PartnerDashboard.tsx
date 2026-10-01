@@ -10,7 +10,15 @@ import { PARTNERS, VENUES, HORIZON, isBusy } from "@/lib/bondz-data";
 import { triggerTap, playTapSound } from "@/lib/haptics";
 import { toast } from "sonner";
 
-export function PartnerDashboard({ currentPartnerId, onLogout }: { currentPartnerId: string; onLogout: () => void }) {
+export function PartnerDashboard({
+  currentPartnerId,
+  onLogout,
+  onBackToOwner,
+}: {
+  currentPartnerId: string;
+  onLogout: () => void;
+  onBackToOwner?: () => void;
+}) {
   const [partnerId, setPartnerId] = useState(currentPartnerId);
   const [blackouts, setBlackouts] = useState<number[]>(() => getPartnerBlackouts(partnerId));
 
@@ -77,6 +85,20 @@ export function PartnerDashboard({ currentPartnerId, onLogout }: { currentPartne
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
+          {onBackToOwner && (
+            <button
+              type="button"
+              onClick={() => {
+                playTapSound();
+                onBackToOwner();
+              }}
+              className="rounded-full bg-ink px-4 py-1.5 text-xs font-bold text-canvas hover:bg-primary transition cursor-pointer flex items-center gap-1.5 shadow-sm"
+            >
+              <span>←</span>
+              <span>Back to Owner Portal</span>
+            </button>
+          )}
+
           <div className="flex items-center gap-2">
             <span className="eyebrow text-ink/50 text-[0.65rem]">Partner Switcher:</span>
             <select
@@ -97,9 +119,9 @@ export function PartnerDashboard({ currentPartnerId, onLogout }: { currentPartne
               playTapSound();
               onLogout();
             }}
-            className="rounded-full border hairline bg-canvas px-4 py-1.5 text-xs font-bold text-ink/75 hover:bg-surface transition cursor-pointer"
+            className="rounded-full border hairline bg-canvas px-4 py-1.5 text-xs font-bold text-ink/75 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition cursor-pointer"
           >
-            Switch Role
+            Log Out
           </button>
         </div>
       </div>
@@ -234,15 +256,16 @@ export function PartnerDashboard({ currentPartnerId, onLogout }: { currentPartne
 
             const d = new Date();
             d.setDate(d.getDate() + dayIdx);
-            const label = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+            const monthShort = d.toLocaleDateString("en-US", { month: "short" });
             const weekday = d.toLocaleDateString("en-US", { weekday: "narrow" });
+            const dayNum = d.getDate();
 
             return (
               <button
                 key={dayIdx}
                 type="button"
                 onClick={() => handleToggleDay(dayIdx)}
-                title={`Day +${dayIdx} (${label}): ${isBlocked ? "Unavailable - Click to open" : "Available - Click to blackout"}`}
+                title={`Day +${dayIdx} (${monthShort} ${dayNum}): ${isBlocked ? "Blocked - Click to mark Available" : "Available - Click to mark Blocked"}`}
                 className={`flex flex-col items-center justify-center p-2 rounded-xl border text-center transition-all cursor-pointer ${
                   isBlocked
                     ? "bg-primary text-primary-foreground border-primary shadow-xs font-bold"
@@ -250,8 +273,15 @@ export function PartnerDashboard({ currentPartnerId, onLogout }: { currentPartne
                 }`}
               >
                 <span className="text-[0.55rem] uppercase opacity-75">{weekday}</span>
-                <span className="text-xs font-bold leading-tight mt-0.5">{d.getDate()}</span>
-                <span className="text-[0.55rem] opacity-70">{d.toLocaleDateString("en-US", { month: "narrow" })}</span>
+                <span className="text-xs font-black leading-tight mt-0.5">{dayNum}</span>
+                <span className="text-[0.62rem] font-bold opacity-80 mt-0.5">{monthShort}</span>
+                <span
+                  className={`mt-1 text-[0.50rem] uppercase tracking-wider px-1 py-0.2 rounded font-mono ${
+                    isBlocked ? "bg-white/20 text-white" : "bg-success/20 text-success font-bold"
+                  }`}
+                >
+                  {isBlocked ? "Blocked" : "Open"}
+                </span>
               </button>
             );
           })}

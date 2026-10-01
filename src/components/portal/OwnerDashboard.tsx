@@ -60,6 +60,13 @@ export function OwnerDashboard({
         </div>
 
         <div className="flex items-center gap-2.5">
+          <a
+            href="#partner-status-fleet"
+            onClick={playTapSound}
+            className="rounded-full border hairline bg-surface px-4 py-2 text-xs font-bold text-ink/80 hover:border-primary hover:text-primary transition cursor-pointer"
+          >
+            Partner Status ↓
+          </a>
           <button
             type="button"
             onClick={() => {
@@ -76,9 +83,9 @@ export function OwnerDashboard({
               playTapSound();
               onLogout();
             }}
-            className="rounded-full border hairline bg-surface px-4 py-2 text-xs font-bold text-ink/75 hover:bg-canvas transition cursor-pointer"
+            className="rounded-full border hairline bg-surface px-4 py-2 text-xs font-bold text-ink/75 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition cursor-pointer"
           >
-            Switch Role
+            Log Out
           </button>
         </div>
       </div>
@@ -221,7 +228,10 @@ export function OwnerDashboard({
       </div>
 
       {/* Section 2: Partner Status & Fleet Dispatch */}
-      <div className="rounded-3xl border hairline bg-surface-light p-5 sm:p-7 shadow-xs">
+      <div
+        id="partner-status-fleet"
+        className="rounded-3xl border hairline bg-surface-light p-5 sm:p-7 shadow-xs scroll-mt-6"
+      >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b hairline pb-4">
           <div>
             <div className="flex items-center gap-2">

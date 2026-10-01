@@ -14,7 +14,150 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          assigned_partners: Json | null
+          client_email: string | null
+          client_name: string | null
+          client_phone: string | null
+          created_at: string
+          date_str: string | null
+          deposit_paid: number | null
+          event: string | null
+          event_title: string | null
+          guests: number | null
+          id: string
+          notes: string | null
+          ref: string | null
+          run_of_show: Json | null
+          session_id: string
+          signature_url: string | null
+          slot: string | null
+          status: string | null
+          total_cost: number | null
+          venue_name: string | null
+          where: string | null
+        }
+        Insert: {
+          assigned_partners?: Json | null
+          client_email?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          created_at?: string
+          date_str?: string | null
+          deposit_paid?: number | null
+          event?: string | null
+          event_title?: string | null
+          guests?: number | null
+          id?: string
+          notes?: string | null
+          ref?: string | null
+          run_of_show?: Json | null
+          session_id: string
+          signature_url?: string | null
+          slot?: string | null
+          status?: string | null
+          total_cost?: number | null
+          venue_name?: string | null
+          where?: string | null
+        }
+        Update: {
+          assigned_partners?: Json | null
+          client_email?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          created_at?: string
+          date_str?: string | null
+          deposit_paid?: number | null
+          event?: string | null
+          event_title?: string | null
+          guests?: number | null
+          id?: string
+          notes?: string | null
+          ref?: string | null
+          run_of_show?: Json | null
+          session_id?: string
+          signature_url?: string | null
+          slot?: string | null
+          status?: string | null
+          total_cost?: number | null
+          venue_name?: string | null
+          where?: string | null
+        }
+        Relationships: []
+      }
+      custom_partners: {
+        Row: {
+          active: boolean | null
+          capacity: string | null
+          category: string | null
+          contact: string | null
+          created_at: string
+          email: string | null
+          id: string
+          is_archived: boolean | null
+          is_paused: boolean | null
+          name: string | null
+          phone: string | null
+          rate_label: string | null
+          session_id: string
+        }
+        Insert: {
+          active?: boolean | null
+          capacity?: string | null
+          category?: string | null
+          contact?: string | null
+          created_at?: string
+          email?: string | null
+          id: string
+          is_archived?: boolean | null
+          is_paused?: boolean | null
+          name?: string | null
+          phone?: string | null
+          rate_label?: string | null
+          session_id: string
+        }
+        Update: {
+          active?: boolean | null
+          capacity?: string | null
+          category?: string | null
+          contact?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_archived?: boolean | null
+          is_paused?: boolean | null
+          name?: string | null
+          phone?: string | null
+          rate_label?: string | null
+          session_id?: string
+        }
+        Relationships: []
+      }
+      partner_blackouts: {
+        Row: {
+          created_at: string
+          day_offset: number | null
+          id: string
+          partner_id: string | null
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          day_offset?: number | null
+          id?: string
+          partner_id?: string | null
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          day_offset?: number | null
+          id?: string
+          partner_id?: string | null
+          session_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

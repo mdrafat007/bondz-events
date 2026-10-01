@@ -112,8 +112,9 @@ Thank you.`;
             <div>
               <span className="eyebrow text-primary">London Studio HQ</span>
               <h3 className="font-display text-base font-black uppercase tracking-tight text-ink mt-0.5 [font-variation-settings:'wdth'_85]">
-                Bondz Events London
+                BONDZ EVENTS
               </h3>
+              <p className="font-serif-i text-xs text-ink/75 italic mt-0.5">Good times, beautifully made.</p>
             </div>
             <span className="rounded-full border hairline bg-canvas px-2.5 py-1 text-[0.68rem] font-bold text-ink/75">
               Studio 4B

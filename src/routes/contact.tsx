@@ -86,8 +86,28 @@ Thank you.`;
           </p>
         </div>
 
+        {/* Mr. Bondz Personal Guarantee Card */}
+        <div className="flex max-w-lg items-center gap-4 rounded-2xl border border-paper/20 bg-night p-4 text-paper shadow-raised sm:p-5">
+          <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-primary/60 bg-night p-1 shadow-inner sm:size-20">
+            <img
+              src={mascotWhite}
+              alt="Mr. Bondz Seal"
+              className="size-full object-contain brightness-125 drop-shadow filter"
+            />
+          </div>
+          <div className="flex min-w-0 flex-col">
+            <span className="eyebrow text-primary">Personal Event Organizer Guarantee</span>
+            <p className="mt-0.5 font-sans text-base font-black tracking-tight text-paper [font-variation-settings:'wdth'_85] sm:text-lg">
+              “Mr. Bondz will take care of it.”
+            </p>
+            <p className="mt-1 font-sans text-xs leading-relaxed text-paper/85">
+              No handoffs, no junior reps. From initial concept to 2am strike, you coordinate directly with Mr. Bondz.
+            </p>
+          </div>
+        </div>
+
         {/* London Studio HQ & Operating Location Card */}
-        <div className="rounded-2xl border hairline bg-surface-light p-4 sm:p-5 shadow-xs">
+        <div className="mt-auto rounded-2xl border hairline bg-surface-light p-4 sm:p-5 shadow-xs">
           <div className="flex items-start justify-between gap-3 border-b hairline pb-3">
             <div>
               <span className="eyebrow text-primary">London Studio HQ</span>
@@ -124,25 +144,6 @@ Thank you.`;
                 <p className="text-ink/60">Mon – Sat: 9:00 AM – 7:00 PM · 24/7 Live Event Strike</p>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="mt-auto flex max-w-lg items-center gap-4 rounded-2xl border border-paper/20 bg-night p-4 text-paper shadow-raised sm:p-5">
-          <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-primary/60 bg-night p-1 shadow-inner sm:size-20">
-            <img
-              src={mascotWhite}
-              alt="Mr. Bondz Seal"
-              className="size-full object-contain brightness-125 drop-shadow filter"
-            />
-          </div>
-          <div className="flex min-w-0 flex-col">
-            <span className="eyebrow text-primary">Personal Event Organizer Guarantee</span>
-            <p className="mt-0.5 font-sans text-base font-black tracking-tight text-paper [font-variation-settings:'wdth'_85] sm:text-lg">
-              “Mr. Bondz will take care of it.”
-            </p>
-            <p className="mt-1 font-sans text-xs leading-relaxed text-paper/85">
-              No handoffs, no junior reps. From initial concept to 2am strike, you coordinate directly with Mr. Bondz.
-            </p>
           </div>
         </div>
       </div>

@@ -33,13 +33,13 @@ export function Check({ on, className }: { on: boolean; className?: string }) {
 
 export function StepHead({ no, title, sub }: { no: string; title: React.ReactNode; sub?: React.ReactNode }) {
   return (
-    <div className="rise shrink-0 min-w-0 w-full md:text-center xl:text-left">
-      <div className="flex items-center gap-3 text-ink/50 md:justify-center xl:justify-start">
+    <div className="rise shrink-0 min-w-0 w-full">
+      <div className="flex items-center gap-3 text-ink/50">
         <span className="eyebrow text-primary">Step {no}</span>
         <span className="h-px w-10 bg-ink/20" />
       </div>
       <h1 className="display mt-2 text-[clamp(1.75rem,min(5.2vw,8vh),5rem)] break-words">{title}</h1>
-      {sub && <p className="mt-2 max-w-2xl text-xs sm:text-sm leading-snug text-ink/70 md:mx-auto xl:mx-0">{sub}</p>}
+      {sub && <p className="mt-2 max-w-2xl text-xs sm:text-sm leading-snug text-ink/70">{sub}</p>}
     </div>
   );
 }
@@ -98,7 +98,10 @@ export function EstimatePanel({ cta }: { cta?: React.ReactNode }) {
       <div className="border-b hairline p-4">
         <p className="eyebrow flex items-center justify-between text-ink/55">
           <span>Live estimate</span>
-          <span className="inline-flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-success" />sample</span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="size-1.5 rounded-full bg-success" />
+            sample
+          </span>
         </p>
         <p className="display mt-2 text-5xl tabular-nums">{money(est.total)}</p>
         <p className="mt-1 text-xs text-ink/60">
@@ -117,10 +120,22 @@ export function EstimatePanel({ cta }: { cta?: React.ReactNode }) {
         ))}
       </ul>
       <div className="space-y-2 border-t hairline p-4 text-sm">
-        <div className="flex justify-between"><span className="text-ink/60">Sample deposit (25%)</span><span className="font-bold text-primary tabular-nums">{money(est.deposit)}</span></div>
-        <div className="flex justify-between"><span className="text-ink/60">Bookable dates · next {HORIZON} days</span><span className="font-bold tabular-nums">{days.length}</span></div>
+        <div className="flex justify-between">
+          <span className="text-ink/60">Sample deposit (25%)</span>
+          <span className="font-bold text-primary tabular-nums">{money(est.deposit)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-ink/60">Bookable dates · next {HORIZON} days</span>
+          <span className="font-bold tabular-nums">{days.length}</span>
+        </div>
         {date && (
-          <div className="flex justify-between"><span className="text-ink/60">Selected</span><span className="font-bold">{date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}{slot ? ` · ${slot}` : ""}</span></div>
+          <div className="flex justify-between">
+            <span className="text-ink/60">Selected</span>
+            <span className="font-bold">
+              {date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
+              {slot ? ` · ${slot}` : ""}
+            </span>
+          </div>
         )}
         {cta && <div className="pt-2">{cta}</div>}
       </div>
@@ -145,7 +160,16 @@ export function EstimateSheet({ cta }: { cta?: React.ReactNode }) {
       {open && (
         <div className="fixed inset-0 z-[55] flex flex-col justify-end bg-ink/40" onClick={() => setOpen(false)}>
           <div className="rise h-[75dvh] p-2" onClick={(e) => e.stopPropagation()}>
-            <EstimatePanel cta={<button onClick={() => setOpen(false)} className="w-full rounded-full border hairline py-2.5 text-sm font-bold">Close</button>} />
+            <EstimatePanel
+              cta={
+                <button
+                  onClick={() => setOpen(false)}
+                  className="w-full rounded-full border hairline py-2.5 text-sm font-bold"
+                >
+                  Close
+                </button>
+              }
+            />
           </div>
         </div>
       )}
@@ -233,11 +257,9 @@ export function RealityPanel({ onClose }: { onClose?: () => void }) {
         <div>
           <div className="flex items-center gap-2">
             <span className="live-dot size-2 rounded-full bg-success" />
-            <p className="eyebrow text-primary">Dispatch preview</p>
+            <p className="eyebrow text-primary">Preview Confirmations</p>
           </div>
-          <p className="mt-1 text-sm font-extrabold text-ink tracking-tight">
-            Who would receive a work order:
-          </p>
+          <p className="mt-1 text-sm font-extrabold text-ink tracking-tight">See Who Gets Confirmations:</p>
         </div>
         {onClose && (
           <button
@@ -263,9 +285,7 @@ export function RealityPanel({ onClose }: { onClose?: () => void }) {
                 <span className="text-xs font-bold text-ink truncate">{item.who}</span>
                 <span className="eyebrow text-[0.62rem] text-ink/45 shrink-0">{item.role}</span>
               </div>
-              <p className="mt-0.5 text-[0.75rem] font-medium leading-snug text-ink/75">
-                {item.detail}
-              </p>
+              <p className="mt-0.5 text-[0.75rem] font-medium leading-snug text-ink/75">{item.detail}</p>
             </div>
           </li>
         ))}
@@ -278,7 +298,8 @@ export function RealityPanel({ onClose }: { onClose?: () => void }) {
             <span>★</span> Mr. Bondz Guarantee
           </p>
           <p className="mt-1 text-[0.78rem] font-medium leading-snug text-ink/90 italic font-serif-i">
-            “Every event includes my physical presence on-site. Once you lock in, all subcontractors are blocked with zero double-booking risk.”
+            “Every event includes my physical presence on-site. Once you lock in, all subcontractors are blocked with
+            zero double-booking risk.”
           </p>
         </div>
       </div>
@@ -287,4 +308,3 @@ export function RealityPanel({ onClose }: { onClose?: () => void }) {
 }
 
 export const allPartnerCount = PARTNERS.length;
-

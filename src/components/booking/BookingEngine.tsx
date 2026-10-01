@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { EVENT_TYPES, VENUES, VIBES_BY_EVENT, availableDays, slotOpen, SLOTS } from "@/lib/bondz-data";
 import { Lockup, StatusLine } from "@/components/site/Brand";
-import { TactileIcon } from "@/components/site/SiteNav";
 import type { CategoryId, EventTypeId, Slot } from "@/lib/bondz-data";
 
 import { cn } from "@/lib/utils";
@@ -23,7 +22,6 @@ export function BookingEngine({
   paused = false,
   onDemoProgress,
   onDemoRoundEnd,
-  onDemoScenario,
 }: {
   init: {
     event?: EventTypeId | undefined;
@@ -36,7 +34,6 @@ export function BookingEngine({
   paused?: boolean;
   onDemoProgress?: (progress: number) => void;
   onDemoRoundEnd?: () => void;
-  onDemoScenario?: (scenario: DemoScenario) => void;
 }) {
   const state = useBookingState(init, demo);
   return (
@@ -47,7 +44,6 @@ export function BookingEngine({
         paused={paused}
         onDemoProgress={onDemoProgress}
         onDemoRoundEnd={onDemoRoundEnd}
-        onDemoScenario={onDemoScenario}
       />
     </BookingProvider>
   );
@@ -69,7 +65,7 @@ function pick<T>(list: readonly T[]): T {
   return list[Math.floor(Math.random() * list.length)] as T;
 }
 
-export interface DemoScenario {
+interface Scenario {
   event: EventTypeId;
   vibes: string[];
   where: "home" | "venue";
@@ -80,7 +76,6 @@ export interface DemoScenario {
   slot: Slot;
   ref: string;
 }
-type Scenario = DemoScenario;
 
 function makeScenario(): Scenario {
   const event = pick(EVENT_TYPES).id as EventTypeId;
@@ -116,13 +111,11 @@ function DemoDirector({
   canvas,
   onProgress,
   onRoundEnd,
-  onScenario,
 }: {
   paused: boolean;
   canvas: React.RefObject<HTMLDivElement | null>;
   onProgress?: (progress: number) => void;
   onRoundEnd?: () => void;
-  onScenario?: (scenario: DemoScenario) => void;
 }) {
   const b = useBooking();
   const current = useRef(b);
@@ -131,38 +124,24 @@ function DemoDirector({
   progress.current = onProgress;
   const roundEnd = useRef(onRoundEnd);
   roundEnd.current = onRoundEnd;
-  const scenarioCb = useRef(onScenario);
-  scenarioCb.current = onScenario;
   const elapsed = useRef(0);
   const lastAction = useRef(-1);
   const scenario = useRef<Scenario>(makeScenario());
-  const pending = useRef<Scenario | null>(null);
-  const announced = useRef(false);
 
   useEffect(() => {
     if (paused) return;
-    if (!announced.current) {
-      announced.current = true;
-      scenarioCb.current?.(scenario.current);
-    }
-    if (pending.current) {
-      scenario.current = pending.current;
-      pending.current = null;
-      scenarioCb.current?.(scenario.current);
-    }
     const timer = window.setInterval(() => {
       const next = elapsed.current + 100;
       if (next >= 19200) {
-        // Round complete: the finished scenario plays its celebration clip, then a fresh one runs.
+        // Round complete: fresh randomised celebration for the next run.
         elapsed.current = 0;
         lastAction.current = -1;
-        pending.current = makeScenario();
+        scenario.current = makeScenario();
         current.current.reset?.();
-        progress.current?.(100);
         roundEnd.current?.();
-        return;
+      } else {
+        elapsed.current = next;
       }
-      elapsed.current = next;
       const sc = scenario.current;
       const step = (Math.floor(elapsed.current / 3200) + 1) as Step;
       const micro = Math.floor((elapsed.current % 3200) / 1000);
@@ -214,14 +193,12 @@ function Frame({
   paused,
   onDemoProgress,
   onDemoRoundEnd,
-  onDemoScenario,
 }: {
   intro: boolean;
   demo: boolean;
   paused: boolean;
   onDemoProgress?: (progress: number) => void;
   onDemoRoundEnd?: () => void;
-  onDemoScenario?: (scenario: DemoScenario) => void;
 }) {
   const b = useBooking();
   const { step, setStep, reveal, setReveal, sel, day, slot } = b;
@@ -250,7 +227,7 @@ function Frame({
           playTapSound();
           setStep(4);
         }}
-        className="w-full whitespace-nowrap px-4 text-xs sm:text-sm"
+        className="w-full"
       >
         {sel.where === "venue" ? "Find my dates →" : "See available dates →"}
       </Primary>
@@ -261,24 +238,16 @@ function Frame({
           playTapSound();
           setStep(5);
         }}
-        className="w-full whitespace-nowrap px-4 text-xs sm:text-sm"
+        className="w-full"
       >
         Continue to details →
       </Primary>
     ) : null;
 
   return (
-    // translate="no" keeps Chrome's page translator from rewriting live text nodes
-    // underneath React, which is the usual source of removeChild crashes here.
-    <div translate="no" className="notranslate flex h-full flex-col max-w-full overflow-x-hidden">
+    <div className="flex h-full flex-col max-w-full overflow-x-hidden">
       {demo && (
-        <DemoDirector
-          paused={paused}
-          canvas={scroller}
-          onProgress={onDemoProgress}
-          onRoundEnd={onDemoRoundEnd}
-          onScenario={onDemoScenario}
-        />
+        <DemoDirector paused={paused} canvas={scroller} onProgress={onDemoProgress} onRoundEnd={onDemoRoundEnd} />
       )}
       {!demo && (
         <header className="shrink-0 border-b hairline bg-canvas transition-colors duration-300">
@@ -382,21 +351,28 @@ function Frame({
 
             {/* Right Controls: SFX + Theme + Exit */}
             <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-              {/* Sound - identical control to the home header */}
-              <TactileIcon
-                label={soundEnabled ? "Mute sound effects" : "Enable sound effects"}
+              {/* SFX Button */}
+              <button
+                type="button"
                 onClick={toggleSound}
-                muted={!soundEnabled}
+                aria-label={soundEnabled ? "Mute realistic sound effects" : "Enable realistic sound effects"}
+                title={soundEnabled ? "Sound ON" : "Sound MUTED"}
+                className={cn(
+                  "flex size-7.5 sm:size-auto sm:h-8.5 items-center justify-center sm:justify-start gap-1.5 rounded-full border hairline px-0 sm:px-2.5 text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-xs",
+                  soundEnabled
+                    ? "bg-surface-light text-ink border-ink/25 hover:border-ink"
+                    : "bg-surface-light/50 text-ink/50 border-ink/15 hover:text-ink",
+                )}
               >
                 {soundEnabled ? (
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="1.8"
+                    strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="size-5"
+                    className="size-3.5 text-primary"
                   >
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                     <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
@@ -407,60 +383,69 @@ function Frame({
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="1.8"
+                    strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="size-5"
+                    className="size-3.5 text-ink/50"
                   >
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                     <line x1="23" y1="9" x2="17" y2="15" />
                     <line x1="17" y1="9" x2="23" y2="15" />
                   </svg>
                 )}
-              </TactileIcon>
+                <span className="hidden sm:inline font-mono text-[0.65rem] uppercase tracking-wider">
+                  {soundEnabled ? "SFX" : "MUTE"}
+                </span>
+              </button>
 
-              {/* Theme - identical control to the home header */}
-              <TactileIcon
-                label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              {/* Theme Mood Toggle */}
+              <button
+                type="button"
                 onClick={() => {
                   playTapSound();
                   toggleTheme();
                 }}
+                aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                title={theme === "dark" ? "Dark Mood active" : "Light Mood active"}
+                className="flex size-7.5 sm:size-auto sm:h-8.5 items-center justify-center sm:justify-start gap-1.5 rounded-full border hairline bg-surface-light px-0 sm:px-2.5 text-xs font-bold text-ink transition-all hover:border-ink hover:bg-canvas active:scale-95 cursor-pointer shadow-xs border-ink/25"
               >
                 {theme === "dark" ? (
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="1.8"
+                    strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="size-5"
+                    className="size-3.5 text-amber-400"
                   >
-                    <circle cx="12" cy="12" r="4.4" />
-                    <line x1="12" y1="1.5" x2="12" y2="3.6" />
-                    <line x1="12" y1="20.4" x2="12" y2="22.5" />
-                    <line x1="4.2" y1="4.2" x2="5.7" y2="5.7" />
-                    <line x1="18.3" y1="18.3" x2="19.8" y2="19.8" />
-                    <line x1="1.5" y1="12" x2="3.6" y2="12" />
-                    <line x1="20.4" y1="12" x2="22.5" y2="12" />
-                    <line x1="4.2" y1="19.8" x2="5.7" y2="18.3" />
-                    <line x1="18.3" y1="5.7" x2="19.8" y2="4.2" />
+                    <circle cx="12" cy="12" r="5" />
+                    <line x1="12" y1="1" x2="12" y2="3" />
+                    <line x1="12" y1="21" x2="12" y2="23" />
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                    <line x1="1" y1="12" x2="3" y2="12" />
+                    <line x1="21" y1="12" x2="23" y2="12" />
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
                   </svg>
                 ) : (
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="1.8"
+                    strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="size-5"
+                    className="size-3.5 text-primary"
                   >
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                   </svg>
                 )}
-              </TactileIcon>
+                <span className="hidden sm:inline font-mono text-[0.65rem] uppercase tracking-wider">
+                  {theme === "dark" ? "DARK" : "LIGHT"}
+                </span>
+              </button>
 
               {/* Exit Link */}
               <Link
@@ -485,8 +470,8 @@ function Frame({
             {canReveal && (
               <label className="flex cursor-pointer items-center gap-1 sm:gap-2 shrink-0">
                 <span className="eyebrow text-ink text-[0.58rem] sm:text-[0.66rem] font-bold">
-                  <span className="hidden sm:inline">Preview sample dispatch</span>
-                  <span className="sm:hidden">Dispatch preview</span>
+                  <span className="hidden sm:inline">Preview Confirmations</span>
+                  <span className="sm:hidden">Confirmations</span>
                 </span>
                 <button
                   role="switch"
@@ -527,17 +512,12 @@ function Frame({
             data-booking-canvas
             className="scroll-quiet w-full max-w-full min-w-0 min-h-0 flex-1 overflow-y-auto pr-1 pb-16"
           >
-            {/* One keyed wrapper per step: each change swaps a whole subtree instead of
-                re-matching sibling nodes, which is what browser translation or extension
-                DOM rewrites turn into a removeChild crash. */}
-            <div key={`step-${step}${step === 3 ? `-${sel.where ?? "none"}` : ""}`}>
-              {step === 1 && <Step1 />}
-              {step === 2 && <Step2 />}
-              {step === 3 && (sel.where === "venue" ? <Step3B /> : <Step3A />)}
-              {step === 4 && <Step4 />}
-              {step === 5 && <Step5 />}
-              {step === 6 && <Step6 />}
-            </div>
+            {step === 1 && <Step1 />}
+            {step === 2 && <Step2 />}
+            {step === 3 && (sel.where === "venue" ? <Step3B /> : <Step3A />)}
+            {step === 4 && <Step4 />}
+            {step === 5 && <Step5 />}
+            {step === 6 && <Step6 />}
           </div>
           {withEstimate && (
             <div className="mt-3 hidden shrink-0 flex-wrap items-center justify-between gap-3 border-t hairline pl-20 pt-3 lg:flex">
@@ -555,7 +535,7 @@ function Frame({
               <div className="flex items-center justify-between gap-2 py-1">
                 <Ghost onClick={() => setStep((step - 1) as Step)}>← Back</Ghost>
               </div>
-              <EstimateSheet cta={<div className="w-44 shrink-0 sm:w-52">{cta}</div>} />
+              <EstimateSheet cta={<div className="w-40 sm:w-44">{cta}</div>} />
             </div>
           )}
         </div>

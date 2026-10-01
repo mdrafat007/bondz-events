@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SystemRouteImport } from './routes/system'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as PortfoliosRouteImport } from './routes/portfolios'
+import { Route as PortalRouteImport } from './routes/portal'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
@@ -36,6 +37,11 @@ const ServicesRoute = ServicesRouteImport.update({
 const PortfoliosRoute = PortfoliosRouteImport.update({
   id: '/portfolios',
   path: '/portfolios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalRoute = PortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PartnersRoute = PartnersRouteImport.update({
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
   '/partners': typeof PartnersRoute
+  '/portal': typeof PortalRoute
   '/portfolios': typeof PortfoliosRoute
   '/services': typeof ServicesRoute
   '/system': typeof SystemRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
   '/partners': typeof PartnersRoute
+  '/portal': typeof PortalRoute
   '/portfolios': typeof PortfoliosRoute
   '/services': typeof ServicesRoute
   '/system': typeof SystemRoute
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
   '/partners': typeof PartnersRoute
+  '/portal': typeof PortalRoute
   '/portfolios': typeof PortfoliosRoute
   '/services': typeof ServicesRoute
   '/system': typeof SystemRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/mcp'
     | '/partners'
+    | '/portal'
     | '/portfolios'
     | '/services'
     | '/system'
@@ -162,6 +172,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/mcp'
     | '/partners'
+    | '/portal'
     | '/portfolios'
     | '/services'
     | '/system'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/mcp'
     | '/partners'
+    | '/portal'
     | '/portfolios'
     | '/services'
     | '/system'
@@ -193,6 +205,7 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   McpRoute: typeof McpRoute
   PartnersRoute: typeof PartnersRoute
+  PortalRoute: typeof PortalRoute
   PortfoliosRoute: typeof PortfoliosRoute
   ServicesRoute: typeof ServicesRoute
   SystemRoute: typeof SystemRoute
@@ -223,6 +236,13 @@ declare module '@tanstack/react-router' {
       path: '/portfolios'
       fullPath: '/portfolios'
       preLoaderRoute: typeof PortfoliosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal': {
+      id: '/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof PortalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/partners': {
@@ -305,6 +325,7 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   McpRoute: McpRoute,
   PartnersRoute: PartnersRoute,
+  PortalRoute: PortalRoute,
   PortfoliosRoute: PortfoliosRoute,
   ServicesRoute: ServicesRoute,
   SystemRoute: SystemRoute,

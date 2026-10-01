@@ -5,12 +5,10 @@ import { PARTNERS } from "@/lib/bondz-data";
 import { triggerTap, playTapSound } from "@/lib/haptics";
 import { useTheme } from "@/lib/theme";
 import mascotWhite from "@/assets/mascot-white.png";
-import mascotRed from "@/assets/mascot-red.png";
 import { cn } from "@/lib/utils";
 
 export function PortalLoginModal({ onSelectRole }: { onSelectRole: (role: PortalRole, partnerId?: string) => void }) {
   const { theme } = useTheme();
-  const mascotImg = theme === "dark" ? mascotWhite : mascotRed;
 
   const [activeTab, setActiveTab] = useState<"owner" | "partner">("owner");
   const [selectedPartner, setSelectedPartner] = useState("ember");
@@ -83,7 +81,7 @@ export function PortalLoginModal({ onSelectRole }: { onSelectRole: (role: Portal
             <motion.img
               variants={loadingMascotVariants}
               animate="animate"
-              src={mascotImg}
+              src={mascotWhite}
               alt="Mr. Bondz mascot"
               className="size-20 object-contain drop-shadow-md select-none"
             />

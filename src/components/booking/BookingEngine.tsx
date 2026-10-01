@@ -565,21 +565,21 @@ function Frame({
             {/* Top Floating Guideline Assistance & Cheering Banner */}
             {!demo && STEP_GUIDES[step] && guideDismissed !== step && (
               <div className="mb-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                <div className="flex items-start justify-between gap-3 rounded-2xl border hairline bg-surface-light p-3.5 sm:p-4 shadow-sm text-ink backdrop-blur-xs">
-                  <div className="flex items-start gap-3 min-w-0">
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-xl border border-primary/20">
+                <div className="flex items-start justify-between gap-2.5 sm:gap-3 rounded-2xl border hairline bg-surface-light p-3 sm:p-4 shadow-sm text-ink backdrop-blur-xs">
+                  <div className="flex items-start gap-2.5 sm:gap-3 min-w-0 flex-1">
+                    <span className="flex size-8 sm:size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-lg sm:text-xl border border-primary/20 mt-0.5">
                       {STEP_GUIDES[step].icon}
                     </span>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="eyebrow rounded-full bg-primary/15 px-2 py-0.5 text-[0.62rem] font-bold text-primary">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <span className="eyebrow shrink-0 whitespace-nowrap rounded-full bg-primary/15 px-2 py-0.5 text-[0.62rem] font-bold text-primary">
                           {STEP_GUIDES[step].badge}
                         </span>
-                        <h4 className="font-display font-extrabold text-xs sm:text-sm text-ink uppercase tracking-tight [font-variation-settings:'wdth'_85] truncate">
+                        <h4 className="font-display font-extrabold text-xs sm:text-sm text-ink uppercase tracking-tight [font-variation-settings:'wdth'_85] leading-tight break-words">
                           {STEP_GUIDES[step].cheer}
                         </h4>
                       </div>
-                      <p className="mt-1 text-xs text-ink/75 leading-relaxed">
+                      <p className="mt-1 text-xs text-ink/75 leading-relaxed break-words">
                         {STEP_GUIDES[step].tip}
                       </p>
                     </div>
@@ -591,7 +591,7 @@ function Frame({
                       setGuideDismissed(step);
                     }}
                     title="Dismiss step guideline"
-                    className="shrink-0 rounded-full p-1 text-ink/40 hover:bg-canvas hover:text-ink transition cursor-pointer text-xs"
+                    className="shrink-0 -mr-0.5 -mt-0.5 rounded-full p-1 text-ink/40 hover:bg-canvas hover:text-ink transition cursor-pointer text-xs"
                   >
                     ✕
                   </button>

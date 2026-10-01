@@ -15,7 +15,10 @@ export const Route = createFileRoute("/invite/$ref")({
       { title: `You're Invited - ${params.ref} · Bondz Events` },
       { name: "description", content: "You are invited to an extraordinary celebration orchestrated by Mr. Bondz." },
       { property: "og:title", content: "You're Invited · Bondz Events" },
-      { property: "og:description", content: "Confirm your attendance, select dietary preferences, and add to your calendar." },
+      {
+        property: "og:description",
+        content: "Confirm your attendance, select dietary preferences, and add to your calendar.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex" },
@@ -30,7 +33,15 @@ function InvitePage() {
   const { ref } = Route.useParams();
   const { invite: inviteToken } = Route.useSearch();
 
-  const [invite, setInvite] = useState<{ title: string; host: string; date: string; slot: Slot; place: string; tagline: string; guests?: number } | null>(null);
+  const [invite, setInvite] = useState<{
+    title: string;
+    host: string;
+    date: string;
+    slot: Slot;
+    place: string;
+    tagline: string;
+    guests?: number;
+  } | null>(null);
 
   useEffect(() => {
     try {
@@ -76,7 +87,14 @@ function InvitePage() {
 
   const eventTitle = invite?.title ?? "Celebration with Mr. Bondz";
   const hostName = invite?.host ?? "Your Host";
-  const dateStr = invite ? new Date(invite.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : "Saturday, October 24, 2026";
+  const dateStr = invite
+    ? new Date(invite.date).toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "Saturday, October 24, 2026";
   const timeWindow = invite?.slot ? `${invite.slot} (${SLOT_TIMES[invite.slot]})` : "Evening (17:00 - 23:00)";
   const locationName = invite?.place ?? "Smokestack Yard";
   const attire = invite?.tagline ?? "Come hungry. Leave with stories.";
@@ -106,14 +124,14 @@ function InvitePage() {
       }
       const count = localStorage.getItem(`bondz_count_${ref}`);
       setRsvpCount(count ? parseInt(count, 10) : 12);
-    } catch { /* optional */ }
+    } catch {
+      /* optional */
+    }
   }, [storageKey, ref]);
 
   const toggleTag = (tag: string) => {
     triggerTap();
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
-    );
+    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
   };
 
   const handleRSVP = (e: React.FormEvent) => {
@@ -131,7 +149,9 @@ function InvitePage() {
       localStorage.setItem(storageKey, JSON.stringify({ attending, name, email, selectedTags, notes }));
       localStorage.setItem(`bondz_count_${ref}`, String(newCount));
     } catch {}
-    toast.success(attending ? `RSVP confirmed, ${name}! Your seat is locked.` : "Thank you for letting your host know.");
+    toast.success(
+      attending ? `RSVP confirmed, ${name}! Your seat is locked.` : "Thank you for letting your host know.",
+    );
   };
 
   const addToGoogleCalendar = () => {
@@ -140,12 +160,16 @@ function InvitePage() {
     const startDate = new Date(invite.date);
     startDate.setHours(invite.slot === "Morning" ? 10 : invite.slot === "Afternoon" ? 14 : 17, 0, 0, 0);
     const endDate = new Date(startDate.getTime() + 5 * 60 * 60 * 1000);
-    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    const fmt = (d: Date) =>
+      d
+        .toISOString()
+        .replace(/[-:]/g, "")
+        .replace(/\.\d{3}/, "");
     const start = fmt(startDate);
     const end = fmt(endDate);
     const title = encodeURIComponent(eventTitle);
     const details = encodeURIComponent(
-      `Celebration hosted by ${hostName}.\nAttire / Vibe: ${attire}\nBooking Ref: ${ref}\nGuest Portal: ${typeof window !== "undefined" ? window.location.href : ""}`
+      `Celebration hosted by ${hostName}.\nAttire / Vibe: ${attire}\nBooking Ref: ${ref}\nGuest Portal: ${typeof window !== "undefined" ? window.location.href : ""}`,
     );
     const location = encodeURIComponent(locationName);
     const gCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`;
@@ -153,21 +177,27 @@ function InvitePage() {
     toast.success("Opening Google Calendar...");
   };
 
-
   return (
     <div className="scroll-quiet h-full overflow-y-auto px-4 py-8 md:px-12 lg:px-20">
       <div className="mx-auto max-w-5xl">
         {/* Header Breadcrumb / Ref */}
-        <div className="flex items-center justify-between border-b hairline pb-5">
-          <div className="flex items-center gap-2 text-xs font-semibold text-ink/65">
-            <span className="uppercase tracking-wider">Guest Invitation Portal</span>
-            <span>·</span>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b hairline pb-5">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-ink/75">
+            <span className="font-black uppercase tracking-wider text-ink">BONDZ EVENTS</span>
+            <span className="text-ink/40">·</span>
+            <span className="uppercase tracking-wider">Guest &amp; Client Event Hub</span>
+            <span className="text-ink/40">·</span>
             <span className="font-mono text-primary font-bold">Ref: {ref}</span>
           </div>
-          <span className="eyebrow rounded-full border border-success/30 bg-success/10 px-3.5 py-1 text-success flex items-center gap-1.5 font-bold">
-            <span className="live-dot size-1.5 rounded-full bg-success" />
-            Verified Guest Pass
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="eyebrow rounded-full border hairline bg-surface px-3 py-1 text-[0.68rem] font-bold text-ink/70">
+              📍 London Studio HQ
+            </span>
+            <span className="eyebrow rounded-full border border-success/30 bg-success/10 px-3 py-1 text-success flex items-center gap-1.5 font-bold text-[0.68rem]">
+              <span className="live-dot size-1.5 rounded-full bg-success" />
+              Verified Guest Pass
+            </span>
+          </div>
         </div>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-12 lg:items-start">
@@ -183,9 +213,7 @@ function InvitePage() {
                 </span>
               </div>
 
-              <h1 className="font-serif-i mt-6 text-[clamp(2.5rem,6vw,5rem)] leading-[0.95] text-ink">
-                {eventTitle}
-              </h1>
+              <h1 className="font-serif-i mt-6 text-[clamp(2.5rem,6vw,5rem)] leading-[0.95] text-ink">{eventTitle}</h1>
 
               <p className="eyebrow mt-3 text-ink/75">
                 Hosted with care by <span className="font-bold text-ink">{hostName}</span> · Orchestrated by Mr. Bondz
@@ -245,18 +273,14 @@ function InvitePage() {
           <div className="lg:col-span-5">
             <div className="rounded-3xl border hairline bg-surface-light p-6 shadow-xl md:p-8">
               <h2 className="display text-3xl">Your RSVP</h2>
-              <p className="mt-1 text-xs text-ink/65">
-                Confirm your attendance and notify {hostName} in one click.
-              </p>
+              <p className="mt-1 text-xs text-ink/65">Confirm your attendance and notify {hostName} in one click.</p>
 
               {submitted ? (
                 <div className="mt-6 rounded-2xl bg-canvas p-6 text-center border hairline">
                   <div className="mx-auto grid size-12 place-items-center rounded-full bg-success text-success-foreground text-xl font-bold shadow-sm">
                     ✓
                   </div>
-                  <h3 className="display mt-4 text-2xl">
-                    {attending ? "You're on the list!" : "Response Recorded"}
-                  </h3>
+                  <h3 className="display mt-4 text-2xl">{attending ? "You're on the list!" : "Response Recorded"}</h3>
                   <p className="mt-2 text-xs leading-relaxed text-ink/75">
                     {attending
                       ? `Thank you, ${name}! Your attendance for ${dateStr} is locked on the roster.`
@@ -265,7 +289,10 @@ function InvitePage() {
                   {selectedTags.length > 0 && attending && (
                     <div className="mt-3 flex flex-wrap justify-center gap-1">
                       {selectedTags.map((t) => (
-                        <span key={t} className="rounded-md bg-primary/10 text-primary px-2 py-0.5 text-[0.65rem] font-bold">
+                        <span
+                          key={t}
+                          className="rounded-md bg-primary/10 text-primary px-2 py-0.5 text-[0.65rem] font-bold"
+                        >
                           ✓ {t}
                         </span>
                       ))}
@@ -364,7 +391,8 @@ function InvitePage() {
                                   : "border hairline bg-canvas text-ink/70 hover:border-ink/50",
                               )}
                             >
-                              {active ? "✓ " : ""}{tag}
+                              {active ? "✓ " : ""}
+                              {tag}
                             </button>
                           );
                         })}
@@ -394,6 +422,25 @@ function InvitePage() {
                 </form>
               )}
             </div>
+          </div>
+        </div>
+        {/* Event Portal Footer: London HQ & Support */}
+        <div className="mt-12 rounded-2xl border hairline bg-surface-light p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs text-ink/70">
+          <div className="flex items-center gap-3">
+            <span className="text-xl">📍</span>
+            <div>
+              <p className="font-bold text-ink">BONDZ EVENTS · London Studio HQ</p>
+              <p className="text-ink/60">42 Bermondsey Street, Studio 4B, London SE1 3UD · Private Event Operations</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 text-xs">
+            <Link to="/" className="font-bold text-ink hover:text-primary transition underline underline-offset-4">
+              Return Home
+            </Link>
+            <span className="text-ink/30">·</span>
+            <Link to="/contact" className="font-bold text-primary hover:underline">
+              Contact Mr. Bondz →
+            </Link>
           </div>
         </div>
       </div>

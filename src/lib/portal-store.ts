@@ -434,6 +434,8 @@ const STORAGE_KEYS = {
   PARTNER_ID: "bondz_portal_partner_id",
   CUSTOM_PARTNERS: "bondz_custom_partners",
   PARTNER_BLACKOUTS: "bondz_partner_blackouts",
+  PAUSED_PARTNERS: "bondz_paused_partners",
+  ARCHIVED_PARTNERS: "bondz_archived_partners",
 };
 
 export function getStoredRole(): PortalRole {
@@ -482,6 +484,63 @@ export function saveCustomPartner(p: CustomPartner) {
   const current = getCustomPartners();
   const next = [p, ...current.filter((x) => x.id !== p.id)];
   localStorage.setItem(STORAGE_KEYS.CUSTOM_PARTNERS, JSON.stringify(next));
+}
+
+export function removeCustomPartner(partnerId: string) {
+  if (typeof window === "undefined") return;
+  const current = getCustomPartners();
+  const next = current.filter((x) => x.id !== partnerId);
+  localStorage.setItem(STORAGE_KEYS.CUSTOM_PARTNERS, JSON.stringify(next));
+}
+
+export function getPausedPartners(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.PAUSED_PARTNERS);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function togglePartnerPause(partnerId: string): boolean {
+  if (typeof window === "undefined") return false;
+  const current = getPausedPartners();
+  const isPaused = current.includes(partnerId);
+  const next = isPaused ? current.filter((id) => id !== partnerId) : [...current, partnerId];
+  localStorage.setItem(STORAGE_KEYS.PAUSED_PARTNERS, JSON.stringify(next));
+  return !isPaused;
+}
+
+export function isPartnerPaused(partnerId: string): boolean {
+  if (typeof window === "undefined") return false;
+  const current = getPausedPartners();
+  return current.includes(partnerId);
+}
+
+export function getArchivedPartners(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.ARCHIVED_PARTNERS);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function togglePartnerArchive(partnerId: string): boolean {
+  if (typeof window === "undefined") return false;
+  const current = getArchivedPartners();
+  const isArchived = current.includes(partnerId);
+  const next = isArchived ? current.filter((id) => id !== partnerId) : [...current, partnerId];
+  localStorage.setItem(STORAGE_KEYS.ARCHIVED_PARTNERS, JSON.stringify(next));
+  return !isArchived;
+}
+
+export function isPartnerArchived(partnerId: string): boolean {
+  if (typeof window === "undefined") return false;
+  const current = getArchivedPartners();
+  return current.includes(partnerId);
 }
 
 export function getPartnerBlackouts(partnerId: string): number[] {

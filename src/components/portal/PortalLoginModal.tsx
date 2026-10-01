@@ -86,7 +86,6 @@ export function PortalLoginModal({ onSelectRole }: { onSelectRole: (role: Portal
               className="size-20 object-contain drop-shadow-md select-none"
             />
           </div>
-          <span className="live-dot absolute bottom-1 right-1 size-3.5 rounded-full bg-success border-2 border-night" />
         </div>
 
         <div className="space-y-2">

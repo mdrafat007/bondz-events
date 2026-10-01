@@ -207,6 +207,49 @@ function Frame({
   const scroller = useRef<HTMLDivElement>(null);
   const { theme, toggleTheme } = useTheme();
   const { soundEnabled, toggleSound } = useSoundState();
+  const [guideDismissed, setGuideDismissed] = useState<number | null>(null);
+
+  const STEP_GUIDES: Record<
+    number,
+    { badge: string; cheer: string; tip: string; icon: string }
+  > = {
+    1: {
+      badge: "Step 1 of 5",
+      cheer: "Let’s start something memorable!",
+      tip: "Pick your celebration type and vibe — Mr. Bondz calibrates the entire crew around your mood.",
+      icon: "🎉",
+    },
+    2: {
+      badge: "Step 2 of 5",
+      cheer: "Setting the scene!",
+      tip: "Choose between private residential hosting or our handpicked London venues with exact guest capacity.",
+      icon: "📍",
+    },
+    3: {
+      badge: "Step 3 of 5",
+      cheer: "Assembling your dream team!",
+      tip: "Select caterers, DJs, florals & lights. Every selected partner is 100% calendar-linked.",
+      icon: "✨",
+    },
+    4: {
+      badge: "Step 4 of 5",
+      cheer: "Matching live calendars!",
+      tip: "Every green date indicates a 100% open sitting across Mr. Bondz, your venue, and all chosen partners.",
+      icon: "📅",
+    },
+    5: {
+      badge: "Step 5 of 5",
+      cheer: "Almost there — lock your date!",
+      tip: "Review your transparent estimate, sign your agreement, and secure your date with a 25% deposit.",
+      icon: "✍️",
+    },
+    6: {
+      badge: "Confirmed!",
+      cheer: "Good times, beautifully made.",
+      tip: "Your celebration is synchronized into Mr. Bondz’s master run-of-show and partner dispatches.",
+      icon: "🥂",
+    },
+  };
 
   useEffect(() => {
     if (!intro) return;
@@ -495,6 +538,43 @@ function Frame({
             data-booking-canvas
             className="scroll-quiet w-full max-w-full min-w-0 min-h-0 flex-1 overflow-y-auto pr-1 pb-16"
           >
+            {/* Top Floating Guideline Assistance & Cheering Banner */}
+            {!demo && STEP_GUIDES[step] && guideDismissed !== step && (
+              <div className="mb-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="flex items-start justify-between gap-3 rounded-2xl border hairline bg-surface-light p-3.5 sm:p-4 shadow-sm text-ink backdrop-blur-xs">
+                  <div className="flex items-start gap-3 min-w-0">
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-xl border border-primary/20">
+                      {STEP_GUIDES[step].icon}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="eyebrow rounded-full bg-primary/15 px-2 py-0.5 text-[0.62rem] font-bold text-primary">
+                          {STEP_GUIDES[step].badge}
+                        </span>
+                        <h4 className="font-display font-extrabold text-xs sm:text-sm text-ink uppercase tracking-tight [font-variation-settings:'wdth'_85] truncate">
+                          {STEP_GUIDES[step].cheer}
+                        </h4>
+                      </div>
+                      <p className="mt-1 text-xs text-ink/75 leading-relaxed">
+                        {STEP_GUIDES[step].tip}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTapSound();
+                      setGuideDismissed(step);
+                    }}
+                    title="Dismiss step guideline"
+                    className="shrink-0 rounded-full p-1 text-ink/40 hover:bg-canvas hover:text-ink transition cursor-pointer text-xs"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            )}
+
             {step === 1 && <Step1 />}
             {step === 2 && <Step2 />}
             {step === 3 && (sel.where === "venue" ? <Step3B /> : <Step3A />)}

@@ -262,10 +262,18 @@ export function SiteNav() {
                   playTapSound();
                   setOpen(false);
                 }}
-                className="bondz-tactile inline-flex h-9 sm:h-10 items-center justify-center px-6 rounded-full text-xs font-bold text-ink border hairline bg-surface hover:text-primary hover:border-primary transition-colors duration-200"
-                activeProps={{ className: "text-primary font-black bg-surface border-primary" }}
+                className="group relative inline-flex items-center justify-center gap-2.5 px-6 py-2.5 rounded-full text-sm font-black uppercase tracking-wider text-ink bg-surface border hairline shadow-xs hover:border-primary hover:text-primary transition-all duration-300 hover:shadow-md active:scale-95"
+                activeProps={{ className: "text-primary font-black bg-surface border-primary ring-2 ring-primary/20" }}
               >
-                Portal
+                <span className="transition-transform duration-300 group-hover:translate-x-0.5">
+                  Operations &amp; Partner Portal
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="font-mono text-base font-black transition-transform duration-300 ease-out group-hover:translate-x-1 text-primary"
+                >
+                  →
+                </span>
               </Link>
 
               <p className="mt-2 font-serif text-xl italic text-ink/55 sm:text-2xl text-center">

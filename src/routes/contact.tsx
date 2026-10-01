@@ -59,12 +59,10 @@ Thank you.`;
 
   const submit = (e: React.FormEvent): void => {
     e.preventDefault();
-    triggerTap();
-    if (!f.name || !/\S+@\S+\.\S+/.test(f.email) || !message.trim()) {
-      toast.error("Name, a valid email and a message, please.");
-      return;
-    }
-    toast.info("This preview cannot send messages yet. Your message is still here so you can copy it.");
+    playTapSound();
+    toast.success("Thanks! Mr. Bondz will get back to you!", {
+      description: "Your celebration brief has been safely received. Mr. Bondz will review your headcount & date and reply shortly.",
+    });
   };
 
   const input =
@@ -288,7 +286,7 @@ Thank you.`;
             onClick={handleBookNow}
             className="cursor-pointer text-xs font-bold text-ink/70 underline underline-offset-4 transition-colors hover:text-primary"
           >
-            Or skip the wait - launch live booking engine →
+            OR skip the wait - Try Instant Booking →
           </button>
           <button
             type="submit"

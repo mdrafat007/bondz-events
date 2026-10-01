@@ -6,9 +6,17 @@ import {
   getCustomPartners,
   getPartnerBlackouts,
   togglePartnerBlackout,
+  isPartnerPaused,
+  isPartnerArchived,
 } from "@/lib/portal-store";
 import { PARTNERS, VENUES, isBusy, type EventTypeId, type Partner } from "@/lib/bondz-data";
-import { AddPartnerModal } from "./AddPartnerModal";
+import {
+  OnboardPartnerModal,
+  PausePartnerModal,
+  ArchivePartnerModal,
+  RemovePartnerModal,
+  type PartnerActionModalType,
+} from "./PartnerActionModals";
 import { triggerTap, playTapSound } from "@/lib/haptics";
 import mascotWhite from "@/assets/mascot-white.png";
 
@@ -23,8 +31,9 @@ export function OwnerDashboard({
   const [partnerFilter, setPartnerFilter] = useState<string>("all");
   const [inspectedPartnerId, setInspectedPartnerId] = useState<string | null>(null);
   const [partnerBlackoutsVersion, setPartnerBlackoutsVersion] = useState(0);
+  const [partnerStatusVersion, setPartnerStatusVersion] = useState(0);
   const [selectedBooking, setSelectedBooking] = useState<PortalBooking | null>(null);
-  const [showAddPartner, setShowAddPartner] = useState(false);
+  const [activePartnerModal, setActivePartnerModal] = useState<PartnerActionModalType>(null);
   const [customPartners, setCustomPartners] = useState<CustomPartner[]>(() => getCustomPartners());
   const [expandedMobileBooking, setExpandedMobileBooking] = useState<string | null>(null);
 
@@ -73,16 +82,36 @@ export function OwnerDashboard({
           >
             Partner Status ↓
           </a>
-          <button
-            type="button"
-            onClick={() => {
-              playTapSound();
-              setShowAddPartner(true);
-            }}
-            className="inline-flex h-8 sm:h-8.5 items-center justify-center whitespace-nowrap rounded-full bg-primary px-3 text-[0.68rem] font-bold text-primary-foreground hover:brightness-110 active:scale-95 transition shadow-xs cursor-pointer"
-          >
-            + Onboard Partner
-          </button>
+          {/* Manage Fleet Action Dropdown */}
+          <div className="relative">
+            <select
+              value=""
+              onChange={(e) => {
+                const action = e.target.value as PartnerActionModalType;
+                if (action) {
+                  playTapSound();
+                  setActivePartnerModal(action);
+                }
+              }}
+              className="inline-flex h-8 sm:h-8.5 items-center justify-center whitespace-nowrap rounded-full bg-primary px-3 text-[0.68rem] font-bold text-primary-foreground hover:brightness-110 active:scale-95 transition shadow-xs cursor-pointer outline-none"
+            >
+              <option value="" disabled className="bg-canvas text-ink font-bold">
+                Manage Fleet ▾
+              </option>
+              <option value="onboard" className="bg-canvas text-ink">
+                + Onboard Partner
+              </option>
+              <option value="pause" className="bg-canvas text-ink">
+                ⏸ Pause Partner
+              </option>
+              <option value="archive" className="bg-canvas text-ink">
+                📦 Archive Partner
+              </option>
+              <option value="remove" className="bg-canvas text-ink text-red-600">
+                ✕ Remove Partner
+              </option>
+            </select>
+          </div>
           <button
             type="button"
             onClick={() => {
@@ -337,39 +366,79 @@ export function OwnerDashboard({
               </select>
             </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                playTapSound();
-                setShowAddPartner(true);
-              }}
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-full border hairline bg-canvas px-3.5 py-1.5 text-xs font-bold text-ink hover:border-primary hover:text-primary transition cursor-pointer"
-            >
-              + Onboard Partner
-            </button>
+            {/* Manage Fleet Action Dropdown */}
+            <div className="relative">
+              <select
+                value=""
+                onChange={(e) => {
+                  const action = e.target.value as PartnerActionModalType;
+                  if (action) {
+                    playTapSound();
+                    setActivePartnerModal(action);
+                  }
+                }}
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-primary-foreground hover:brightness-110 active:scale-95 transition shadow-xs cursor-pointer outline-none"
+              >
+                <option value="" disabled className="bg-canvas text-ink font-bold">
+                  Manage Fleet ▾
+                </option>
+                <option value="onboard" className="bg-canvas text-ink">
+                  + Onboard Partner
+                </option>
+                <option value="pause" className="bg-canvas text-ink">
+                  ⏸ Pause Partner
+                </option>
+                <option value="archive" className="bg-canvas text-ink">
+                  📦 Archive Partner
+                </option>
+                <option value="remove" className="bg-canvas text-ink text-red-600">
+                  ✕ Remove Partner
+                </option>
+              </select>
+            </div>
           </div>
         </div>
 
         {/* Partner Cards Grid (Filtered in-place) */}
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {/* Default Partners */}
-          {PARTNERS.filter((p) => partnerFilter === "all" || partnerFilter === p.id).map((p) => {
+          {PARTNERS.filter((p) => {
+            if (partnerFilter !== "all" && partnerFilter !== p.id) return false;
+            // Hide archived partners by default unless specifically selected
+            if (partnerFilter === "all" && isPartnerArchived(p.id)) return false;
+            return true;
+          }).map((p) => {
             const blackouts = getPartnerBlackouts(p.id);
             const isSelected = inspectedPartnerId === p.id;
+            const paused = isPartnerPaused(p.id);
+            const archived = isPartnerArchived(p.id);
+
             return (
               <div
                 key={p.id}
                 className={`rounded-2xl border bg-canvas p-4 flex flex-col justify-between transition ${
                   isSelected
                     ? "border-primary ring-2 ring-primary/20 shadow-md bg-primary/5"
+                    : paused
+                    ? "border-amber-500/40 bg-amber-500/5 hover:border-amber-500/60"
+                    : archived
+                    ? "border-ink/20 opacity-70 hover:opacity-100"
                     : "hairline hover:border-primary/50"
                 }`}
               >
                 <div>
                   <div className="flex items-start justify-between">
                     <span className="eyebrow text-primary text-[0.65rem] capitalize">{p.category}</span>
-                    <span className="rounded-full bg-success/15 px-2 py-0.5 text-[0.62rem] font-bold text-success">
-                      Active
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[0.62rem] font-bold ${
+                        paused
+                          ? "bg-amber-500/15 text-amber-600 border border-amber-500/30"
+                          : archived
+                          ? "bg-ink/10 text-ink/70"
+                          : "bg-success/15 text-success"
+                      }`}
+                    >
+                      {paused ? "⏸ Paused (Hold)" : archived ? "📦 Archived" : "● Active"}
                     </span>
                   </div>
                   <h4 className="font-display font-bold text-ink text-base mt-1">{p.name}</h4>
@@ -381,7 +450,9 @@ export function OwnerDashboard({
                   </p>
                 </div>
                 <div className="mt-3 pt-2.5 border-t hairline flex items-center justify-between text-[0.68rem] text-ink/60">
-                  <span className="text-primary font-bold">Synchronized ✓</span>
+                  <span className="text-primary font-bold">
+                    {paused ? "Sync Paused ⏸" : archived ? "In Archive 📦" : "Synchronized ✓"}
+                  </span>
                   <button
                     type="button"
                     onClick={() => {
@@ -407,23 +478,42 @@ export function OwnerDashboard({
 
           {/* Newly Added Custom Partners */}
           {customPartners
-            .filter((p) => partnerFilter === "all" || partnerFilter === p.id)
+            .filter((p) => {
+              if (partnerFilter !== "all" && partnerFilter !== p.id) return false;
+              if (partnerFilter === "all" && isPartnerArchived(p.id)) return false;
+              return true;
+            })
             .map((p) => {
               const isSelected = inspectedPartnerId === p.id;
+              const paused = isPartnerPaused(p.id);
+              const archived = isPartnerArchived(p.id);
+
               return (
                 <div
                   key={p.id}
                   className={`rounded-2xl border p-4 flex flex-col justify-between transition ${
                     isSelected
                       ? "border-primary ring-2 ring-primary/20 shadow-md bg-primary/10"
+                      : paused
+                      ? "border-amber-500/40 bg-amber-500/5 hover:border-amber-500/60"
+                      : archived
+                      ? "border-ink/20 opacity-70 hover:opacity-100"
                       : "border-primary/30 bg-primary/5"
                   }`}
                 >
                   <div>
                     <div className="flex items-start justify-between">
                       <span className="eyebrow text-primary text-[0.65rem] capitalize">{p.category}</span>
-                      <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[0.62rem] font-bold text-primary">
-                        Custom Onboarded
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[0.62rem] font-bold ${
+                          paused
+                            ? "bg-amber-500/15 text-amber-600 border border-amber-500/30"
+                            : archived
+                            ? "bg-ink/10 text-ink/70"
+                            : "bg-primary/20 text-primary"
+                        }`}
+                      >
+                        {paused ? "⏸ Paused" : archived ? "📦 Archived" : "Custom Onboarded"}
                       </span>
                     </div>
                     <h4 className="font-display font-bold text-ink text-base mt-1">{p.name}</h4>
@@ -789,12 +879,44 @@ export function OwnerDashboard({
         </div>
       )}
 
-      {/* Add Partner Dialog */}
-      {showAddPartner && (
-        <AddPartnerModal
-          onClose={() => setShowAddPartner(false)}
+      {/* Partner Fleet Action Modals (Onboard, Pause, Archive, Remove) */}
+      {activePartnerModal === "onboard" && (
+        <OnboardPartnerModal
+          onClose={() => setActivePartnerModal(null)}
           onAdded={(newPartner) => {
             setCustomPartners((prev) => [newPartner, ...prev]);
+            setPartnerStatusVersion((v) => v + 1);
+          }}
+        />
+      )}
+
+      {activePartnerModal === "pause" && (
+        <PausePartnerModal
+          customPartners={customPartners}
+          onClose={() => setActivePartnerModal(null)}
+          onUpdated={() => setPartnerStatusVersion((v) => v + 1)}
+        />
+      )}
+
+      {activePartnerModal === "archive" && (
+        <ArchivePartnerModal
+          customPartners={customPartners}
+          onClose={() => setActivePartnerModal(null)}
+          onUpdated={() => setPartnerStatusVersion((v) => v + 1)}
+        />
+      )}
+
+      {activePartnerModal === "remove" && (
+        <RemovePartnerModal
+          customPartners={customPartners}
+          onClose={() => setActivePartnerModal(null)}
+          onRemoved={(removedId) => {
+            setCustomPartners((prev) => prev.filter((p) => p.id !== removedId));
+            if (inspectedPartnerId === removedId) {
+              setInspectedPartnerId(null);
+              setPartnerFilter("all");
+            }
+            setPartnerStatusVersion((v) => v + 1);
           }}
         />
       )}

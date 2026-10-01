@@ -22,6 +22,7 @@ export function OwnerDashboard({
   const [selectedBooking, setSelectedBooking] = useState<PortalBooking | null>(null);
   const [showAddPartner, setShowAddPartner] = useState(false);
   const [customPartners, setCustomPartners] = useState<CustomPartner[]>(() => getCustomPartners());
+  const [expandedMobileBooking, setExpandedMobileBooking] = useState<string | null>(null);
 
   const bookings = useMemo(() => getAllPortalBookings(), []);
 
@@ -123,14 +124,41 @@ export function OwnerDashboard({
       <div className="rounded-3xl border hairline bg-surface-light p-5 sm:p-7 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b hairline pb-4">
           <div>
-            <h2 className="display text-xl sm:text-2xl font-bold text-ink">Master Booking Engine Synchronizations</h2>
+            <div className="flex items-center gap-2">
+              <span className="eyebrow text-primary text-[0.68rem] font-mono">Live Operations</span>
+              <span className="rounded-full bg-success/15 px-2 py-0.5 text-[0.62rem] font-bold text-success">
+                ● Synced
+              </span>
+            </div>
+            <h2 className="display text-xl sm:text-2xl font-bold text-ink mt-0.5">Confirmed Event Bookings</h2>
             <p className="text-xs text-ink/60">
-              Live pipeline mirroring the 8 event categories from the hero showcase engine.
+              Active celebrations matching the 8 event categories from the booking engine.
             </p>
           </div>
 
-          {/* Event Filter Pills */}
-          <div className="flex flex-wrap gap-1.5">
+          {/* Mobile Category Dropdown (sm:hidden) */}
+          <div className="sm:hidden flex items-center justify-between gap-2 border hairline rounded-2xl bg-canvas p-2">
+            <span className="eyebrow text-ink/50 text-[0.68rem] uppercase font-bold pl-1">Filter Event:</span>
+            <select
+              value={filterEvent}
+              onChange={(e) => {
+                triggerTap();
+                setFilterEvent(e.target.value);
+              }}
+              className="bg-transparent text-xs font-bold text-ink outline-none cursor-pointer capitalize pr-2"
+            >
+              {["all", "wedding", "birthday", "bbq", "corporate", "anniversary", "family", "hybrid", "custom"].map(
+                (cat) => (
+                  <option key={cat} value={cat} className="bg-canvas text-ink capitalize">
+                    {cat === "all" ? "All Event Types" : cat}
+                  </option>
+                ),
+              )}
+            </select>
+          </div>
+
+          {/* Desktop & Tablet Event Filter Pills (hidden sm:flex) */}
+          <div className="hidden sm:flex flex-wrap gap-1.5">
             {["all", "wedding", "birthday", "bbq", "corporate", "anniversary", "family", "hybrid", "custom"].map(
               (cat) => (
                 <button
@@ -140,10 +168,10 @@ export function OwnerDashboard({
                     triggerTap();
                     setFilterEvent(cat);
                   }}
-                  className={`rounded-full px-3 py-1 text-[0.70rem] font-bold uppercase transition ${
+                  className={`rounded-full px-3 py-1 text-[0.70rem] font-bold uppercase transition cursor-pointer ${
                     filterEvent === cat
                       ? "bg-ink text-canvas shadow-xs"
-                      : "border hairline bg-canvas text-ink/70 hover:border-ink"
+                      : "border hairline bg-canvas text-ink/70 hover:border-ink hover:text-ink"
                   }`}
                 >
                   {cat}
@@ -153,8 +181,94 @@ export function OwnerDashboard({
           </div>
         </div>
 
-        {/* Bookings Table */}
-        <div className="mt-4 overflow-x-auto">
+        {/* Mobile Dropdown Cards (sm:hidden) */}
+        <div className="sm:hidden mt-4 space-y-3">
+          {filteredBookings.map((b) => {
+            const isExpanded = expandedMobileBooking === b.id;
+            return (
+              <div key={b.id} className="rounded-2xl border hairline bg-canvas p-4 shadow-2xs transition">
+                <div
+                  className="flex items-start justify-between cursor-pointer select-none"
+                  onClick={() => {
+                    playTapSound();
+                    setExpandedMobileBooking(isExpanded ? null : b.id);
+                  }}
+                >
+                  <div className="min-w-0 pr-2">
+                    <span className="font-mono text-primary font-bold text-xs">{b.ref}</span>
+                    <h3 className="font-bold text-ink text-base truncate mt-0.5">{b.eventTitle}</h3>
+                    <p className="text-[0.72rem] text-ink/60 mt-0.5">
+                      {b.dateStr} · {b.slot} · {b.guests} guests
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end shrink-0">
+                    <span className="font-mono font-bold text-ink text-sm">${b.totalCost.toLocaleString()}</span>
+                    <span className="mt-1 flex items-center gap-1 rounded-full border hairline bg-surface px-2 py-0.5 text-[0.65rem] font-bold text-ink/70">
+                      <span>{isExpanded ? "Hide" : "Details"}</span>
+                      <span className="text-[0.60rem]">{isExpanded ? "▲" : "▼"}</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Collapsible Dropdown Card Body */}
+                {isExpanded && (
+                  <div className="mt-3 pt-3 border-t hairline space-y-3 text-xs animate-in fade-in duration-200">
+                    <div className="grid grid-cols-2 gap-2 text-[0.75rem]">
+                      <div>
+                        <span className="eyebrow text-ink/45 block text-[0.62rem]">Venue / Setup</span>
+                        <p className="font-semibold text-ink mt-0.5">{b.venueName}</p>
+                        <p className="text-ink/60 capitalize text-[0.70rem]">{b.where}</p>
+                      </div>
+                      <div>
+                        <span className="eyebrow text-ink/45 block text-[0.62rem]">Deposit Locked</span>
+                        <p className="font-mono font-bold text-success mt-0.5">${b.depositPaid.toLocaleString()}</p>
+                        <p className="text-ink/60 text-[0.70rem]">25% confirmed</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="eyebrow text-ink/45 block text-[0.62rem]">Client Contact</span>
+                      <p className="font-medium text-ink mt-0.5">{b.clientName}</p>
+                      <p className="text-ink/60 font-mono text-[0.70rem]">
+                        {b.clientPhone} · {b.clientEmail}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span className="eyebrow text-ink/45 block text-[0.62rem] mb-1">Assigned Fleet Partners</span>
+                      <div className="flex flex-wrap gap-1">
+                        {b.assignedPartners.map((p) => (
+                          <span
+                            key={p.partnerName}
+                            className="rounded-md border hairline bg-surface px-2 py-0.5 text-[0.65rem] font-medium text-ink"
+                          >
+                            {p.partnerName}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t hairline flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          playTapSound();
+                          setSelectedBooking(b);
+                        }}
+                        className="w-full rounded-xl bg-ink py-2 text-xs font-bold text-canvas hover:bg-primary transition cursor-pointer text-center"
+                      >
+                        Inspect Full Timeline &amp; Strike →
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Desktop & Tablet Bookings Table (hidden sm:block) */}
+        <div className="hidden sm:block mt-4 overflow-x-auto">
           <table className="w-full text-left text-xs text-ink/80 border-collapse">
             <thead>
               <tr className="border-b hairline text-[0.68rem] uppercase font-bold text-ink/50">

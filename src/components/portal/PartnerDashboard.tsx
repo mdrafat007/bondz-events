@@ -21,6 +21,7 @@ export function PartnerDashboard({
 }) {
   const [partnerId, setPartnerId] = useState(currentPartnerId);
   const [blackouts, setBlackouts] = useState<number[]>(() => getPartnerBlackouts(partnerId));
+  const [expandedMobileOrder, setExpandedMobileOrder] = useState<string | null>(null);
 
   const allPartners = useMemo(() => PARTNERS, []);
   const activePartner = useMemo(
@@ -84,7 +85,7 @@ export function PartnerDashboard({
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2.5 sm:shrink-0">
           {onBackToOwner && (
             <button
               type="button"
@@ -92,34 +93,35 @@ export function PartnerDashboard({
                 playTapSound();
                 onBackToOwner();
               }}
-              className="rounded-full bg-ink px-4 py-1.5 text-xs font-bold text-canvas hover:bg-primary transition cursor-pointer flex items-center gap-1.5 shadow-sm"
+              className="rounded-full bg-ink px-4 py-1.5 text-xs font-bold text-canvas hover:bg-primary transition cursor-pointer flex items-center gap-1.5 shadow-sm whitespace-nowrap"
             >
               <span>←</span>
               <span>Back to Owner Portal</span>
             </button>
           )}
 
-          <div className="flex items-center gap-2">
-            <span className="eyebrow text-ink/50 text-[0.65rem]">Partner Switcher:</span>
+          <div className="flex items-center gap-1.5 rounded-full border hairline bg-surface px-2.5 py-1">
+            <span className="eyebrow text-ink/50 text-[0.65rem] uppercase">Partner:</span>
             <select
               value={partnerId}
               onChange={(e) => handlePartnerSwitch(e.target.value)}
-              className="rounded-full border hairline bg-surface px-3 py-1.5 text-xs font-bold text-ink outline-none focus:border-primary"
+              className="bg-transparent text-xs font-bold text-ink outline-none cursor-pointer pr-1"
             >
               {allPartners.map((p) => (
-                <option key={p.id} value={p.id}>
+                <option key={p.id} value={p.id} className="bg-canvas text-ink">
                   {p.name} ({p.category})
                 </option>
               ))}
             </select>
           </div>
+
           <button
             type="button"
             onClick={() => {
               playTapSound();
               onLogout();
             }}
-            className="rounded-full border hairline bg-canvas px-4 py-1.5 text-xs font-bold text-ink/75 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition cursor-pointer"
+            className="rounded-full border hairline bg-canvas px-4 py-1.5 text-xs font-bold text-ink/75 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition cursor-pointer whitespace-nowrap sm:ml-auto"
           >
             Log Out
           </button>
@@ -171,55 +173,127 @@ export function PartnerDashboard({
             Oak Kitchen or DJ Nova) to inspect live schedules.
           </div>
         ) : (
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full text-left text-xs text-ink/80 border-collapse">
-              <thead>
-                <tr className="border-b hairline text-[0.68rem] uppercase font-bold text-ink/50">
-                  <th className="py-2.5 px-3">Event / Reference</th>
-                  <th className="py-2.5 px-3">Scheduled Date</th>
-                  <th className="py-2.5 px-3">Location / Venue</th>
-                  <th className="py-2.5 px-3">Guests</th>
-                  <th className="py-2.5 px-3">Agreed Fee</th>
-                  <th className="py-2.5 px-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y hairline">
-                {partnerBookings.map((b) => {
-                  const match = b.assignedPartners.find(
-                    (p) =>
-                      p.partnerId === partnerId ||
-                      p.partnerName.toLowerCase().includes(activePartner.name.toLowerCase()),
-                  );
-                  return (
-                    <tr key={b.id} className="hover:bg-canvas/50 transition">
-                      <td className="py-3 px-3">
-                        <span className="font-mono text-primary font-bold block">{b.ref}</span>
-                        <span className="font-bold text-ink text-sm block">{b.eventTitle}</span>
-                        <span className="text-[0.68rem] text-ink/55">{b.clientName}</span>
-                      </td>
-                      <td className="py-3 px-3 whitespace-nowrap">
-                        <span className="font-semibold text-ink block">{b.dateStr}</span>
-                        <span className="text-[0.68rem] text-primary font-bold">{b.slot}</span>
-                      </td>
-                      <td className="py-3 px-3">
-                        <span className="font-medium text-ink block">{b.venueName}</span>
-                        <span className="text-[0.68rem] text-ink/55 capitalize">{b.where}</span>
-                      </td>
-                      <td className="py-3 px-3 font-semibold text-ink">{b.guests} guests</td>
-                      <td className="py-3 px-3 font-mono font-bold text-primary text-sm">
-                        ${match?.agreedFee.toLocaleString()}
-                      </td>
-                      <td className="py-3 px-3">
-                        <span className="rounded-full bg-success/15 px-2.5 py-0.5 text-[0.68rem] font-bold text-success">
-                          ✓ Calendar Locked
+          <>
+            {/* Mobile Dropdown Cards (sm:hidden) */}
+            <div className="sm:hidden mt-4 space-y-3">
+              {partnerBookings.map((b) => {
+                const match = b.assignedPartners.find(
+                  (p) =>
+                    p.partnerId === partnerId || p.partnerName.toLowerCase().includes(activePartner.name.toLowerCase()),
+                );
+                const isExpanded = expandedMobileOrder === b.id;
+
+                return (
+                  <div key={b.id} className="rounded-2xl border hairline bg-canvas p-4 shadow-2xs transition">
+                    <div
+                      className="flex items-start justify-between cursor-pointer select-none"
+                      onClick={() => {
+                        playTapSound();
+                        setExpandedMobileOrder(isExpanded ? null : b.id);
+                      }}
+                    >
+                      <div className="min-w-0 pr-2">
+                        <span className="font-mono text-primary font-bold text-xs">{b.ref}</span>
+                        <h3 className="font-bold text-ink text-base truncate mt-0.5">{b.eventTitle}</h3>
+                        <p className="text-[0.72rem] text-ink/60 mt-0.5">
+                          {b.dateStr} · {b.slot}
+                        </p>
+                      </div>
+                      <div className="flex flex-col items-end shrink-0">
+                        <span className="font-mono font-bold text-primary text-sm">
+                          ${match?.agreedFee.toLocaleString()}
                         </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        <span className="mt-1 flex items-center gap-1 rounded-full border hairline bg-surface px-2 py-0.5 text-[0.65rem] font-bold text-ink/70">
+                          <span>{isExpanded ? "Hide" : "Details"}</span>
+                          <span className="text-[0.60rem]">{isExpanded ? "▲" : "▼"}</span>
+                        </span>
+                      </div>
+                    </div>
+
+                    {isExpanded && (
+                      <div className="mt-3 pt-3 border-t hairline space-y-2.5 text-xs animate-in fade-in duration-200">
+                        <div className="grid grid-cols-2 gap-2 text-[0.75rem]">
+                          <div>
+                            <span className="eyebrow text-ink/45 block text-[0.62rem]">Venue / Setup</span>
+                            <p className="font-semibold text-ink mt-0.5">{b.venueName}</p>
+                            <p className="text-ink/60 capitalize text-[0.70rem]">{b.where}</p>
+                          </div>
+                          <div>
+                            <span className="eyebrow text-ink/45 block text-[0.62rem]">Client Headcount</span>
+                            <p className="font-bold text-ink mt-0.5">{b.guests} Guests</p>
+                            <p className="text-ink/60 text-[0.70rem]">Guaranteed capacity</p>
+                          </div>
+                        </div>
+
+                        <div>
+                          <span className="eyebrow text-ink/45 block text-[0.62rem]">Client Contact</span>
+                          <p className="font-medium text-ink mt-0.5">{b.clientName}</p>
+                        </div>
+
+                        <div className="pt-2 border-t hairline flex items-center justify-between text-[0.72rem]">
+                          <span className="text-ink/60">Dispatch Base</span>
+                          <span className="rounded-full bg-success/15 px-2.5 py-0.5 font-bold text-success text-[0.68rem]">
+                            ✓ Calendar Locked
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop & Tablet Table (hidden sm:block) */}
+            <div className="hidden sm:block mt-4 overflow-x-auto">
+              <table className="w-full text-left text-xs text-ink/80 border-collapse">
+                <thead>
+                  <tr className="border-b hairline text-[0.68rem] uppercase font-bold text-ink/50">
+                    <th className="py-2.5 px-3">Event / Reference</th>
+                    <th className="py-2.5 px-3">Scheduled Date</th>
+                    <th className="py-2.5 px-3">Location / Venue</th>
+                    <th className="py-2.5 px-3">Guests</th>
+                    <th className="py-2.5 px-3">Agreed Fee</th>
+                    <th className="py-2.5 px-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y hairline">
+                  {partnerBookings.map((b) => {
+                    const match = b.assignedPartners.find(
+                      (p) =>
+                        p.partnerId === partnerId ||
+                        p.partnerName.toLowerCase().includes(activePartner.name.toLowerCase()),
+                    );
+                    return (
+                      <tr key={b.id} className="hover:bg-canvas/50 transition">
+                        <td className="py-3 px-3">
+                          <span className="font-mono text-primary font-bold block">{b.ref}</span>
+                          <span className="font-bold text-ink text-sm block">{b.eventTitle}</span>
+                          <span className="text-[0.68rem] text-ink/55">{b.clientName}</span>
+                        </td>
+                        <td className="py-3 px-3 whitespace-nowrap">
+                          <span className="font-semibold text-ink block">{b.dateStr}</span>
+                          <span className="text-[0.68rem] text-primary font-bold">{b.slot}</span>
+                        </td>
+                        <td className="py-3 px-3">
+                          <span className="font-medium text-ink block">{b.venueName}</span>
+                          <span className="text-[0.68rem] text-ink/55 capitalize">{b.where}</span>
+                        </td>
+                        <td className="py-3 px-3 font-semibold text-ink">{b.guests} guests</td>
+                        <td className="py-3 px-3 font-mono font-bold text-primary text-sm">
+                          ${match?.agreedFee.toLocaleString()}
+                        </td>
+                        <td className="py-3 px-3">
+                          <span className="rounded-full bg-success/15 px-2.5 py-0.5 text-[0.68rem] font-bold text-success">
+                            ✓ Calendar Locked
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 

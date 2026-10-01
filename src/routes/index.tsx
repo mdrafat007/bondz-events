@@ -246,13 +246,13 @@ function LandingPage() {
                 </div>
 
                 {/* Features placed directly under the Booking CTA */}
-                <div className="grid w-full grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-4 border-t border-hairline pt-4 sm:gap-y-5 sm:pt-5 lg:gap-x-3 xl:gap-x-5">
+                <div className="grid w-full grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-3 border-t border-hairline pt-4 sm:gap-x-4 sm:gap-y-4 sm:pt-5 lg:gap-x-2.5 xl:gap-x-4">
                   {pillars.map((pillar) => (
-                    <div key={pillar.number} className="flex min-w-0 items-baseline gap-2.5">
-                      <span className="shrink-0 font-serif text-lg font-bold italic text-primary sm:text-2xl">
+                    <div key={pillar.number} className="flex min-w-0 items-baseline gap-1.5 sm:gap-2">
+                      <span className="shrink-0 font-serif text-base font-bold italic text-primary sm:text-xl xl:text-2xl">
                         {pillar.number}
                       </span>
-                      <h2 className="min-w-0 font-sans text-sm font-black uppercase leading-tight text-ink [font-variation-settings:'wdth'_85] sm:text-base lg:text-[0.76rem] xl:text-[0.88rem] lg:whitespace-nowrap">
+                      <h2 className="min-w-0 font-sans text-xs font-black uppercase leading-tight text-ink [font-variation-settings:'wdth'_85] sm:text-sm lg:text-[0.72rem] xl:text-[0.82rem] 2xl:text-[0.88rem] break-words">
                         {pillar.title}
                       </h2>
                     </div>

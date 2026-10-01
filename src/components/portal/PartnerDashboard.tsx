@@ -4,7 +4,6 @@ import {
   getAllPortalBookings,
   getPartnerBlackouts,
   togglePartnerBlackout,
-  setStoredPartnerId,
 } from "@/lib/portal-store";
 import { PARTNERS, VENUES, HORIZON, isBusy } from "@/lib/bondz-data";
 import { triggerTap, playTapSound } from "@/lib/haptics";
@@ -13,13 +12,11 @@ import { toast } from "sonner";
 export function PartnerDashboard({
   currentPartnerId,
   onLogout,
-  onBackToOwner,
 }: {
   currentPartnerId: string;
   onLogout: () => void;
-  onBackToOwner?: () => void;
 }) {
-  const [partnerId, setPartnerId] = useState(currentPartnerId);
+  const [partnerId] = useState(currentPartnerId);
   const [blackouts, setBlackouts] = useState<number[]>(() => getPartnerBlackouts(partnerId));
   const [expandedMobileOrder, setExpandedMobileOrder] = useState<string | null>(null);
 
@@ -46,13 +43,6 @@ export function PartnerDashboard({
     );
     return sum + (match?.agreedFee || 0);
   }, 0);
-
-  const handlePartnerSwitch = (newId: string) => {
-    playTapSound();
-    setPartnerId(newId);
-    setStoredPartnerId(newId);
-    setBlackouts(getPartnerBlackouts(newId));
-  };
 
   const handleToggleDay = (dayIndex: number) => {
     playTapSound();
@@ -85,43 +75,14 @@ export function PartnerDashboard({
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2.5 sm:shrink-0">
-          {onBackToOwner && (
-            <button
-              type="button"
-              onClick={() => {
-                playTapSound();
-                onBackToOwner();
-              }}
-              className="rounded-full bg-ink px-4 py-1.5 text-xs font-bold text-canvas hover:bg-primary transition cursor-pointer flex items-center gap-1.5 shadow-sm whitespace-nowrap"
-            >
-              <span>←</span>
-              <span>Back to Owner Portal</span>
-            </button>
-          )}
-
-          <div className="flex items-center gap-1.5 rounded-full border hairline bg-surface px-2.5 py-1">
-            <span className="eyebrow text-ink/50 text-[0.65rem] uppercase">Partner:</span>
-            <select
-              value={partnerId}
-              onChange={(e) => handlePartnerSwitch(e.target.value)}
-              className="bg-transparent text-xs font-bold text-ink outline-none cursor-pointer pr-1"
-            >
-              {allPartners.map((p) => (
-                <option key={p.id} value={p.id} className="bg-canvas text-ink">
-                  {p.name} ({p.category})
-                </option>
-              ))}
-            </select>
-          </div>
-
+        <div className="flex items-center justify-start sm:justify-end gap-2.5 sm:shrink-0">
           <button
             type="button"
             onClick={() => {
               playTapSound();
               onLogout();
             }}
-            className="rounded-full border hairline bg-canvas px-4 py-1.5 text-xs font-bold text-ink/75 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition cursor-pointer whitespace-nowrap sm:ml-auto"
+            className="rounded-full border hairline bg-canvas px-4 py-1.5 text-xs font-bold text-ink/75 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition cursor-pointer whitespace-nowrap"
           >
             Log Out
           </button>

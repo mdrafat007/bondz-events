@@ -88,10 +88,6 @@ function PortalPage() {
           <PartnerDashboard
             currentPartnerId={partnerId}
             onLogout={handleLogout}
-            onBackToOwner={() => {
-              setRole("owner");
-              setStoredRole("owner");
-            }}
           />
         )}
       </main>

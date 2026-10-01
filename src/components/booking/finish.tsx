@@ -18,7 +18,7 @@ import {
 } from "@/lib/bondz-data";
 import { signalBot } from "@/lib/bot-bus";
 import { saveLiveBooking } from "@/lib/portal-store";
-import { priceOf, SLOT_TIMES } from "@/lib/bondz-data";
+import { SLOT_TIMES } from "@/lib/bondz-data";
 import { cn } from "@/lib/utils";
 import { StepHead } from "./panels";
 import { Ghost, Primary } from "./steps";

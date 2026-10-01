@@ -34,10 +34,10 @@ export const Route = createFileRoute("/")({
 });
 
 const pillars = [
-  { number: "01", title: "Curated availability" },
-  { number: "02", title: "Sample date matching" },
-  { number: "03", title: "One simple sitting" },
-  { number: "04", title: "360° dispatch preview" },
+  { number: "01", title: "CURATED AVAILABILITY" },
+  { number: "02", title: "REAL-TIME SYNC" },
+  { number: "03", title: "SIMPLIFIED BOOKING" },
+  { number: "04", title: "360° CONFIRMATION" },
 ];
 
 // Managed portraits are served by the public preview host

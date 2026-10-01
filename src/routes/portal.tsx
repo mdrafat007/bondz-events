@@ -7,6 +7,7 @@ import {
   clearStoredRole,
   setStoredRole,
   setStoredPartnerId,
+  hydratePortalSession,
 } from "@/lib/portal-store";
 import { PortalLoginModal } from "@/components/portal/PortalLoginModal";
 import { OwnerDashboard } from "@/components/portal/OwnerDashboard";
@@ -42,7 +43,7 @@ function PortalPage() {
     if (savedPartner) {
       setPartnerId(savedPartner);
     }
-    setIsReady(true);
+    void hydratePortalSession().finally(() => setIsReady(true));
   }, []);
 
   const handleSelectRole = (newRole: PortalRole, selectedPartnerId?: string) => {

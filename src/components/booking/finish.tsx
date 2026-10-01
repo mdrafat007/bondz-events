@@ -17,6 +17,8 @@ import {
   type Slot,
 } from "@/lib/bondz-data";
 import { signalBot } from "@/lib/bot-bus";
+import { saveLiveBooking } from "@/lib/portal-store";
+import { priceOf, SLOT_TIMES } from "@/lib/bondz-data";
 import { cn } from "@/lib/utils";
 import { StepHead } from "./panels";
 import { Ghost, Primary } from "./steps";
@@ -250,7 +252,39 @@ export function Step5() {
       }, i * 750),
     );
     window.setTimeout(() => {
-      setRef("BZ-" + Math.random().toString(36).slice(2, 6).toUpperCase() + "-" + String(Date.now()).slice(-4));
+      const newRef = "BZ-" + Math.random().toString(36).slice(2, 6).toUpperCase() + "-" + String(Date.now()).slice(-4);
+      setRef(newRef);
+      // The showcase never writes; real bookings sync to this visitor's session.
+      if (!s.demo) {
+        void saveLiveBooking(
+          {
+            ref: newRef,
+            event: (sel.event ?? "custom") as never,
+            eventTitle: details.honor || s.ev?.title || "Celebration",
+            guests: sel.guests,
+            where: sel.where === "venue" ? "venue" : "home",
+            venueName: s.place,
+            dateStr: s.dateStr,
+            slot: s.slot as never,
+            totalCost: est.total,
+            depositPaid: est.deposit,
+            clientName: details.name,
+            clientPhone: details.phone,
+            clientEmail: details.email,
+            notes: details.notes ?? "",
+            assignedPartners: s.assigned.map((a) => ({
+              partnerId: a.p!.id,
+              partnerName: a.p!.name,
+              category: a.cat,
+              agreedFee: priceOf(a.p!, sel.guests),
+              status: "Confirmed" as const,
+            })),
+            runOfShow: [{ time: String(SLOT_TIMES[s.slot as keyof typeof SLOT_TIMES] ?? ""), action: "Event start" }],
+            status: "Confirmed",
+          },
+          signature,
+        );
+      }
       setStep(6);
     }, 3700);
   };

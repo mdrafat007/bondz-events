@@ -1059,9 +1059,9 @@ small { display: block; color: #7a7282; font-size: 8px; margin-top: 1px; }
 ol.terms { padding-left: 0; list-style: none; columns: 2; column-gap: 20px; margin: 0; }
 ol.terms li { margin-bottom: 5px; break-inside: avoid; font-size: 8px; line-height: 1.35; color: #433d49; }
 ol.terms li b { color: #151118; }
-.signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 16px; page-break-inside: avoid; }
-.sig-box { border-top: 1.5px solid #151118; padding-top: 4px; height: 60px; position: relative; }
-.sig-box img { position: absolute; bottom: 20px; left: 0; height: 38px; object-fit: contain; }
+.signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 20px; page-break-inside: avoid; }
+.sig-box { border-top: 1.5px solid #151118; padding-top: 4px; height: 68px; position: relative; }
+.sig-box img { position: absolute; bottom: 22px; left: 0; max-height: 44px; max-width: 220px; object-fit: contain; filter: brightness(0); -webkit-filter: brightness(0); }
 .sig-name { position: absolute; bottom: 18px; left: 0; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 26px; color: #151118; }
 .sig-label { position: absolute; bottom: 4px; left: 0; font-size: 7.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #7a7282; }
 </style></head><body>
@@ -1071,13 +1071,13 @@ ol.terms li b { color: #151118; }
   <div style="text-align:right">
     <div class="k">Service Agreement & Receipt</div>
     <h1>You’re booked.</h1>
-    <div style="font-size:9.5px;color:#555;margin-top:2px">Ref <b>${ref}</b> · Deposit Confirmed</div>
+    <div style="font-size:9.5px;color:#555;margin-top:2px">Ref <b>${ref}</b> · London Studio HQ · Deposit Confirmed</div>
   </div>
 </header>
 <div class="meta-grid">
   <div><div class="meta-label">Client</div><div class="meta-val"><b>${details.name}</b><br>${details.email}<br>${details.phone}</div></div>
   <div><div class="meta-label">Event</div><div class="meta-val"><b>${ev?.title}</b> · ${sel.guests} guests<br>${shownDateText}<br>${slot}</div></div>
-  <div><div class="meta-label">Location & Venue</div><div class="meta-val">${place}</div></div>
+  <div><div class="meta-label">Location & Venue</div><div class="meta-val">${place} · London, UK<br><span style="font-size:8.5px;color:#7a7282">Bondz Events London HQ</span></div></div>
 </div>
 <table>
   <thead><tr><th>Item & Scope</th><th style="text-align:right">Amount</th></tr></thead>
@@ -1097,7 +1097,7 @@ ol.terms li b { color: #151118; }
   </div>
   <div class="sig-box">
     <span class="sig-name">Mr. Bondz</span>
-    <span class="sig-label">Event Organizer & Founder - Bondz Events</span>
+    <span class="sig-label">Event Organizer & Founder - Bondz Events London</span>
   </div>
 </div>
 </div>

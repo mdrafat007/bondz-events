@@ -5,7 +5,9 @@ export function PolicyDialog({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
@@ -31,7 +33,7 @@ export function PolicyDialog({ children }: { children: React.ReactNode }) {
             <div className="flex shrink-0 items-start justify-between gap-3 border-b hairline px-4 py-4 sm:px-6 sm:py-5">
               <div className="min-w-0">
                 <p className="eyebrow text-primary">Policy</p>
-        <h2 className="display mt-1 text-xl sm:text-2xl">POLICY</h2>
+                <h2 className="display mt-1 text-xl sm:text-2xl">POLICY</h2>
               </div>
               <button
                 type="button"
@@ -44,7 +46,10 @@ export function PolicyDialog({ children }: { children: React.ReactNode }) {
             </div>
             <ol className="scroll-quiet min-h-0 flex-1 overflow-y-auto px-4 py-2 sm:px-6">
               {CANCELLATION_POLICY.map((t, i) => (
-                <li key={t.t} className="grid grid-cols-[1.6rem_minmax(0,1fr)] gap-2 border-b hairline py-3 last:border-0">
+                <li
+                  key={t.t}
+                  className="grid grid-cols-[1.6rem_minmax(0,1fr)] gap-2 border-b hairline py-3 last:border-0"
+                >
                   <span className="text-xs font-bold text-primary">{String(i + 1).padStart(2, "0")}</span>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-ink">{t.t}</p>
@@ -62,18 +67,23 @@ export function PolicyDialog({ children }: { children: React.ReactNode }) {
 
 export function SiteFooter() {
   return (
-    <footer className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 border-t border-hairline/60 bg-canvas px-4 py-1.5 text-ink/55 transition-colors duration-300 md:px-8">
+    <footer className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] lg:grid-cols-[1fr_auto_1fr] items-center gap-x-3 border-t border-hairline/60 bg-canvas px-4 py-1.5 text-ink/55 transition-colors duration-300 md:px-8">
       <span className="eyebrow truncate">
         © 2026 Bondz Events<span className="hidden sm:inline"> · by Mr. Bondz</span>
       </span>
-      <PolicyDialog>
-        <button
-          type="button"
-          className="eyebrow shrink-0 underline-offset-4 hover:text-ink hover:underline"
-        >
-          BOOKING POLICY
-        </button>
-      </PolicyDialog>
+
+      {/* Desktop-only centered tagline */}
+      <span className="hidden lg:block font-serif-i italic text-center text-xs tracking-wide text-ink/75 select-none">
+        Good times, beautifully made<span className="text-primary font-bold">.</span>
+      </span>
+
+      <div className="flex justify-end">
+        <PolicyDialog>
+          <button type="button" className="eyebrow shrink-0 underline-offset-4 hover:text-ink hover:underline">
+            Cancellation<span className="hidden sm:inline"> &amp; Rescheduling</span>
+          </button>
+        </PolicyDialog>
+      </div>
     </footer>
   );
 }

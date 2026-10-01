@@ -1067,7 +1067,13 @@ ol.terms li b { color: #151118; }
 </style></head><body>
 <div class="pdf-container">
 <header>
-  <div><img src="${logoUrl}" alt="Bondz Events" class="logo" /></div>
+  <div>
+    <img src="${logoUrl}" alt="Bondz Events" class="logo" />
+    <div style="font-size:8px;color:#7a7282;margin-top:4px;line-height:1.35">
+      <b>London Studio HQ:</b> 42 Bermondsey Street, Studio 4B, London SE1 3UD<br>
+      Direct: confirm@bondzevents.com · Good times, beautifully made.
+    </div>
+  </div>
   <div style="text-align:right">
     <div class="k">Service Agreement & Receipt</div>
     <h1>You’re booked.</h1>
@@ -1077,7 +1083,7 @@ ol.terms li b { color: #151118; }
 <div class="meta-grid">
   <div><div class="meta-label">Client</div><div class="meta-val"><b>${details.name}</b><br>${details.email}<br>${details.phone}</div></div>
   <div><div class="meta-label">Event</div><div class="meta-val"><b>${ev?.title}</b> · ${sel.guests} guests<br>${shownDateText}<br>${slot}</div></div>
-  <div><div class="meta-label">Location & Venue</div><div class="meta-val">${place} · London, UK<br><span style="font-size:8.5px;color:#7a7282">Bondz Events London HQ</span></div></div>
+  <div><div class="meta-label">Location & Venue</div><div class="meta-val">${place} · London, UK<br><span style="font-size:8.5px;color:#7a7282">Operated by Bondz Events London HQ</span></div></div>
 </div>
 <table>
   <thead><tr><th>Item & Scope</th><th style="text-align:right">Amount</th></tr></thead>

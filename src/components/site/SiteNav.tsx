@@ -252,8 +252,10 @@ export function SiteNav() {
               ))}
             </ul>
 
-            {/* Portal centered button: appeared in menu after contact, right before AI assistant */}
-            <div className="mt-auto pt-6 pb-4 flex flex-col items-center justify-center text-center gap-3">
+            {/* AI Assistant and Portal Links */}
+            <div className="mt-auto pt-6 pb-4 flex flex-col items-center justify-center text-center gap-4">
+              <ConnectAIAssistant variant="hero" className="w-full sm:w-auto" />
+
               <Link
                 to="/portal"
                 onClick={() => {
@@ -266,7 +268,6 @@ export function SiteNav() {
                 Portal
               </Link>
 
-              <ConnectAIAssistant variant="hero" className="w-full sm:w-auto" />
               <p className="mt-2 font-serif text-xl italic text-ink/55 sm:text-2xl text-center">
                 Good times, beautifully made<span className="text-primary">.</span>
               </p>

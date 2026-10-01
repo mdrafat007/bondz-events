@@ -307,11 +307,11 @@ export function Step2() {
   ];
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-4">
+    <div className="flex w-full max-w-full min-w-0 flex-col gap-4">
       <div className="shrink-0">
         <StepHead no="02" title="Where’s the party?" sub="Two routes. Both end at “You’re Booked” - one just has more calendars to reconcile. You set the headcount on the next step." />
       </div>
-      <div className="scroll-quiet grid min-h-0 flex-1 gap-3 overflow-y-auto sm:gap-4 md:grid-cols-2">
+      <div className="grid w-full gap-4 md:grid-cols-2">
         {branches.map((b) => (
           <button
             key={b.id}
@@ -323,15 +323,15 @@ export function Step2() {
               signalBot({ mood: "happy", tip: b.id === "home" ? "Add partners - only ones free together are offered." : "Only venues that fit your crowd made it onto this screen." });
             }}
             className={cn(
-              "group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-5 text-left transition md:p-7 shadow-sm cursor-pointer hover:border-primary active:scale-[0.99] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30",
+              "group relative flex min-h-[320px] flex-col justify-between rounded-2xl border p-5 sm:p-7 text-left transition shadow-sm cursor-pointer hover:border-primary active:scale-[0.99] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30",
               b.id === "venue" ? "border-ink bg-ink text-canvas hover:ring-2 hover:ring-primary/40" : "hairline bg-surface-light text-ink hover:ring-2 hover:ring-primary/40"
             )}
           >
             {/* Top Row: Editorial Badge & Big Editorial Architecture SVG */}
-            <div className="flex w-full items-start justify-between">
+            <div className="flex w-full items-start justify-between gap-3">
               <span
                 className={cn(
-                  "eyebrow inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-bold text-xs uppercase",
+                  "eyebrow inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-bold text-xs uppercase shrink-0",
                   b.id === "venue"
                     ? "border border-white/20 bg-white/10 text-canvas"
                     : "border hairline bg-canvas/80 text-ink"
@@ -342,7 +342,7 @@ export function Step2() {
               </span>
 
               {/* Editorial High-End Illustration */}
-              <div className="size-24 sm:size-28 md:size-32 transition-transform duration-500 group-hover:scale-105">
+              <div className="size-20 sm:size-26 md:size-28 shrink-0 transition-transform duration-500 group-hover:scale-105">
                 {b.id === "home" ? (
                   <HomeEditorialSvg className="size-full object-contain" />
                 ) : (
@@ -351,23 +351,28 @@ export function Step2() {
               </div>
             </div>
 
-            <div className="mt-4 w-full">
-              <h2 className="display text-4xl md:text-5xl lg:text-6xl">{b.t}</h2>
-              <p className="mt-3 max-w-md text-sm leading-snug opacity-75">{b.d}</p>
-              <ul className="mt-4 flex flex-wrap gap-1.5">
-                {b.tags.map((t) => (
-                  <li key={t} className={cn("eyebrow rounded-full border px-2.5 py-1", b.id === "venue" ? "border-canvas/25" : "hairline")}>{t}</li>
-                ))}
-              </ul>
-              <div className="mt-6 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary group-hover:translate-x-1 transition-transform">
-                <span>Select this route</span>
-                <span>→</span>
+            <div className="mt-4 flex flex-col flex-1 justify-between w-full">
+              <div>
+                <h2 className="display text-3xl sm:text-4xl md:text-5xl leading-tight">{b.t}</h2>
+                <p className="mt-2.5 text-xs sm:text-sm leading-relaxed opacity-85">{b.d}</p>
+              </div>
+
+              <div className="mt-5 space-y-4">
+                <ul className="flex flex-wrap gap-1.5">
+                  {b.tags.map((t) => (
+                    <li key={t} className={cn("eyebrow rounded-full border px-2.5 py-1 text-[0.68rem]", b.id === "venue" ? "border-canvas/25 text-canvas/80" : "hairline text-ink/75")}>{t}</li>
+                  ))}
+                </ul>
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary group-hover:translate-x-1 transition-transform">
+                  <span>Select this route</span>
+                  <span>→</span>
+                </div>
               </div>
             </div>
           </button>
         ))}
       </div>
-      <div className="shrink-0 pl-20"><Ghost onClick={() => setStep(1)}>← Back</Ghost></div>
+      <div className="shrink-0 pt-2"><Ghost onClick={() => setStep(1)}>← Back</Ghost></div>
     </div>
   );
 }

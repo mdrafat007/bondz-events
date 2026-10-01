@@ -16,26 +16,30 @@ import { useTheme } from "@/lib/theme";
 
 const STEPS = ["Event", "Where", "Services-Addons", "Date", "Details", "Booked"];
 
-export function BookingEngine({
-  init,
-  intro,
-  demo = false,
-  paused = false,
-  onDemoProgress,
-  onDemoRoundEnd,
-}: {
-  init: {
+export interface BookingEngineProps {
+  init?: {
     event?: EventTypeId | undefined;
     where?: "home" | "venue" | undefined;
     step?: Step | undefined;
     reveal?: boolean | undefined;
   };
-  intro: boolean;
+  intro?: boolean;
   demo?: boolean;
   paused?: boolean;
   onDemoProgress?: (progress: number) => void;
   onDemoRoundEnd?: () => void;
-}) {
+  onDemoScenario?: (scenario: DemoScenario) => void;
+}
+
+export function BookingEngine({
+  init,
+  intro = false,
+  demo = false,
+  paused = false,
+  onDemoProgress,
+  onDemoRoundEnd,
+  onDemoScenario,
+}: BookingEngineProps) {
   const state = useBookingState(init, demo);
   return (
     <BookingProvider value={state}>
@@ -45,6 +49,7 @@ export function BookingEngine({
         paused={paused}
         onDemoProgress={onDemoProgress}
         onDemoRoundEnd={onDemoRoundEnd}
+        onDemoScenario={onDemoScenario}
       />
     </BookingProvider>
   );
@@ -66,7 +71,7 @@ function pick<T>(list: readonly T[]): T {
   return list[Math.floor(Math.random() * list.length)] as T;
 }
 
-interface Scenario {
+export interface Scenario {
   event: EventTypeId;
   vibes: string[];
   where: "home" | "venue";
@@ -77,6 +82,8 @@ interface Scenario {
   slot: Slot;
   ref: string;
 }
+
+export type DemoScenario = Scenario;
 
 function makeScenario(): Scenario {
   const event = pick(EVENT_TYPES).id as EventTypeId;
@@ -112,11 +119,13 @@ function DemoDirector({
   canvas,
   onProgress,
   onRoundEnd,
+  onScenario,
 }: {
   paused: boolean;
   canvas: React.RefObject<HTMLDivElement | null>;
   onProgress?: (progress: number) => void;
   onRoundEnd?: () => void;
+  onScenario?: (scenario: DemoScenario) => void;
 }) {
   const b = useBooking();
   const current = useRef(b);
@@ -125,9 +134,15 @@ function DemoDirector({
   progress.current = onProgress;
   const roundEnd = useRef(onRoundEnd);
   roundEnd.current = onRoundEnd;
+  const scenarioCb = useRef(onScenario);
+  scenarioCb.current = onScenario;
   const elapsed = useRef(0);
   const lastAction = useRef(-1);
   const scenario = useRef<Scenario>(makeScenario());
+
+  useEffect(() => {
+    scenarioCb.current?.(scenario.current);
+  }, []);
 
   useEffect(() => {
     if (paused) return;
@@ -138,6 +153,7 @@ function DemoDirector({
         elapsed.current = 0;
         lastAction.current = -1;
         scenario.current = makeScenario();
+        scenarioCb.current?.(scenario.current);
         current.current.reset?.();
         roundEnd.current?.();
       } else {
@@ -194,12 +210,14 @@ function Frame({
   paused,
   onDemoProgress,
   onDemoRoundEnd,
+  onDemoScenario,
 }: {
   intro: boolean;
   demo: boolean;
   paused: boolean;
   onDemoProgress?: (progress: number) => void;
   onDemoRoundEnd?: () => void;
+  onDemoScenario?: (scenario: DemoScenario) => void;
 }) {
   const b = useBooking();
   const { step, setStep, reveal, setReveal, sel, day, slot } = b;
@@ -291,7 +309,13 @@ function Frame({
   return (
     <div className="flex h-full flex-col max-w-full overflow-x-hidden">
       {demo && (
-        <DemoDirector paused={paused} canvas={scroller} onProgress={onDemoProgress} onRoundEnd={onDemoRoundEnd} />
+        <DemoDirector
+          paused={paused}
+          canvas={scroller}
+          onProgress={onDemoProgress}
+          onRoundEnd={onDemoRoundEnd}
+          onScenario={onDemoScenario}
+        />
       )}
       {!demo && (
         <header className="shrink-0 border-b hairline bg-canvas transition-colors duration-300">

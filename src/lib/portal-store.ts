@@ -469,88 +469,151 @@ export function setStoredPartnerId(id: string) {
   localStorage.setItem(STORAGE_KEYS.PARTNER_ID, id);
 }
 
-export function getCustomPartners(): CustomPartner[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEYS.CUSTOM_PARTNERS);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
+/* ------------------------------------------------------------------ */
+/* Visitor session sync (Lovable Cloud).                               */
+/* Each tab gets an ephemeral session id in sessionStorage; every read */
+/* and write is scoped to it, so closing the tab restores the showroom */
+/* baseline. A sessionStorage cache keeps the sync getters instant.    */
+/* ------------------------------------------------------------------ */
+
+const SESSION_KEY = "bondz_session_id";
+const SESSION_BOOKINGS = "bondz_session_bookings";
+
+export function getSessionId(): string {
+  if (typeof window === "undefined") return "";
+  let id = sessionStorage.getItem(SESSION_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem(SESSION_KEY, id);
   }
+  return id;
+}
+
+function readCache<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
+  try {
+    const raw = sessionStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+function writeCache(key: string, value: unknown) {
+  if (typeof window === "undefined") return;
+  sessionStorage.setItem(key, JSON.stringify(value));
+}
+
+async function db() {
+  const { supabase } = await import("@/integrations/supabase/client");
+  return supabase;
+}
+function bg(p: PromiseLike<{ error: unknown }>) {
+  Promise.resolve(p).then(({ error }) => error && console.warn("[bondz sync]", error));
+}
+
+function upsertPartnerRow(p: CustomPartner) {
+  const sid = getSessionId();
+  void db().then((s) =>
+    bg(
+      s.from("custom_partners").upsert({
+        id: p.id,
+        session_id: sid,
+        name: p.name,
+        category: p.category,
+        contact: p.contact,
+        phone: p.phone,
+        email: p.email,
+        rate_label: p.rateLabel,
+        capacity: p.capacity,
+        active: p.active,
+        is_paused: isPartnerPaused(p.id),
+        is_archived: isPartnerArchived(p.id),
+      }),
+    ),
+  );
+}
+
+export function getCustomPartners(): CustomPartner[] {
+  return readCache<CustomPartner[]>(STORAGE_KEYS.CUSTOM_PARTNERS, []);
 }
 
 export function saveCustomPartner(p: CustomPartner) {
   if (typeof window === "undefined") return;
-  const current = getCustomPartners();
-  const next = [p, ...current.filter((x) => x.id !== p.id)];
-  localStorage.setItem(STORAGE_KEYS.CUSTOM_PARTNERS, JSON.stringify(next));
+  const next = [p, ...getCustomPartners().filter((x) => x.id !== p.id)];
+  writeCache(STORAGE_KEYS.CUSTOM_PARTNERS, next);
+  upsertPartnerRow(p);
 }
 
 export function removeCustomPartner(partnerId: string) {
   if (typeof window === "undefined") return;
-  const current = getCustomPartners();
-  const next = current.filter((x) => x.id !== partnerId);
-  localStorage.setItem(STORAGE_KEYS.CUSTOM_PARTNERS, JSON.stringify(next));
+  writeCache(
+    STORAGE_KEYS.CUSTOM_PARTNERS,
+    getCustomPartners().filter((x) => x.id !== partnerId),
+  );
+  const sid = getSessionId();
+  void db().then((s) => bg(s.from("custom_partners").delete().eq("session_id", sid).eq("id", partnerId)));
+}
+
+function syncFlags(partnerId: string) {
+  const custom = getCustomPartners().find((p) => p.id === partnerId);
+  if (custom) {
+    upsertPartnerRow(custom);
+    return;
+  }
+  // Built-in partners: store a flag-only row so pause/archive persists for this session.
+  const base = PARTNERS.find((p: Partner) => p.id === partnerId);
+  const sid = getSessionId();
+  void db().then((s) =>
+    bg(
+      s.from("custom_partners").upsert({
+        id: `${sid}:${partnerId}`,
+        session_id: sid,
+        name: base?.name ?? partnerId,
+        category: base?.category ?? null,
+        active: false,
+        is_paused: isPartnerPaused(partnerId),
+        is_archived: isPartnerArchived(partnerId),
+      }),
+    ),
+  );
 }
 
 export function getPausedPartners(): string[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEYS.PAUSED_PARTNERS);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  return readCache<string[]>(STORAGE_KEYS.PAUSED_PARTNERS, []);
 }
 
 export function togglePartnerPause(partnerId: string): boolean {
   if (typeof window === "undefined") return false;
   const current = getPausedPartners();
   const isPaused = current.includes(partnerId);
-  const next = isPaused ? current.filter((id) => id !== partnerId) : [...current, partnerId];
-  localStorage.setItem(STORAGE_KEYS.PAUSED_PARTNERS, JSON.stringify(next));
+  writeCache(STORAGE_KEYS.PAUSED_PARTNERS, isPaused ? current.filter((id) => id !== partnerId) : [...current, partnerId]);
+  syncFlags(partnerId);
   return !isPaused;
 }
 
 export function isPartnerPaused(partnerId: string): boolean {
-  if (typeof window === "undefined") return false;
-  const current = getPausedPartners();
-  return current.includes(partnerId);
+  return getPausedPartners().includes(partnerId);
 }
 
 export function getArchivedPartners(): string[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEYS.ARCHIVED_PARTNERS);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  return readCache<string[]>(STORAGE_KEYS.ARCHIVED_PARTNERS, []);
 }
 
 export function togglePartnerArchive(partnerId: string): boolean {
   if (typeof window === "undefined") return false;
   const current = getArchivedPartners();
   const isArchived = current.includes(partnerId);
-  const next = isArchived ? current.filter((id) => id !== partnerId) : [...current, partnerId];
-  localStorage.setItem(STORAGE_KEYS.ARCHIVED_PARTNERS, JSON.stringify(next));
+  writeCache(STORAGE_KEYS.ARCHIVED_PARTNERS, isArchived ? current.filter((id) => id !== partnerId) : [...current, partnerId]);
+  syncFlags(partnerId);
   return !isArchived;
 }
 
 export function isPartnerArchived(partnerId: string): boolean {
-  if (typeof window === "undefined") return false;
-  const current = getArchivedPartners();
-  return current.includes(partnerId);
+  return getArchivedPartners().includes(partnerId);
 }
 
 export function getPartnerBlackouts(partnerId: string): number[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(`${STORAGE_KEYS.PARTNER_BLACKOUTS}_${partnerId}`);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  return readCache<number[]>(`${STORAGE_KEYS.PARTNER_BLACKOUTS}_${partnerId}`, []);
 }
 
 export function togglePartnerBlackout(partnerId: string, day: number): number[] {
@@ -558,10 +621,163 @@ export function togglePartnerBlackout(partnerId: string, day: number): number[] 
   const current = getPartnerBlackouts(partnerId);
   const exists = current.includes(day);
   const next = exists ? current.filter((d) => d !== day) : [...current, day].sort((a, b) => a - b);
-  localStorage.setItem(`${STORAGE_KEYS.PARTNER_BLACKOUTS}_${partnerId}`, JSON.stringify(next));
+  writeCache(`${STORAGE_KEYS.PARTNER_BLACKOUTS}_${partnerId}`, next);
+  const sid = getSessionId();
+  void db().then((s) =>
+    bg(
+      exists
+        ? s.from("partner_blackouts").delete().eq("session_id", sid).eq("partner_id", partnerId).eq("day_offset", day)
+        : s.from("partner_blackouts").insert({ session_id: sid, partner_id: partnerId, day_offset: day }),
+    ),
+  );
   return next;
 }
 
 export function getAllPortalBookings(): PortalBooking[] {
-  return DEFAULT_SCENARIOS;
+  const live = readCache<PortalBooking[]>(SESSION_BOOKINGS, []);
+  return [...live, ...DEFAULT_SCENARIOS];
+}
+
+type BookingRow = {
+  id: string;
+  ref: string | null;
+  event: string | null;
+  event_title: string | null;
+  guests: number | null;
+  where: string | null;
+  venue_name: string | null;
+  date_str: string | null;
+  slot: string | null;
+  total_cost: number | null;
+  deposit_paid: number | null;
+  client_name: string | null;
+  client_phone: string | null;
+  client_email: string | null;
+  notes: string | null;
+  assigned_partners: unknown;
+  run_of_show: unknown;
+  status: string | null;
+};
+
+function rowToBooking(r: BookingRow): PortalBooking {
+  return {
+    id: r.id,
+    ref: r.ref ?? "",
+    event: (r.event ?? "custom") as EventTypeId,
+    eventTitle: r.event_title ?? "",
+    guests: r.guests ?? 0,
+    where: r.where === "venue" ? "venue" : "home",
+    venueName: r.venue_name ?? "",
+    dateStr: r.date_str ?? "",
+    slot: (r.slot ?? "Evening") as Slot,
+    totalCost: Number(r.total_cost ?? 0),
+    depositPaid: Number(r.deposit_paid ?? 0),
+    clientName: r.client_name ?? "",
+    clientPhone: r.client_phone ?? "",
+    clientEmail: r.client_email ?? "",
+    notes: r.notes ?? "",
+    assignedPartners: (Array.isArray(r.assigned_partners) ? r.assigned_partners : []) as PortalBooking["assignedPartners"],
+    runOfShow: (Array.isArray(r.run_of_show) ? r.run_of_show : []) as PortalBooking["runOfShow"],
+    status: (r.status ?? "Confirmed") as PortalBooking["status"],
+  };
+}
+
+/** Pull this visitor session's bookings, partners and blackouts into the cache. */
+export async function hydratePortalSession(): Promise<void> {
+  if (typeof window === "undefined") return;
+  const sid = getSessionId();
+  try {
+    const s = await db();
+    const [b, p, bo] = await Promise.all([
+      s.from("bookings").select("*").eq("session_id", sid).order("created_at", { ascending: false }),
+      s.from("custom_partners").select("*").eq("session_id", sid),
+      s.from("partner_blackouts").select("partner_id, day_offset").eq("session_id", sid),
+    ]);
+    if (b.data) writeCache(SESSION_BOOKINGS, (b.data as BookingRow[]).map(rowToBooking));
+    if (p.data) {
+      const prefix = `${sid}:`;
+      const custom: CustomPartner[] = [];
+      const paused: string[] = [];
+      const archived: string[] = [];
+      for (const r of p.data) {
+        const pid = r.id.startsWith(prefix) ? r.id.slice(prefix.length) : r.id;
+        if (!r.id.startsWith(prefix)) {
+          custom.push({
+            id: r.id,
+            name: r.name ?? "",
+            category: (r.category ?? "catering") as CategoryId,
+            contact: r.contact ?? "",
+            phone: r.phone ?? "",
+            email: r.email ?? "",
+            rateLabel: r.rate_label ?? "",
+            capacity: r.capacity ?? "",
+            active: r.active ?? true,
+          });
+        }
+        if (r.is_paused) paused.push(pid);
+        if (r.is_archived) archived.push(pid);
+      }
+      writeCache(STORAGE_KEYS.CUSTOM_PARTNERS, custom);
+      writeCache(STORAGE_KEYS.PAUSED_PARTNERS, paused);
+      writeCache(STORAGE_KEYS.ARCHIVED_PARTNERS, archived);
+    }
+    if (bo.data) {
+      const map = new Map<string, number[]>();
+      for (const r of bo.data) {
+        if (!r.partner_id || r.day_offset == null) continue;
+        map.set(r.partner_id, [...(map.get(r.partner_id) ?? []), r.day_offset]);
+      }
+      map.forEach((days, pid) => writeCache(`${STORAGE_KEYS.PARTNER_BLACKOUTS}_${pid}`, days.sort((a, c) => a - c)));
+    }
+  } catch (e) {
+    console.warn("[bondz sync] hydrate failed", e);
+  }
+}
+
+/** Persist a confirmed booking (and its signature) for this visitor session. */
+export async function saveLiveBooking(
+  booking: Omit<PortalBooking, "id">,
+  signatureDataUrl?: string | null,
+): Promise<void> {
+  if (typeof window === "undefined") return;
+  const sid = getSessionId();
+  const local: PortalBooking = { ...booking, id: `live-${booking.ref}` };
+  writeCache(SESSION_BOOKINGS, [local, ...readCache<PortalBooking[]>(SESSION_BOOKINGS, [])]);
+  try {
+    const s = await db();
+    let signatureUrl: string | null = null;
+    if (signatureDataUrl) {
+      const blob = await (await fetch(signatureDataUrl)).blob();
+      const path = `${sid}/${booking.ref}.png`;
+      const up = await s.storage.from("booking-signatures").upload(path, blob, { contentType: "image/png", upsert: true });
+      if (!up.error) {
+        const signed = await s.storage.from("booking-signatures").createSignedUrl(path, 60 * 60 * 24 * 365);
+        signatureUrl = signed.data?.signedUrl ?? null;
+      }
+    }
+    const { error } = await s.from("bookings").insert({
+      session_id: sid,
+      ref: booking.ref,
+      event: booking.event,
+      event_title: booking.eventTitle,
+      guests: booking.guests,
+      where: booking.where,
+      venue_name: booking.venueName,
+      date_str: booking.dateStr,
+      slot: booking.slot,
+      total_cost: booking.totalCost,
+      deposit_paid: booking.depositPaid,
+      client_name: booking.clientName,
+      client_phone: booking.clientPhone,
+      client_email: booking.clientEmail,
+      notes: booking.notes || null,
+      signature_url: signatureUrl,
+      assigned_partners: booking.assignedPartners,
+      run_of_show: booking.runOfShow,
+      status: booking.status,
+    });
+    if (error) console.warn("[bondz sync] booking insert", error);
+  } catch (e) {
+    console.warn("[bondz sync] booking save failed", e);
+  }
 }

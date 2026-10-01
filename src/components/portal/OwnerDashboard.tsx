@@ -5,8 +5,9 @@ import {
   getAllPortalBookings,
   getCustomPartners,
   getPartnerBlackouts,
+  togglePartnerBlackout,
 } from "@/lib/portal-store";
-import { PARTNERS, VENUES, type EventTypeId } from "@/lib/bondz-data";
+import { PARTNERS, VENUES, isBusy, type EventTypeId, type Partner } from "@/lib/bondz-data";
 import { AddPartnerModal } from "./AddPartnerModal";
 import { triggerTap, playTapSound } from "@/lib/haptics";
 import mascotWhite from "@/assets/mascot-white.png";
@@ -19,6 +20,9 @@ export function OwnerDashboard({
   onSwitchToPartner?: (partnerId: string) => void;
 }) {
   const [filterEvent, setFilterEvent] = useState<string>("all");
+  const [partnerFilter, setPartnerFilter] = useState<string>("all");
+  const [inspectedPartnerId, setInspectedPartnerId] = useState<string | null>(null);
+  const [partnerBlackoutsVersion, setPartnerBlackoutsVersion] = useState(0);
   const [selectedBooking, setSelectedBooking] = useState<PortalBooking | null>(null);
   const [showAddPartner, setShowAddPartner] = useState(false);
   const [customPartners, setCustomPartners] = useState<CustomPartner[]>(() => getCustomPartners());
@@ -294,36 +298,44 @@ export function OwnerDashboard({
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
-            {/* Partner Switcher Dropdown */}
-            {onSwitchToPartner && (
-              <div className="flex items-center gap-1.5 rounded-full border hairline bg-canvas px-3 py-1.5 shadow-2xs">
-                <span className="eyebrow text-ink/50 text-[0.65rem] uppercase font-bold">Inspect:</span>
-                <select
-                  defaultValue=""
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      playTapSound();
-                      onSwitchToPartner(e.target.value);
-                    }
-                  }}
-                  className="bg-transparent text-xs font-bold text-ink outline-none cursor-pointer pr-1"
-                >
-                  <option value="" disabled className="bg-canvas text-ink/60">
-                    Switch Partner...
-                  </option>
+            {/* In-Place Partner Filter Dropdown */}
+            <div className="flex items-center gap-1.5 rounded-full border hairline bg-canvas px-3 py-1.5 shadow-2xs">
+              <span className="eyebrow text-ink/50 text-[0.65rem] uppercase font-bold">Filter:</span>
+              <select
+                value={partnerFilter}
+                onChange={(e) => {
+                  playTapSound();
+                  const val = e.target.value;
+                  setPartnerFilter(val);
+                  if (val === "all") {
+                    setInspectedPartnerId(null);
+                  } else {
+                    setInspectedPartnerId(val);
+                  }
+                }}
+                className="bg-transparent text-xs font-bold text-ink outline-none cursor-pointer pr-1"
+              >
+                <option value="all" className="bg-canvas text-ink">
+                  All Fleet Partners ({PARTNERS.length + customPartners.length})
+                </option>
+                <optgroup label="Core Network" className="bg-canvas text-ink font-semibold">
                   {PARTNERS.map((p) => (
                     <option key={p.id} value={p.id} className="bg-canvas text-ink">
                       {p.name} ({p.category})
                     </option>
                   ))}
-                  {customPartners.map((p) => (
-                    <option key={p.id} value={p.id} className="bg-canvas text-ink">
-                      {p.name} ({p.category})
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+                </optgroup>
+                {customPartners.length > 0 && (
+                  <optgroup label="Custom Onboarded" className="bg-canvas text-ink font-semibold">
+                    {customPartners.map((p) => (
+                      <option key={p.id} value={p.id} className="bg-canvas text-ink">
+                        {p.name} ({p.category})
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
+              </select>
+            </div>
 
             <button
               type="button"
@@ -338,14 +350,20 @@ export function OwnerDashboard({
           </div>
         </div>
 
+        {/* Partner Cards Grid (Filtered in-place) */}
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {/* Default Partners */}
-          {PARTNERS.map((p) => {
+          {PARTNERS.filter((p) => partnerFilter === "all" || partnerFilter === p.id).map((p) => {
             const blackouts = getPartnerBlackouts(p.id);
+            const isSelected = inspectedPartnerId === p.id;
             return (
               <div
                 key={p.id}
-                className="rounded-2xl border hairline bg-canvas p-4 flex flex-col justify-between group hover:border-primary/50 transition"
+                className={`rounded-2xl border bg-canvas p-4 flex flex-col justify-between transition ${
+                  isSelected
+                    ? "border-primary ring-2 ring-primary/20 shadow-md bg-primary/5"
+                    : "hairline hover:border-primary/50"
+                }`}
               >
                 <div>
                   <div className="flex items-start justify-between">
@@ -364,48 +382,309 @@ export function OwnerDashboard({
                 </div>
                 <div className="mt-3 pt-2.5 border-t hairline flex items-center justify-between text-[0.68rem] text-ink/60">
                   <span className="text-primary font-bold">Synchronized ✓</span>
-                  {onSwitchToPartner && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        playTapSound();
-                        onSwitchToPartner(p.id);
-                      }}
-                      className="font-bold text-ink hover:text-primary transition cursor-pointer underline underline-offset-2"
-                    >
-                      Inspect Status →
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTapSound();
+                      if (isSelected) {
+                        setInspectedPartnerId(null);
+                        setPartnerFilter("all");
+                      } else {
+                        setInspectedPartnerId(p.id);
+                        setPartnerFilter(p.id);
+                      }
+                    }}
+                    className={`font-bold transition cursor-pointer underline underline-offset-2 ${
+                      isSelected ? "text-primary font-black" : "text-ink hover:text-primary"
+                    }`}
+                  >
+                    {isSelected ? "Hide Inspection ▲" : "Inspect Status →"}
+                  </button>
                 </div>
               </div>
             );
           })}
 
           {/* Newly Added Custom Partners */}
-          {customPartners.map((p) => (
-            <div
-              key={p.id}
-              className="rounded-2xl border border-primary/30 bg-primary/5 p-4 flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-start justify-between">
-                  <span className="eyebrow text-primary text-[0.65rem] capitalize">{p.category}</span>
-                  <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[0.62rem] font-bold text-primary">
-                    Custom Onboarded
-                  </span>
+          {customPartners
+            .filter((p) => partnerFilter === "all" || partnerFilter === p.id)
+            .map((p) => {
+              const isSelected = inspectedPartnerId === p.id;
+              return (
+                <div
+                  key={p.id}
+                  className={`rounded-2xl border p-4 flex flex-col justify-between transition ${
+                    isSelected
+                      ? "border-primary ring-2 ring-primary/20 shadow-md bg-primary/10"
+                      : "border-primary/30 bg-primary/5"
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-start justify-between">
+                      <span className="eyebrow text-primary text-[0.65rem] capitalize">{p.category}</span>
+                      <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[0.62rem] font-bold text-primary">
+                        Custom Onboarded
+                      </span>
+                    </div>
+                    <h4 className="font-display font-bold text-ink text-base mt-1">{p.name}</h4>
+                    <p className="text-xs text-ink/75 mt-0.5">
+                      Contact: {p.contact} · {p.rateLabel}
+                    </p>
+                  </div>
+                  <div className="mt-3 pt-2.5 border-t hairline flex items-center justify-between text-[0.68rem] text-ink/60">
+                    <span>{p.phone}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playTapSound();
+                        if (isSelected) {
+                          setInspectedPartnerId(null);
+                          setPartnerFilter("all");
+                        } else {
+                          setInspectedPartnerId(p.id);
+                          setPartnerFilter(p.id);
+                        }
+                      }}
+                      className="font-bold text-primary hover:underline transition cursor-pointer"
+                    >
+                      {isSelected ? "Hide ▲" : "Inspect →"}
+                    </button>
+                  </div>
                 </div>
-                <h4 className="font-display font-bold text-ink text-base mt-1">{p.name}</h4>
-                <p className="text-xs text-ink/75 mt-0.5">
-                  Contact: {p.contact} · {p.rateLabel}
+              );
+            })}
+        </div>
+
+        {/* In-Place Partner Inspection Drawer / Panel */}
+        {inspectedPartnerId && (() => {
+          const defaultPartner = PARTNERS.find((p) => p.id === inspectedPartnerId);
+          const customPartner = customPartners.find((p) => p.id === inspectedPartnerId);
+          const activePartner = defaultPartner || (customPartner ? {
+            id: customPartner.id,
+            name: customPartner.name,
+            category: customPartner.category,
+            min: 10,
+            max: 200,
+            events: "all" as const,
+            flat: 500,
+            seed: 99,
+            busyRate: 0.2,
+          } : null);
+
+          if (!activePartner) return null;
+
+          const blackouts = getPartnerBlackouts(activePartner.id);
+          const assignedOrders = bookings.filter((b) =>
+            b.assignedPartners.some(
+              (p) =>
+                p.partnerId === activePartner.id ||
+                p.partnerName.toLowerCase().includes(activePartner.name.toLowerCase()),
+            ),
+          );
+
+          const totalEarnings = bookings.reduce((sum, b) => {
+            const match = b.assignedPartners.find(
+              (p) =>
+                p.partnerId === activePartner.id ||
+                p.partnerName.toLowerCase().includes(activePartner.name.toLowerCase()),
+            );
+            return sum + (match?.agreedFee || 0);
+          }, 0);
+
+          return (
+            <div className="mt-6 border-t hairline pt-6 space-y-6 animate-in fade-in slide-in-from-top-3 duration-200">
+              {/* Inspection Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-canvas p-4 sm:p-5 rounded-2xl border hairline">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="eyebrow text-primary text-[0.68rem] capitalize font-mono">
+                      Partner In-Place Inspector
+                    </span>
+                    <span className="rounded-full bg-success/15 px-2 py-0.5 text-[0.62rem] font-bold text-success">
+                      ● Active Fleet Connection
+                    </span>
+                  </div>
+                  <h3 className="display text-xl sm:text-2xl font-bold text-ink mt-0.5">
+                    {activePartner.name}
+                  </h3>
+                  <p className="text-xs text-ink/65">
+                    Category: <span className="capitalize font-semibold text-ink">{activePartner.category}</span> · Capacity: {activePartner.min} - {activePartner.max} guests · {assignedOrders.length} Confirmed Work Orders
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTapSound();
+                      setInspectedPartnerId(null);
+                      setPartnerFilter("all");
+                    }}
+                    className="inline-flex items-center justify-center whitespace-nowrap rounded-full border hairline bg-surface px-3.5 py-1.5 text-xs font-bold text-ink/80 hover:bg-ink hover:text-canvas transition cursor-pointer"
+                  >
+                    ✕ Close Inspector
+                  </button>
+                </div>
+              </div>
+
+              {/* Partner Quick Bento */}
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="rounded-2xl border hairline bg-canvas p-4 shadow-2xs">
+                  <span className="eyebrow text-ink/50 text-[0.65rem] block">Assigned Work Orders</span>
+                  <p className="display mt-1 text-xl sm:text-2xl font-black text-ink">{assignedOrders.length} Events</p>
+                  <span className="text-[0.65rem] font-medium text-ink/60 mt-0.5 block">Synced from Mr. Bondz</span>
+                </div>
+                <div className="rounded-2xl border hairline bg-canvas p-4 shadow-2xs">
+                  <span className="eyebrow text-primary text-[0.65rem] block font-bold">Contracted Revenue</span>
+                  <p className="display mt-1 text-xl sm:text-2xl font-black text-primary">${totalEarnings.toLocaleString()}</p>
+                  <span className="text-[0.65rem] font-medium text-ink/60 mt-0.5 block">Guaranteed 25% deposit base</span>
+                </div>
+                <div className="rounded-2xl border hairline bg-canvas p-4 shadow-2xs">
+                  <span className="eyebrow text-ink/50 text-[0.65rem] block">Guest Capacity</span>
+                  <p className="display mt-1 text-xl sm:text-2xl font-black text-ink">{activePartner.min} - {activePartner.max}</p>
+                  <span className="text-[0.65rem] font-medium text-ink/60 mt-0.5 block">Operational threshold</span>
+                </div>
+                <div className="rounded-2xl border hairline bg-canvas p-4 shadow-2xs">
+                  <span className="eyebrow text-ink/50 text-[0.65rem] block">Active Blackout Holds</span>
+                  <p className="display mt-1 text-xl sm:text-2xl font-black text-ink">{blackouts.length} Days</p>
+                  <span className="text-[0.65rem] font-medium text-ink/60 mt-0.5 block">Excluded dates</span>
+                </div>
+              </div>
+
+              {/* Assigned Work Orders List */}
+              <div className="rounded-2xl border hairline bg-canvas p-4 sm:p-5 shadow-2xs">
+                <h4 className="font-display font-bold text-ink text-base">
+                  Assigned Work Orders for {activePartner.name}
+                </h4>
+                <p className="text-xs text-ink/60 mt-0.5">
+                  Synchronized live dispatches matching client bookings.
+                </p>
+                {assignedOrders.length === 0 ? (
+                  <p className="mt-3 py-6 text-center text-xs text-ink/50 italic font-serif-i">
+                    No active bookings assigned to this partner in the current demo roster.
+                  </p>
+                ) : (
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    {assignedOrders.map((b) => {
+                      const match = b.assignedPartners.find(
+                        (p) =>
+                          p.partnerId === activePartner.id ||
+                          p.partnerName.toLowerCase().includes(activePartner.name.toLowerCase()),
+                      );
+                      return (
+                        <div key={b.id} className="rounded-xl border hairline bg-surface p-3.5 flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-start justify-between">
+                              <span className="font-mono text-primary font-bold text-xs">{b.ref}</span>
+                              <span className="font-mono font-bold text-success text-xs">
+                                ${match?.agreedFee.toLocaleString()}
+                              </span>
+                            </div>
+                            <h5 className="font-bold text-ink text-sm mt-1">{b.eventTitle}</h5>
+                            <p className="text-[0.70rem] text-ink/65 mt-0.5">
+                              {b.dateStr} · {b.slot} · {b.guests} guests · {b.venueName}
+                            </p>
+                          </div>
+                          <div className="mt-3 pt-2 border-t hairline flex items-center justify-between text-[0.68rem]">
+                            <span className="text-ink/60">Client: {b.clientName}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                playTapSound();
+                                setSelectedBooking(b);
+                              }}
+                              className="font-bold text-primary hover:underline cursor-pointer"
+                            >
+                              Timeline & Strike →
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* 75-Day Availability & Blackout Controls (In-Place) */}
+              <div className="rounded-2xl border hairline bg-canvas p-4 sm:p-5 shadow-2xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b hairline pb-3">
+                  <div>
+                    <h4 className="font-display font-bold text-ink text-base">
+                      75-Day Availability &amp; Blackout Manager
+                    </h4>
+                    <p className="text-xs text-ink/60">
+                      Toggle blackout dates for {activePartner.name} in real time without navigating away.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 text-[0.70rem] font-semibold text-ink/75">
+                    <div className="flex items-center gap-1.5">
+                      <span className="size-2.5 rounded bg-success/20 border border-success/40" />
+                      <span>Available</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="size-2.5 rounded bg-primary" />
+                      <span>Blackout (Blocked)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                  {Array.from({ length: 30 }, (_, dayIdx) => {
+                    const isBlockedByPartner = blackouts.includes(dayIdx);
+                    const isSimulatedBusy = isBusy(activePartner.seed, activePartner.busyRate, dayIdx);
+                    const isBlocked = isBlockedByPartner || isSimulatedBusy;
+
+                    const d = new Date();
+                    d.setDate(d.getDate() + dayIdx);
+                    const monthShort = d.toLocaleDateString("en-US", { month: "short" });
+                    const weekday = d.toLocaleDateString("en-US", { weekday: "short" });
+                    const dayNum = d.getDate();
+
+                    return (
+                      <button
+                        key={dayIdx}
+                        type="button"
+                        onClick={() => {
+                          playTapSound();
+                          togglePartnerBlackout(activePartner.id, dayIdx);
+                          setPartnerBlackoutsVersion((v) => v + 1);
+                        }}
+                        title={`Day +${dayIdx} (${weekday}, ${monthShort} ${dayNum}): ${
+                          isBlocked ? "Blocked - Click to mark Available" : "Available - Click to mark Blocked"
+                        }`}
+                        className={`flex items-center justify-between px-2.5 py-2 rounded-xl border transition-all cursor-pointer select-none text-left ${
+                          isBlocked
+                            ? "bg-primary text-primary-foreground border-primary shadow-2xs"
+                            : "hairline bg-surface hover:border-primary/50 text-ink hover:bg-canvas"
+                        }`}
+                      >
+                        <div className="flex items-baseline gap-1.5 min-w-0">
+                          <span className="font-mono text-sm font-black leading-none">{dayNum}</span>
+                          <div className="flex flex-col leading-none">
+                            <span className="text-[0.60rem] font-bold uppercase tracking-tight opacity-90">
+                              {monthShort}
+                            </span>
+                            <span className="text-[0.52rem] uppercase opacity-65 font-medium">{weekday}</span>
+                          </div>
+                        </div>
+
+                        <span
+                          className={`text-[0.55rem] uppercase tracking-wider px-1.5 py-0.5 rounded-full font-mono font-bold shrink-0 ${
+                            isBlocked ? "bg-white/20 text-white" : "bg-success/15 text-success border border-success/30"
+                          }`}
+                        >
+                          {isBlocked ? "Blocked" : "Open"}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="mt-3 text-[0.70rem] text-ink/50 text-center font-serif-i italic">
+                  Showing 30-day forecast. Live updates are directly linked to client booking availability.
                 </p>
               </div>
-              <div className="mt-3 pt-2.5 border-t hairline flex items-center justify-between text-[0.68rem] text-ink/60">
-                <span>{p.phone}</span>
-                <span className="text-primary font-bold">Synchronized ✓</span>
-              </div>
             </div>
-          ))}
-        </div>
+          );
+        })()}
       </div>
 
       {/* Booking Timeline & Run-of-Show Inspection Modal */}

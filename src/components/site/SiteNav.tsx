@@ -13,7 +13,6 @@ const LINKS = [
   { to: "/portfolios", label: "Events Gallery" },
   { to: "/services", label: "Event Services" },
   { to: "/partners", label: "Partners" },
-  { to: "/portal", label: "Login Portal" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
@@ -161,17 +160,19 @@ export function SiteNav() {
             )}
           </TactileIcon>
 
-          <Link
-            to="/portal"
-            onClick={() => {
-              playTapSound();
-              setOpen(false);
-            }}
-            className="bondz-tactile hidden sm:inline-flex h-9 sm:h-10 items-center px-3.5 rounded-full text-xs font-bold text-ink hover:text-primary transition-colors duration-200"
-            activeProps={{ className: "text-primary font-black bg-surface" }}
-          >
-            Portal
-          </Link>
+          {!open && (
+            <Link
+              to="/portal"
+              onClick={() => {
+                playTapSound();
+                setOpen(false);
+              }}
+              className="bondz-tactile hidden sm:inline-flex h-9 sm:h-10 items-center px-3.5 rounded-full text-xs font-bold text-ink hover:text-primary transition-colors duration-200"
+              activeProps={{ className: "text-primary font-black bg-surface" }}
+            >
+              Portal
+            </Link>
+          )}
 
           <button
             type="button"
@@ -250,9 +251,23 @@ export function SiteNav() {
                 </li>
               ))}
             </ul>
-            <div className="mt-auto pt-8 pb-4 flex flex-col items-center justify-center text-center">
+
+            {/* Portal centered button: appeared in menu after contact, right before AI assistant */}
+            <div className="mt-auto pt-6 pb-4 flex flex-col items-center justify-center text-center gap-3">
+              <Link
+                to="/portal"
+                onClick={() => {
+                  playTapSound();
+                  setOpen(false);
+                }}
+                className="bondz-tactile inline-flex h-9 sm:h-10 items-center justify-center px-6 rounded-full text-xs font-bold text-ink border hairline bg-surface hover:text-primary hover:border-primary transition-colors duration-200"
+                activeProps={{ className: "text-primary font-black bg-surface border-primary" }}
+              >
+                Portal
+              </Link>
+
               <ConnectAIAssistant variant="hero" className="w-full sm:w-auto" />
-              <p className="mt-5 font-serif text-xl italic text-ink/55 sm:text-2xl text-center">
+              <p className="mt-2 font-serif text-xl italic text-ink/55 sm:text-2xl text-center">
                 Good times, beautifully made<span className="text-primary">.</span>
               </p>
             </div>

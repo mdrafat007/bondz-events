@@ -321,8 +321,8 @@ export function PartnerDashboard({
           </div>
         </div>
 
-        {/* 75-Day Grid */}
-        <div className="mt-6 grid grid-cols-5 sm:grid-cols-7 md:grid-cols-10 lg:grid-cols-15 gap-1.5">
+        {/* 75-Day Responsive Horizontal Cards Grid */}
+        <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
           {Array.from({ length: 30 }, (_, dayIdx) => {
             const isBlockedByPartner = blackouts.includes(dayIdx);
             const isSimulatedBusy = isBusy(activePartner.seed, activePartner.busyRate, dayIdx);
@@ -331,7 +331,7 @@ export function PartnerDashboard({
             const d = new Date();
             d.setDate(d.getDate() + dayIdx);
             const monthShort = d.toLocaleDateString("en-US", { month: "short" });
-            const weekday = d.toLocaleDateString("en-US", { weekday: "narrow" });
+            const weekday = d.toLocaleDateString("en-US", { weekday: "short" });
             const dayNum = d.getDate();
 
             return (
@@ -339,19 +339,24 @@ export function PartnerDashboard({
                 key={dayIdx}
                 type="button"
                 onClick={() => handleToggleDay(dayIdx)}
-                title={`Day +${dayIdx} (${monthShort} ${dayNum}): ${isBlocked ? "Blocked - Click to mark Available" : "Available - Click to mark Blocked"}`}
-                className={`flex flex-col items-center justify-center p-2 rounded-xl border text-center transition-all cursor-pointer ${
+                title={`Day +${dayIdx} (${weekday}, ${monthShort} ${dayNum}): ${isBlocked ? "Blocked - Click to mark Available" : "Available - Click to mark Blocked"}`}
+                className={`flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all cursor-pointer select-none text-left ${
                   isBlocked
-                    ? "bg-primary text-primary-foreground border-primary shadow-xs font-bold"
-                    : "hairline bg-canvas hover:border-primary/50 text-ink/80 hover:bg-surface"
+                    ? "bg-primary text-primary-foreground border-primary shadow-xs"
+                    : "hairline bg-canvas hover:border-primary/50 text-ink hover:bg-surface"
                 }`}
               >
-                <span className="text-[0.55rem] uppercase opacity-75">{weekday}</span>
-                <span className="text-xs font-black leading-tight mt-0.5">{dayNum}</span>
-                <span className="text-[0.62rem] font-bold opacity-80 mt-0.5">{monthShort}</span>
+                <div className="flex items-baseline gap-1.5 min-w-0">
+                  <span className="font-mono text-sm sm:text-base font-black leading-none">{dayNum}</span>
+                  <div className="flex flex-col leading-none">
+                    <span className="text-[0.62rem] font-bold uppercase tracking-tight opacity-90">{monthShort}</span>
+                    <span className="text-[0.55rem] uppercase opacity-65 font-medium">{weekday}</span>
+                  </div>
+                </div>
+
                 <span
-                  className={`mt-1 text-[0.50rem] uppercase tracking-wider px-1 py-0.2 rounded font-mono ${
-                    isBlocked ? "bg-white/20 text-white" : "bg-success/20 text-success font-bold"
+                  className={`text-[0.60rem] uppercase tracking-wider px-2 py-0.5 rounded-full font-mono font-bold shrink-0 ${
+                    isBlocked ? "bg-white/20 text-white" : "bg-success/15 text-success border border-success/30"
                   }`}
                 >
                   {isBlocked ? "Blocked" : "Open"}
@@ -362,8 +367,7 @@ export function PartnerDashboard({
         </div>
 
         <p className="mt-4 text-xs text-ink/55 text-center font-serif-i italic">
-          Showing next 30 days of the 75-day rolling window. Changes reflect instantaneously in all client calendar
-          intersections.
+          Showing next 30 days of the 75-day rolling window. Changes reflect instantaneously in all client calendar intersections.
         </p>
       </div>
     </div>

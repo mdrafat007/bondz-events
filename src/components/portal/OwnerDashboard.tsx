@@ -46,25 +46,26 @@ export function OwnerDashboard({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="eyebrow text-primary">Master Command Center</span>
-              <span className="rounded-full border border-success/30 bg-success/10 px-2.5 py-0.5 text-[0.65rem] font-bold text-success">
-                ● Live 360° Sync
+              <span className="eyebrow text-primary text-[0.68rem] tracking-wider uppercase font-bold">Operations</span>
+              <span className="rounded-full border border-success/30 bg-success/10 px-2 py-0.5 text-[0.62rem] font-bold text-success flex items-center gap-1">
+                <span className="size-1.5 rounded-full bg-success animate-pulse" />
+                Live Sync
               </span>
             </div>
-            <h1 className="display text-3xl sm:text-4xl font-extrabold text-ink tracking-tight mt-0.5">
-              Mr. Bondz Operations
+            <h1 className="display text-2xl sm:text-3xl font-extrabold text-ink tracking-tight mt-0.5">
+              Mr. Bondz
             </h1>
-            <p className="text-xs text-ink/65">
+            <p className="text-[0.72rem] text-ink/65">
               London Studio HQ · 42 Bermondsey Street, Studio 4B · 8 Signature Event Pipelines
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <a
             href="#partner-status-fleet"
             onClick={playTapSound}
-            className="rounded-full border hairline bg-surface px-4 py-2 text-xs font-bold text-ink/80 hover:border-primary hover:text-primary transition cursor-pointer"
+            className="inline-flex h-8 sm:h-8.5 items-center justify-center whitespace-nowrap rounded-full border hairline bg-surface px-3 text-[0.68rem] font-bold text-ink/80 hover:border-primary hover:text-primary transition cursor-pointer"
           >
             Partner Status ↓
           </a>
@@ -74,7 +75,7 @@ export function OwnerDashboard({
               playTapSound();
               setShowAddPartner(true);
             }}
-            className="rounded-full bg-primary px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-primary-foreground hover:brightness-110 active:scale-95 transition shadow-sm cursor-pointer"
+            className="inline-flex h-8 sm:h-8.5 items-center justify-center whitespace-nowrap rounded-full bg-primary px-3 text-[0.68rem] font-bold text-primary-foreground hover:brightness-110 active:scale-95 transition shadow-xs cursor-pointer"
           >
             + Onboard Partner
           </button>
@@ -84,7 +85,7 @@ export function OwnerDashboard({
               playTapSound();
               onLogout();
             }}
-            className="rounded-full border hairline bg-surface px-4 py-2 text-xs font-bold text-ink/75 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition cursor-pointer"
+            className="inline-flex h-8 sm:h-8.5 items-center justify-center whitespace-nowrap rounded-full border hairline bg-surface px-3 text-[0.68rem] font-bold text-ink/75 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition cursor-pointer"
           >
             Log Out
           </button>

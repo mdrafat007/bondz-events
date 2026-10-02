@@ -74,13 +74,14 @@ const eventTitle = (id: EventTypeId) => EVENT_TYPES.find((e) => e.id === id)?.ti
 /** Width of the virtual desktop the engine renders into before being scaled to fit. */
 const STAGE_W = 1040;
 
-const STORY_STEPS: { step: Step; label: string }[] = [
-  { step: 1, label: "01 Vibe" },
-  { step: 2, label: "02 Place" },
-  { step: 3, label: "03 Crew" },
-  { step: 4, label: "04 Date" },
-  { step: 5, label: "05 Sign" },
-  { step: 6, label: "06 Done" },
+/** Exact booking flow step names matching BookingEngine STEPS */
+const BOOKING_FLOW_STEPS: { step: Step; name: string }[] = [
+  { step: 1, name: "Event" },
+  { step: 2, name: "Where" },
+  { step: 3, name: "Services-Addons" },
+  { step: 4, name: "Date" },
+  { step: 5, name: "Details" },
+  { step: 6, name: "Booked" },
 ];
 
 export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingDemoProps) {
@@ -123,6 +124,7 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
 
   // Derive current step from continuous progress (0 to 100 over 6 segments)
   const currentStep = celebrating ? 6 : (Math.min(6, Math.max(1, Math.floor(progress / (100 / 6)) + 1)) as Step);
+  const currentStepName = BOOKING_FLOW_STEPS[currentStep - 1]?.name ?? "Event";
 
   // Jump to specific story state
   const jumpToStep = useCallback((step: Step) => {
@@ -136,7 +138,6 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
 
   // Tap navigation: left side goes back, right side goes next
   const handleCardClick = (e: React.MouseEvent<HTMLElement>) => {
-    // Avoid double triggering if clicking interactive elements inside
     const target = e.target as HTMLElement;
     if (target.closest("button") || target.closest("a") || target.closest("[data-story-nav]")) {
       return;
@@ -173,73 +174,12 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
       )}
       aria-label="Self-playing booking engine showcase. Tap left/right to browse story states, hover to pause."
     >
-      {/* Instagram Story Style Segmented Progress Bar Header */}
-      <div className="absolute inset-x-0 top-0 z-40 flex flex-col gap-1.5 p-3 sm:p-4 bg-gradient-to-b from-black/60 via-black/30 to-transparent">
-        <div className="flex items-center gap-1.5 w-full">
-          {STORY_STEPS.map((s, idx) => {
-            const stepNum = s.step;
-            const segmentSize = 100 / 6;
-            const segmentStart = idx * segmentSize;
-            const segmentEnd = (idx + 1) * segmentSize;
-
-            let fillPercent = 0;
-            if (celebrating) {
-              fillPercent = 100;
-            } else if (progress >= segmentEnd) {
-              fillPercent = 100;
-            } else if (progress <= segmentStart) {
-              fillPercent = 0;
-            } else {
-              fillPercent = ((progress - segmentStart) / segmentSize) * 100;
-            }
-
-            const isActive = currentStep === stepNum;
-
-            return (
-              <button
-                key={s.step}
-                type="button"
-                data-story-nav
-                onClick={(e) => {
-                  e.stopPropagation();
-                  jumpToStep(stepNum);
-                }}
-                title={`Jump to ${s.label}`}
-                className="relative h-1.5 sm:h-2 flex-1 overflow-hidden rounded-full bg-white/25 backdrop-blur-xs transition-all hover:h-2 sm:hover:h-2.5 focus:outline-none cursor-pointer"
-              >
-                <div
-                  className={cn(
-                    "h-full rounded-full transition-all duration-100 ease-linear",
-                    isActive ? "bg-primary" : "bg-white/90"
-                  )}
-                  style={{ width: `${fillPercent}%` }}
-                />
-              </button>
-            );
-          })}
+      {/* Top subtle badge overlay (tap hint / pause state) */}
+      {hovering && (
+        <div className="pointer-events-none absolute right-3 top-3 z-30 flex items-center gap-1 rounded-full bg-black/60 px-2.5 py-1 text-[0.62rem] font-bold text-primary backdrop-blur-xs">
+          <span>❚❚ Paused</span>
         </div>
-
-        {/* Story state label & live indicator */}
-        <div className="flex items-center justify-between text-[0.62rem] sm:text-[0.68rem] font-bold text-white/90 uppercase tracking-wider drop-shadow-sm px-0.5">
-          <div className="flex items-center gap-1.5">
-            <span className="live-dot size-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="font-extrabold text-white">Live Showcase</span>
-            <span className="text-white/40">·</span>
-            <span className="text-white/80">{STORY_STEPS[currentStep - 1]?.label}</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-white/70">
-            {hovering ? (
-              <span className="flex items-center gap-1 bg-black/40 px-2 py-0.5 rounded-full text-[0.60rem] text-primary font-bold">
-                ❚❚ Paused
-              </span>
-            ) : (
-              <span className="hidden sm:inline text-[0.60rem] opacity-75">
-                Tap card to advance →
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
+      )}
 
       {/* The real booking engine, running itself inside a scaled desktop viewport */}
       <div ref={boxRef} className="absolute inset-0 overflow-hidden">
@@ -313,11 +253,67 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
         </div>
       )}
 
-      {/* Headline caption at bottom */}
-      <figcaption className="absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end bg-gradient-to-t from-paper via-paper/90 to-transparent p-4 pt-10 dark:from-canvas dark:via-canvas/90 sm:p-5 sm:pt-12">
-        <p className="text-xs font-black uppercase leading-snug tracking-tight text-primary sm:text-sm md:text-base">
+      {/* Bottom overlay: 1. Live + Steps name kicker -> 2. Title -> 3. Lightweight segmented progress bars */}
+      <figcaption className="absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end bg-gradient-to-t from-paper via-paper/95 to-transparent p-3.5 pt-12 dark:from-canvas dark:via-canvas/95 sm:p-5 sm:pt-14">
+        {/* 1. Kicker: Live + Exact booking flow step name */}
+        <div className="flex items-center gap-1.5 text-[0.62rem] sm:text-[0.68rem] font-bold uppercase tracking-wider text-ink/75 dark:text-white/80">
+          <span className="live-dot size-1.5 rounded-full bg-primary animate-pulse shrink-0" />
+          <span className="font-extrabold text-primary">Live</span>
+          <span className="text-ink/30 dark:text-white/30">·</span>
+          <span className="text-ink dark:text-white font-mono font-bold">
+            Step {currentStep} of 6: {currentStepName}
+          </span>
+        </div>
+
+        {/* 2. Main Title */}
+        <p className="mt-1 text-xs font-black uppercase leading-snug tracking-tight text-ink dark:text-white sm:text-sm md:text-base">
           {media.title}
         </p>
+
+        {/* 3. Lightweight Segmented Instagram Story Bars (reduced weight: h-1 sm:h-1.25) */}
+        <div className="mt-2.5 flex items-center gap-1.5 w-full">
+          {BOOKING_FLOW_STEPS.map((s, idx) => {
+            const stepNum = s.step;
+            const segmentSize = 100 / 6;
+            const segmentStart = idx * segmentSize;
+            const segmentEnd = (idx + 1) * segmentSize;
+
+            let fillPercent = 0;
+            if (celebrating) {
+              fillPercent = 100;
+            } else if (progress >= segmentEnd) {
+              fillPercent = 100;
+            } else if (progress <= segmentStart) {
+              fillPercent = 0;
+            } else {
+              fillPercent = ((progress - segmentStart) / segmentSize) * 100;
+            }
+
+            const isActive = currentStep === stepNum;
+
+            return (
+              <button
+                key={s.step}
+                type="button"
+                data-story-nav
+                onClick={(e) => {
+                  e.stopPropagation();
+                  jumpToStep(stepNum);
+                }}
+                title={`Jump to Step ${stepNum}: ${s.name}`}
+                className="relative h-1 sm:h-1.25 flex-1 overflow-hidden rounded-full bg-ink/15 dark:bg-white/20 transition-all hover:h-1.5 focus:outline-none cursor-pointer"
+              >
+                <div
+                  className={cn(
+                    "h-full rounded-full transition-all duration-100 ease-linear",
+                    isActive ? "bg-primary" : "bg-primary/80 dark:bg-white/90"
+                  )}
+                  style={{ width: `${fillPercent}%` }}
+                />
+              </button>
+            );
+          })}
+        </div>
       </figcaption>
     </figure>
   );

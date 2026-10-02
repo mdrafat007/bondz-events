@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import {
   type PortalBooking,
   getAllPortalBookings,
@@ -10,6 +10,7 @@ import {
 import { PARTNERS, VENUES, HORIZON, isBusy } from "@/lib/bondz-data";
 import { triggerTap, playTapSound } from "@/lib/haptics";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export function PartnerDashboard({
   currentPartnerId,
@@ -22,6 +23,8 @@ export function PartnerDashboard({
   const [blackouts, setBlackouts] = useState<number[]>(() => getPartnerBlackouts(partnerId));
   const [expandedMobileOrder, setExpandedMobileOrder] = useState<string | null>(null);
   const [bookings, setBookings] = useState<PortalBooking[]>(() => getAllPortalBookings());
+  const [isPartnerMenuOpen, setIsPartnerMenuOpen] = useState(false);
+  const partnerMenuRef = useRef<HTMLDivElement>(null);
 
   // Sync internal partnerId state if currentPartnerId prop changes
   useEffect(() => {
@@ -29,6 +32,25 @@ export function PartnerDashboard({
     setBlackouts(getPartnerBlackouts(currentPartnerId));
     setBookings(getAllPortalBookings());
   }, [currentPartnerId]);
+
+  // Click-outside listener for custom dropdown
+  useEffect(() => {
+    if (!isPartnerMenuOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      if (partnerMenuRef.current && !partnerMenuRef.current.contains(e.target as Node)) {
+        setIsPartnerMenuOpen(false);
+      }
+    };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsPartnerMenuOpen(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [isPartnerMenuOpen]);
 
   const customPartners = useMemo(() => getCustomPartners(), []);
   const allPartners = useMemo(() => {
@@ -124,45 +146,133 @@ export function PartnerDashboard({
         </div>
 
         <div className="flex flex-wrap sm:flex-nowrap items-center justify-start sm:justify-end gap-2 sm:shrink-0">
-          {/* Partner Switcher Dropdown */}
-          <div className="flex items-center gap-1.5 rounded-full border hairline bg-surface px-3 py-1.5 text-xs">
-            <span className="eyebrow text-ink/50 text-[0.65rem] font-bold">Partner:</span>
-            <select
-              value={partnerId}
-              onChange={(e) => {
+          {/* Custom Partner Switcher Menu (Scroll-Quiet, Zero Scrollbar Visuals) */}
+          <div className="relative" ref={partnerMenuRef}>
+            <button
+              type="button"
+              onClick={() => {
                 playTapSound();
-                const nextId = e.target.value;
-                setPartnerId(nextId);
-                setStoredPartnerId(nextId);
-                setBlackouts(getPartnerBlackouts(nextId));
-                setBookings(getAllPortalBookings());
+                setIsPartnerMenuOpen(!isPartnerMenuOpen);
               }}
-              className="bg-transparent font-bold text-ink outline-none cursor-pointer text-xs max-w-[170px] truncate"
+              className="inline-flex items-center gap-1.5 rounded-full border hairline bg-surface px-3 py-1.5 text-xs font-bold text-ink hover:border-primary/50 transition cursor-pointer"
             >
-              <optgroup label="Core Network" className="bg-canvas text-ink font-semibold">
-                {PARTNERS.map((p) => (
-                  <option key={p.id} value={p.id} className="bg-canvas text-ink">
-                    {p.name} ({p.category})
-                  </option>
-                ))}
-              </optgroup>
-              <optgroup label="Venues" className="bg-canvas text-ink font-semibold">
-                {VENUES.map((v) => (
-                  <option key={v.id} value={v.id} className="bg-canvas text-ink">
-                    {v.name} (Venue)
-                  </option>
-                ))}
-              </optgroup>
-              {customPartners.length > 0 && (
-                <optgroup label="Custom Onboarded" className="bg-canvas text-ink font-semibold">
-                  {customPartners.map((c) => (
-                    <option key={c.id} value={c.id} className="bg-canvas text-ink">
-                      {c.name} ({c.category})
-                    </option>
-                  ))}
-                </optgroup>
-              )}
-            </select>
+              <span className="eyebrow text-ink/50 text-[0.65rem] font-bold">Partner:</span>
+              <span className="truncate max-w-[140px] sm:max-w-[180px]">{activePartner.name}</span>
+              <span className="text-[0.65rem] text-ink/50">▾</span>
+            </button>
+
+            {isPartnerMenuOpen && (
+              <div className="scroll-quiet absolute right-0 top-full mt-2 w-72 max-h-80 overflow-y-auto rounded-2xl border hairline bg-surface p-2 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="px-2.5 py-1 text-[0.65rem] font-extrabold uppercase tracking-wider eyebrow text-primary/80">
+                  Core Network
+                </div>
+                <div className="space-y-0.5">
+                  {PARTNERS.map((p) => {
+                    const isCur = partnerId === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => {
+                          playTapSound();
+                          setPartnerId(p.id);
+                          setStoredPartnerId(p.id);
+                          setBlackouts(getPartnerBlackouts(p.id));
+                          setBookings(getAllPortalBookings());
+                          setIsPartnerMenuOpen(false);
+                        }}
+                        className={cn(
+                          "flex w-full items-center justify-between rounded-xl px-2.5 py-1.5 text-left text-xs transition cursor-pointer",
+                          isCur
+                            ? "bg-primary/15 text-primary font-bold"
+                            : "text-ink/80 hover:bg-surface-light hover:text-ink font-medium",
+                        )}
+                      >
+                        <span className="truncate">
+                          {p.name}{" "}
+                          <span className="text-[0.68rem] text-ink/40 font-normal">({p.category})</span>
+                        </span>
+                        {isCur && <span className="text-primary font-bold text-xs ml-1">✓</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-2 border-t hairline pt-1.5 px-2.5 py-1 text-[0.65rem] font-extrabold uppercase tracking-wider eyebrow text-primary/80">
+                  Venues
+                </div>
+                <div className="space-y-0.5">
+                  {VENUES.map((v) => {
+                    const isCur = partnerId === v.id;
+                    return (
+                      <button
+                        key={v.id}
+                        type="button"
+                        onClick={() => {
+                          playTapSound();
+                          setPartnerId(v.id);
+                          setStoredPartnerId(v.id);
+                          setBlackouts(getPartnerBlackouts(v.id));
+                          setBookings(getAllPortalBookings());
+                          setIsPartnerMenuOpen(false);
+                        }}
+                        className={cn(
+                          "flex w-full items-center justify-between rounded-xl px-2.5 py-1.5 text-left text-xs transition cursor-pointer",
+                          isCur
+                            ? "bg-primary/15 text-primary font-bold"
+                            : "text-ink/80 hover:bg-surface-light hover:text-ink font-medium",
+                        )}
+                      >
+                        <span className="truncate">
+                          {v.name}{" "}
+                          <span className="text-[0.68rem] text-ink/40 font-normal">(Venue)</span>
+                        </span>
+                        {isCur && <span className="text-primary font-bold text-xs ml-1">✓</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {customPartners.length > 0 && (
+                  <>
+                    <div className="mt-2 border-t hairline pt-1.5 px-2.5 py-1 text-[0.65rem] font-extrabold uppercase tracking-wider eyebrow text-primary/80">
+                      Custom Onboarded
+                    </div>
+                    <div className="space-y-0.5">
+                      {customPartners.map((c) => {
+                        const isCur = partnerId === c.id;
+                        return (
+                          <button
+                            key={c.id}
+                            type="button"
+                            onClick={() => {
+                              playTapSound();
+                              setPartnerId(c.id);
+                              setStoredPartnerId(c.id);
+                              setBlackouts(getPartnerBlackouts(c.id));
+                              setBookings(getAllPortalBookings());
+                              setIsPartnerMenuOpen(false);
+                            }}
+                            className={cn(
+                              "flex w-full items-center justify-between rounded-xl px-2.5 py-1.5 text-left text-xs transition cursor-pointer",
+                              isCur
+                                ? "bg-primary/15 text-primary font-bold"
+                                : "text-ink/80 hover:bg-surface-light hover:text-ink font-medium",
+                            )}
+                          >
+                            <span className="truncate">
+                              {c.name}{" "}
+                              <span className="text-[0.68rem] text-ink/40 font-normal">({c.category})</span>
+                            </span>
+                            {isCur && <span className="text-primary font-bold text-xs ml-1">✓</span>}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           <button

@@ -241,6 +241,8 @@ export function Step5() {
             : "demo card details";
 
   const pay = () => {
+    // Immediate physical rumble on user tap gesture (allowed by Android Chrome)
+    triggerHaptic([60, 80, 45, 80, 120]);
     setLoading(true);
     signalBot({ mood: "think" });
     // The self-playing showcase stays completely silent; only real bookings make sound.
@@ -715,7 +717,7 @@ function RescheduleModal({
         </div>
 
         <p className="mt-4 text-xs font-bold text-ink/70 uppercase tracking-wider">Select new verified open date</p>
-        <div className="mt-2 grid grid-cols-3 sm:grid-cols-6 gap-1.5 max-h-48 overflow-y-auto pr-1">
+        <div className="scroll-quiet mt-2 grid grid-cols-3 sm:grid-cols-6 gap-1.5 max-h-48 overflow-y-auto pr-1">
           {days.map((d) => {
             const dt = dayToDate(anchor, d);
             const on = pick === d;

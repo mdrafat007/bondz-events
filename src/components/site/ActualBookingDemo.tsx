@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { BookingEngine, type DemoScenario } from "@/components/booking/BookingEngine";
 import { EVENT_TYPES, VENUES, type EventTypeId } from "@/lib/bondz-data";
+import { playTapSound, triggerHaptic } from "@/lib/haptics";
+import type { Step } from "@/components/booking/store";
 import weddingImg from "@/assets/pf-wedding.jpg";
 import birthdayImg from "@/assets/pf-birthday.jpg";
 import bbqImg from "@/assets/pf-bbq.jpg";
@@ -72,11 +74,21 @@ const eventTitle = (id: EventTypeId) => EVENT_TYPES.find((e) => e.id === id)?.ti
 /** Width of the virtual desktop the engine renders into before being scaled to fit. */
 const STAGE_W = 1040;
 
+const STORY_STEPS: { step: Step; label: string }[] = [
+  { step: 1, label: "01 Vibe" },
+  { step: 2, label: "02 Place" },
+  { step: 3, label: "03 Crew" },
+  { step: 4, label: "04 Date" },
+  { step: 5, label: "05 Sign" },
+  { step: 6, label: "06 Done" },
+];
+
 export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingDemoProps) {
   const [scenario, setScenario] = useState<DemoScenario | null>(null);
   const [progress, setProgress] = useState(0);
   const [hovering, setHovering] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
+  const [activeStep, setActiveStep] = useState<Step>(1);
   const [box, setBox] = useState({ w: 0, h: 0 });
   const boxRef = useRef<HTMLDivElement | null>(null);
   const celebrationTimer = useRef<number | null>(null);
@@ -98,6 +110,7 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
     celebrationTimer.current = window.setTimeout(() => {
       setCelebrating(false);
       setProgress(0);
+      setActiveStep(1);
     }, 6000);
   }, []);
 
@@ -108,20 +121,126 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
     [],
   );
 
+  // Derive current step from continuous progress (0 to 100 over 6 segments)
+  const currentStep = celebrating ? 6 : (Math.min(6, Math.max(1, Math.floor(progress / (100 / 6)) + 1)) as Step);
+
+  // Jump to specific story state
+  const jumpToStep = useCallback((step: Step) => {
+    playTapSound();
+    triggerHaptic(14);
+    if (celebrating) setCelebrating(false);
+    setActiveStep(step);
+    const targetProgress = ((step - 1) / 6) * 100;
+    setProgress(targetProgress);
+  }, [celebrating]);
+
+  // Tap navigation: left side goes back, right side goes next
+  const handleCardClick = (e: React.MouseEvent<HTMLElement>) => {
+    // Avoid double triggering if clicking interactive elements inside
+    const target = e.target as HTMLElement;
+    if (target.closest("button") || target.closest("a") || target.closest("[data-story-nav]")) {
+      return;
+    }
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const isRightHalf = x > rect.width * 0.45;
+
+    if (isRightHalf) {
+      if (currentStep < 6) {
+        jumpToStep((currentStep + 1) as Step);
+      } else {
+        handleRoundEnd();
+      }
+    } else {
+      if (currentStep > 1) {
+        jumpToStep((currentStep - 1) as Step);
+      }
+    }
+  };
+
   const media = EVENT_MEDIA[scenario?.event ?? "wedding"];
   const venue = VENUES.find((v) => v.id === scenario?.venue) ?? null;
 
   return (
     <figure
+      onClick={handleCardClick}
       onPointerEnter={() => setHovering(true)}
       onPointerLeave={() => setHovering(false)}
       className={cn(
-        "group relative flex aspect-[4/5] select-none flex-col overflow-hidden rounded-3xl border border-hairline bg-paper shadow-raised transition-colors duration-300 sm:aspect-[3/4] md:aspect-[4/5] dark:border-primary/45 dark:shadow-[0_0_30px_rgba(241,69,59,0.16)] ring-1 ring-primary/20 h-full min-h-[360px] max-h-[460px] lg:max-h-[92%] my-auto",
+        "group relative flex aspect-[4/5] select-none flex-col overflow-hidden rounded-3xl border border-hairline bg-paper shadow-raised transition-colors duration-300 sm:aspect-[3/4] md:aspect-[4/5] dark:border-primary/45 dark:shadow-[0_0_30px_rgba(241,69,59,0.16)] ring-1 ring-primary/20 h-full min-h-[360px] max-h-[460px] lg:max-h-[92%] my-auto cursor-pointer",
         "dark:bg-canvas",
         className,
       )}
-      aria-label="Self-playing booking engine showcase. Select to start your own booking."
+      aria-label="Self-playing booking engine showcase. Tap left/right to browse story states, hover to pause."
     >
+      {/* Instagram Story Style Segmented Progress Bar Header */}
+      <div className="absolute inset-x-0 top-0 z-40 flex flex-col gap-1.5 p-3 sm:p-4 bg-gradient-to-b from-black/60 via-black/30 to-transparent">
+        <div className="flex items-center gap-1.5 w-full">
+          {STORY_STEPS.map((s, idx) => {
+            const stepNum = s.step;
+            const segmentSize = 100 / 6;
+            const segmentStart = idx * segmentSize;
+            const segmentEnd = (idx + 1) * segmentSize;
+
+            let fillPercent = 0;
+            if (celebrating) {
+              fillPercent = 100;
+            } else if (progress >= segmentEnd) {
+              fillPercent = 100;
+            } else if (progress <= segmentStart) {
+              fillPercent = 0;
+            } else {
+              fillPercent = ((progress - segmentStart) / segmentSize) * 100;
+            }
+
+            const isActive = currentStep === stepNum;
+
+            return (
+              <button
+                key={s.step}
+                type="button"
+                data-story-nav
+                onClick={(e) => {
+                  e.stopPropagation();
+                  jumpToStep(stepNum);
+                }}
+                title={`Jump to ${s.label}`}
+                className="relative h-1.5 sm:h-2 flex-1 overflow-hidden rounded-full bg-white/25 backdrop-blur-xs transition-all hover:h-2 sm:hover:h-2.5 focus:outline-none cursor-pointer"
+              >
+                <div
+                  className={cn(
+                    "h-full rounded-full transition-all duration-100 ease-linear",
+                    isActive ? "bg-primary" : "bg-white/90"
+                  )}
+                  style={{ width: `${fillPercent}%` }}
+                />
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Story state label & live indicator */}
+        <div className="flex items-center justify-between text-[0.62rem] sm:text-[0.68rem] font-bold text-white/90 uppercase tracking-wider drop-shadow-sm px-0.5">
+          <div className="flex items-center gap-1.5">
+            <span className="live-dot size-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="font-extrabold text-white">Live Showcase</span>
+            <span className="text-white/40">·</span>
+            <span className="text-white/80">{STORY_STEPS[currentStep - 1]?.label}</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-white/70">
+            {hovering ? (
+              <span className="flex items-center gap-1 bg-black/40 px-2 py-0.5 rounded-full text-[0.60rem] text-primary font-bold">
+                ❚❚ Paused
+              </span>
+            ) : (
+              <span className="hidden sm:inline text-[0.60rem] opacity-75">
+                Tap card to advance →
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* The real booking engine, running itself inside a scaled desktop viewport */}
       <div ref={boxRef} className="absolute inset-0 overflow-hidden">
         <div
@@ -137,6 +256,7 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
             intro={false}
             demo
             paused={hovering || celebrating}
+            demoStep={activeStep}
             onDemoProgress={setProgress}
             onDemoRoundEnd={handleRoundEnd}
             onDemoScenario={setScenario}
@@ -193,17 +313,11 @@ export function ActualBookingDemo({ onLaunchBooking, className }: ActualBookingD
         </div>
       )}
 
-      {/* Headline and scrubber */}
-      <figcaption className="absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end bg-gradient-to-t from-paper via-paper/85 to-transparent p-4 pt-10 dark:from-canvas dark:via-canvas/85 sm:p-5 sm:pt-12">
+      {/* Headline caption at bottom */}
+      <figcaption className="absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end bg-gradient-to-t from-paper via-paper/90 to-transparent p-4 pt-10 dark:from-canvas dark:via-canvas/90 sm:p-5 sm:pt-12">
         <p className="text-xs font-black uppercase leading-snug tracking-tight text-primary sm:text-sm md:text-base">
           {media.title}
         </p>
-        <div className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-ink/15">
-          <div
-            className="h-full rounded-full bg-primary transition-all duration-100 ease-linear"
-            style={{ width: `${celebrating ? 100 : progress}%` }}
-          />
-        </div>
       </figcaption>
     </figure>
   );

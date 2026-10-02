@@ -26,6 +26,7 @@ export interface BookingEngineProps {
   intro?: boolean;
   demo?: boolean;
   paused?: boolean;
+  demoStep?: Step;
   onDemoProgress?: (progress: number) => void;
   onDemoRoundEnd?: () => void;
   onDemoScenario?: (scenario: DemoScenario) => void;
@@ -36,6 +37,7 @@ export function BookingEngine({
   intro = false,
   demo = false,
   paused = false,
+  demoStep,
   onDemoProgress,
   onDemoRoundEnd,
   onDemoScenario,
@@ -47,6 +49,7 @@ export function BookingEngine({
         intro={intro}
         demo={demo}
         paused={paused}
+        demoStep={demoStep}
         onDemoProgress={onDemoProgress}
         onDemoRoundEnd={onDemoRoundEnd}
         onDemoScenario={onDemoScenario}
@@ -117,12 +120,14 @@ function makeScenario(): Scenario {
 function DemoDirector({
   paused,
   canvas,
+  demoStep,
   onProgress,
   onRoundEnd,
   onScenario,
 }: {
   paused: boolean;
   canvas: React.RefObject<HTMLDivElement | null>;
+  demoStep?: Step;
   onProgress?: (progress: number) => void;
   onRoundEnd?: () => void;
   onScenario?: (scenario: DemoScenario) => void;
@@ -143,6 +148,37 @@ function DemoDirector({
   useEffect(() => {
     scenarioCb.current?.(scenario.current);
   }, []);
+
+  // Allow jumping to a specific step when user taps/clicks story progress bars
+  useEffect(() => {
+    if (demoStep && demoStep >= 1 && demoStep <= 6) {
+      elapsed.current = (demoStep - 1) * 3200;
+      lastAction.current = -1;
+      progress.current?.((elapsed.current / 19200) * 100);
+      const sc = scenario.current;
+      const state = current.current;
+      state.setStep(demoStep);
+      if (demoStep === 1) {
+        state.setSel((s) => ({ ...s, event: sc.event }));
+        state.setVibes(sc.vibes);
+      } else if (demoStep === 2) {
+        state.setSel((s) => ({ ...s, where: sc.where, venue: sc.venue, guests: sc.guests }));
+      } else if (demoStep === 3) {
+        state.setSel((s) => ({ ...s, services: sc.services }));
+      } else if (demoStep === 4) {
+        const slotIndex = SLOTS.indexOf(sc.slot);
+        const open = availableDays(state.sel).filter((day) => slotOpen(day, slotIndex));
+        state.setDay(open[0] ?? null);
+        state.setSlot(sc.slot);
+      } else if (demoStep === 5) {
+        state.setDetails((d) => ({ ...d, name: sc.name, honor: sc.name }));
+        state.setSignature("demo-signature");
+      } else {
+        state.setRef(sc.ref);
+      }
+      canvas.current?.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [demoStep, canvas]);
 
   useEffect(() => {
     if (paused) return;
@@ -208,6 +244,7 @@ function Frame({
   intro,
   demo,
   paused,
+  demoStep,
   onDemoProgress,
   onDemoRoundEnd,
   onDemoScenario,
@@ -215,6 +252,7 @@ function Frame({
   intro: boolean;
   demo: boolean;
   paused: boolean;
+  demoStep?: Step;
   onDemoProgress?: (progress: number) => void;
   onDemoRoundEnd?: () => void;
   onDemoScenario?: (scenario: DemoScenario) => void;
@@ -312,6 +350,7 @@ function Frame({
         <DemoDirector
           paused={paused}
           canvas={scroller}
+          demoStep={demoStep}
           onProgress={onDemoProgress}
           onRoundEnd={onDemoRoundEnd}
           onScenario={onDemoScenario}

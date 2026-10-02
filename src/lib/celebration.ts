@@ -39,6 +39,9 @@ export function playCelebrationSequence(): () => void {
   timers.push(
     window.setTimeout(() => {
       stopCelebration();
+      // Physical vibration synced with the cheer. Android devices rumble;
+      // iOS and desktops ignore the Vibration API safely (silent fallback).
+      triggerHaptic([60, 80, 45, 80, 45, 80, 120]);
       try {
         const audio = new Audio(cheersUrl);
         audio.volume = 0.9;

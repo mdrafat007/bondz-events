@@ -4,6 +4,8 @@ import {
   getAllPortalBookings,
   getPartnerBlackouts,
   togglePartnerBlackout,
+  getCustomPartners,
+  setStoredPartnerId,
 } from "@/lib/portal-store";
 import { PARTNERS, VENUES, HORIZON, isBusy } from "@/lib/bondz-data";
 import { triggerTap, playTapSound } from "@/lib/haptics";
@@ -12,6 +14,7 @@ import { toast } from "sonner";
 export function PartnerDashboard({
   currentPartnerId,
   onLogout,
+  onBackToOwner,
 }: {
   currentPartnerId: string;
   onLogout: () => void;
@@ -20,33 +23,73 @@ export function PartnerDashboard({
   const [partnerId, setPartnerId] = useState(currentPartnerId);
   const [blackouts, setBlackouts] = useState<number[]>(() => getPartnerBlackouts(partnerId));
   const [expandedMobileOrder, setExpandedMobileOrder] = useState<string | null>(null);
+  const [bookings, setBookings] = useState<PortalBooking[]>(() => getAllPortalBookings());
 
   // Sync internal partnerId state if currentPartnerId prop changes
   useEffect(() => {
     setPartnerId(currentPartnerId);
     setBlackouts(getPartnerBlackouts(currentPartnerId));
+    setBookings(getAllPortalBookings());
   }, [currentPartnerId]);
 
-  const allPartners = useMemo(() => PARTNERS, []);
+  const customPartners = useMemo(() => getCustomPartners(), []);
+  const allPartners = useMemo(() => {
+    return [
+      ...PARTNERS,
+      ...VENUES.map((v) => ({
+        id: v.id,
+        name: v.name,
+        category: "Venue",
+        min: v.min,
+        max: v.max,
+        events: v.events,
+        seed: v.seed,
+        busyRate: v.busyRate,
+        perGuest: 0,
+        flat: v.price,
+      })),
+      ...customPartners.map((c) => ({
+        id: c.id,
+        name: c.name,
+        category: c.category,
+        min: 10,
+        max: 250,
+        events: "all" as const,
+        seed: 99,
+        busyRate: 0.2,
+        perGuest: 0,
+        flat: 1000,
+      })),
+    ];
+  }, [customPartners]);
+
   const activePartner = useMemo(
     () => allPartners.find((p) => p.id === partnerId) || allPartners[0]!,
     [allPartners, partnerId],
   );
 
-  const bookings = useMemo(() => getAllPortalBookings(), []);
-
   // Filter bookings where this partner is assigned
   const partnerBookings = useMemo(() => {
     return bookings.filter((b) =>
-      b.assignedPartners.some(
-        (p) => p.partnerId === partnerId || p.partnerName.toLowerCase().includes(activePartner.name.toLowerCase()),
+      b.assignedPartners?.some(
+        (p) =>
+          p.partnerId === partnerId ||
+          p.partnerName.toLowerCase().trim() === activePartner.name.toLowerCase().trim() ||
+          p.partnerName.toLowerCase().includes(activePartner.name.toLowerCase()) ||
+          activePartner.name.toLowerCase().includes(p.partnerName.toLowerCase()) ||
+          (activePartner.category === "Venue" && b.venueName.toLowerCase().includes(activePartner.name.toLowerCase())),
       ),
     );
   }, [bookings, partnerId, activePartner]);
 
   const totalEarnings = partnerBookings.reduce((sum, b) => {
-    const match = b.assignedPartners.find(
-      (p) => p.partnerId === partnerId || p.partnerName.toLowerCase().includes(activePartner.name.toLowerCase()),
+    const match = b.assignedPartners?.find(
+      (p) =>
+        p.partnerId === partnerId ||
+        p.partnerName.toLowerCase().trim() === activePartner.name.toLowerCase().trim() ||
+        p.partnerName.toLowerCase().includes(activePartner.name.toLowerCase()) ||
+        activePartner.name.toLowerCase().includes(p.partnerName.toLowerCase()) ||
+        (activePartner.category === "Venue" && b.venueName.toLowerCase().includes(activePartner.name.toLowerCase())),
     );
     return sum + (match?.agreedFee || 0);
   }, 0);
@@ -82,14 +125,68 @@ export function PartnerDashboard({
           </p>
         </div>
 
-        <div className="flex items-center justify-start sm:justify-end gap-2.5 sm:shrink-0">
+        <div className="flex flex-wrap sm:flex-nowrap items-center justify-start sm:justify-end gap-2 sm:shrink-0">
+          {onBackToOwner && (
+            <button
+              type="button"
+              onClick={() => {
+                playTapSound();
+                onBackToOwner();
+              }}
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-full border hairline bg-surface px-3.5 py-2 text-xs font-bold text-ink/80 hover:border-primary hover:text-primary transition cursor-pointer"
+            >
+              ← Back to Owner Portal
+            </button>
+          )}
+
+          {/* Partner Switcher Dropdown */}
+          <div className="flex items-center gap-1.5 rounded-full border hairline bg-surface px-3 py-1.5 text-xs">
+            <span className="eyebrow text-ink/50 text-[0.65rem] font-bold">Partner:</span>
+            <select
+              value={partnerId}
+              onChange={(e) => {
+                playTapSound();
+                const nextId = e.target.value;
+                setPartnerId(nextId);
+                setStoredPartnerId(nextId);
+                setBlackouts(getPartnerBlackouts(nextId));
+                setBookings(getAllPortalBookings());
+              }}
+              className="bg-transparent font-bold text-ink outline-none cursor-pointer text-xs max-w-[170px] truncate"
+            >
+              <optgroup label="Core Network" className="bg-canvas text-ink font-semibold">
+                {PARTNERS.map((p) => (
+                  <option key={p.id} value={p.id} className="bg-canvas text-ink">
+                    {p.name} ({p.category})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="Venues" className="bg-canvas text-ink font-semibold">
+                {VENUES.map((v) => (
+                  <option key={v.id} value={v.id} className="bg-canvas text-ink">
+                    {v.name} (Venue)
+                  </option>
+                ))}
+              </optgroup>
+              {customPartners.length > 0 && (
+                <optgroup label="Custom Onboarded" className="bg-canvas text-ink font-semibold">
+                  {customPartners.map((c) => (
+                    <option key={c.id} value={c.id} className="bg-canvas text-ink">
+                      {c.name} ({c.category})
+                    </option>
+                  ))}
+                </optgroup>
+              )}
+            </select>
+          </div>
+
           <button
             type="button"
             onClick={() => {
               playTapSound();
               onLogout();
             }}
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-full border hairline bg-canvas px-4 py-2 text-xs font-bold text-ink/75 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition cursor-pointer"
+            className="inline-flex items-center justify-center whitespace-nowrap rounded-full border hairline bg-canvas px-3.5 py-2 text-xs font-bold text-ink/75 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 transition cursor-pointer"
           >
             Log Out
           </button>

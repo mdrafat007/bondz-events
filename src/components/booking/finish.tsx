@@ -272,13 +272,26 @@ export function Step5() {
             clientPhone: details.phone,
             clientEmail: details.email,
             notes: details.notes ?? "",
-            assignedPartners: s.assigned.map((a) => ({
-              partnerId: a.p!.id,
-              partnerName: a.p!.name,
-              category: a.cat,
-              agreedFee: priceOf(a.p!, sel.guests),
-              status: "Confirmed" as const,
-            })),
+            assignedPartners: [
+              ...(s.venue
+                ? [
+                    {
+                      partnerId: s.venue.id,
+                      partnerName: s.venue.name,
+                      category: "Venue",
+                      agreedFee: s.venue.price,
+                      status: "Confirmed" as const,
+                    },
+                  ]
+                : []),
+              ...s.assigned.map((a) => ({
+                partnerId: a.p!.id,
+                partnerName: a.p!.name,
+                category: a.cat,
+                agreedFee: priceOf(a.p!, sel.guests),
+                status: "Confirmed" as const,
+              })),
+            ],
             runOfShow: [{ time: String(SLOT_TIMES[s.slot as keyof typeof SLOT_TIMES] ?? ""), action: "Event start" }],
             status: "Confirmed",
           },

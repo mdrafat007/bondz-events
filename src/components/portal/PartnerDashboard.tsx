@@ -14,11 +14,9 @@ import { toast } from "sonner";
 export function PartnerDashboard({
   currentPartnerId,
   onLogout,
-  onBackToOwner,
 }: {
   currentPartnerId: string;
   onLogout: () => void;
-  onBackToOwner?: () => void;
 }) {
   const [partnerId, setPartnerId] = useState(currentPartnerId);
   const [blackouts, setBlackouts] = useState<number[]>(() => getPartnerBlackouts(partnerId));
@@ -126,19 +124,6 @@ export function PartnerDashboard({
         </div>
 
         <div className="flex flex-wrap sm:flex-nowrap items-center justify-start sm:justify-end gap-2 sm:shrink-0">
-          {onBackToOwner && (
-            <button
-              type="button"
-              onClick={() => {
-                playTapSound();
-                onBackToOwner();
-              }}
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-full border hairline bg-surface px-3.5 py-2 text-xs font-bold text-ink/80 hover:border-primary hover:text-primary transition cursor-pointer"
-            >
-              ← Back to Owner Portal
-            </button>
-          )}
-
           {/* Partner Switcher Dropdown */}
           <div className="flex items-center gap-1.5 rounded-full border hairline bg-surface px-3 py-1.5 text-xs">
             <span className="eyebrow text-ink/50 text-[0.65rem] font-bold">Partner:</span>

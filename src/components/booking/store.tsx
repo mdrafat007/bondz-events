@@ -23,7 +23,7 @@ function stamp() {
   return d.toTimeString().slice(0, 8);
 }
 
-export function useBookingState(init: { event?: EventTypeId | undefined; where?: "home" | "venue" | undefined; step?: Step | undefined; reveal?: boolean | undefined }, demo = false) {
+export function useBookingState(init: { event?: EventTypeId | undefined; where?: "home" | "venue" | undefined; step?: Step | undefined; reveal?: boolean | undefined } = {}, demo = false) {
   const [anchor] = useState(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);

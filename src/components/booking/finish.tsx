@@ -717,7 +717,10 @@ function RescheduleModal({
         </div>
 
         <p className="mt-4 text-xs font-bold text-ink/70 uppercase tracking-wider">Select new verified open date</p>
-        <div className="scroll-quiet mt-2 grid grid-cols-3 sm:grid-cols-6 gap-1.5 max-h-48 overflow-y-auto pr-1">
+        <div
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          className="scroll-quiet mt-2 grid grid-cols-3 sm:grid-cols-6 gap-1.5 max-h-48 overflow-y-auto pr-1"
+        >
           {days.map((d) => {
             const dt = dayToDate(anchor, d);
             const on = pick === d;

@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button, Card, cn, triggerTap } from "@/index";
 import {
@@ -364,6 +364,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
           aria-modal="true"
           aria-label={title}
           onClick={(e) => e.stopPropagation()}
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           className="rise scroll-quiet max-h-full w-full max-w-lg overflow-y-auto rounded-card bg-surface p-6 shadow-[var(--bondz-shadow-popover)]"
         >
           <div className="flex items-start justify-between gap-3">

@@ -24,6 +24,21 @@ input {
   color: var(--bondz-surface-light);
 }
 
+/* Eliminate native browser scrollbars globally for any element with .scroll-quiet or inline styled */
+.scroll-quiet,
+[data-scroll-quiet] {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+.scroll-quiet::-webkit-scrollbar,
+[data-scroll-quiet]::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
 .bondz-orbit-a {
   animation: spin 1.2s linear infinite;
 }

@@ -236,7 +236,7 @@ Thank you.`;
             <span className={label}>Preferred date</span>
             <input
               type="date"
-              className={input}
+              className={`${input} cursor-pointer [color-scheme:light] dark:[color-scheme:dark] dark:[&::-webkit-calendar-picker-indicator]:invert dark:[&::-webkit-calendar-picker-indicator]:brightness-200 dark:[&::-webkit-calendar-picker-indicator]:opacity-90 [&::-webkit-calendar-picker-indicator]:cursor-pointer`}
               value={f.date}
               onChange={(e) => {
                 playTapSound();
